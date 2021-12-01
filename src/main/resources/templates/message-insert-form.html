@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<html lang="en">
 
 <head>
     <meta charset="UTF-8">
@@ -9,35 +9,14 @@
 <form action="create" method="post" enctype="multipart/form-data">
     <input type="text" name="title" placeholder="title"/>
     <br/>
+    <br/>
     <input type="text" name="author" placeholder="author" />
+    <br/>
     <br/>
     <input type="file" name="file" placeholder="file"/>
     <br/>
+    <br/>
     <input type="submit" />
 </form>
-
-<!--<form action="#" th:action="@{/create}" th:object="${test}" method="post" >-->
-<!--&lt;!&ndash;    <input type="text" th:field="*{incomeMessage}" id="incomeMessage" placeholder="Income Message">&ndash;&gt;-->
-<!--    <p><input type="file" id="file-uploader">-->
-<!--        <input type="submit" value="Отправить"></p>-->
-<!--&lt;!&ndash;    <table>&ndash;&gt;-->
-<!--&lt;!&ndash;        <td>&ndash;&gt;-->
-<!--&lt;!&ndash;            <text>Сообщения</text>&ndash;&gt;-->
-<!--&lt;!&ndash;            <br/>&ndash;&gt;-->
-<!--&lt;!&ndash;            <input type="text" th:field="*{incomeMessage}" id="incomeMessage" placeholder="Income Message">&ndash;&gt;-->
-<!--&lt;!&ndash;            <br/>&ndash;&gt;-->
-<!--&lt;!&ndash;            <input type="text" th:field="*{outgoingMessage}" id="outgoingMessage" placeholder="Outgoing Message"&ndash;&gt;-->
-<!--&lt;!&ndash;                   required>&ndash;&gt;-->
-<!--&lt;!&ndash;        </td>&ndash;&gt;-->
-<!--&lt;!&ndash;        <td>&ndash;&gt;-->
-<!--&lt;!&ndash;            <text>Topics</text>&ndash;&gt;-->
-<!--&lt;!&ndash;            <br/>&ndash;&gt;-->
-<!--&lt;!&ndash;            <input type="text" th:field="*{readTopic}" id="readTopic" placeholder="Topic from read">&ndash;&gt;-->
-<!--&lt;!&ndash;            <br/>&ndash;&gt;-->
-<!--&lt;!&ndash;            <input type="text" th:field="*{sendTopic}" id="sendTopic" placeholder="Topic when send">&ndash;&gt;-->
-<!--&lt;!&ndash;        </td>&ndash;&gt;-->
-<!--&lt;!&ndash;        <input type="submit" value="Done">&ndash;&gt;-->
-<!--&lt;!&ndash;    </table>&ndash;&gt;-->
-<!--</form>-->
 </body>
 </html>
