@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Modification XML</title>
+</head>
+
+
+
+
+
+<body>
+
+<form action="#" th:action="@{/create}" th:object="${test}" method="post" >
+<!--    <input type="text" th:field="*{incomeMessage}" id="incomeMessage" placeholder="Income Message">-->
+    <p><input type="file" id="file-uploader">
+        <input type="submit" value="Отправить"></p>
+<!--    <table>-->
+<!--        <td>-->
+<!--            <text>Сообщения</text>-->
+<!--            <br/>-->
+<!--            <input type="text" th:field="*{incomeMessage}" id="incomeMessage" placeholder="Income Message">-->
+<!--            <br/>-->
+<!--            <input type="text" th:field="*{outgoingMessage}" id="outgoingMessage" placeholder="Outgoing Message"-->
+<!--                   required>-->
+<!--        </td>-->
+<!--        <td>-->
+<!--            <text>Topics</text>-->
+<!--            <br/>-->
+<!--            <input type="text" th:field="*{readTopic}" id="readTopic" placeholder="Topic from read">-->
+<!--            <br/>-->
+<!--            <input type="text" th:field="*{sendTopic}" id="sendTopic" placeholder="Topic when send">-->
+<!--        </td>-->
+<!--        <input type="submit" value="Done">-->
+<!--    </table>-->
+</form>
+</body>
+</html>
