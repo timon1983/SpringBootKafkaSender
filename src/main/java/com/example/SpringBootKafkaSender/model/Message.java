@@ -1,17 +1,18 @@
 package com.example.SpringBootKafkaSender.model;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import java.io.File;
 import java.time.LocalDate;
 
 @Entity
 @Data
-@Builder
+@Builder(toBuilder = true)
 @Table(name = "messages")
+@AllArgsConstructor
 @NoArgsConstructor
 public class Message {
 
@@ -28,7 +29,7 @@ public class Message {
     @Column(name = "author", nullable = false)
     private String author;
     @Column(name = "content", nullable = false)
-    private File content;
+    private String content;
     @Column(name = "type", nullable = false)
     private String contentType;
 }
