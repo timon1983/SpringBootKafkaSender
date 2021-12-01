@@ -1,14 +1,18 @@
 package com.example.SpringBootKafkaSender.model;
 
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.io.File;
-import java.util.Date;
+import java.time.LocalDate;
 
 @Entity
 @Data
+@Builder
 @Table(name = "messages")
+@NoArgsConstructor
 public class Message {
 
     @Id
@@ -20,11 +24,11 @@ public class Message {
     @Column(name = "size", nullable = false)
     private long size;
     @Column(name = "date_create", nullable = false)
-    private Date dateOfCreate;
+    private LocalDate dateOfCreate;
     @Column(name = "author", nullable = false)
     private String author;
     @Column(name = "content", nullable = false)
-    File content;
-
-
+    private File content;
+    @Column(name = "type", nullable = false)
+    private String contentType;
 }
