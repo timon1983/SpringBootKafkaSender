@@ -4,6 +4,7 @@ create table if not exists messages(
                                    title varchar(45) not null,
                                    size int not null default 0,
                                    date_create date not null ,
+                                   time_create time not null,
                                    author varchar(45) not null,
                                    content varchar(255) not null,
                                    type varchar(255) not null);
