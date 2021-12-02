@@ -3,9 +3,11 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>Modification XML</title>
+    <title>Upload file</title>
 </head>
 <body>
+<table>
+    <td>
 <form action="create" method="post" enctype="multipart/form-data">
     <input type="text" name="title" placeholder="title"/>
     <br/>
@@ -18,5 +20,10 @@
     <br/>
     <input type="submit" />
 </form>
+    </td>
+    <td>
+        <form method="get" action="/UI/message/"><button type="submit">Back</button></form>
+    </td>
+</table>
 </body>
 </html>

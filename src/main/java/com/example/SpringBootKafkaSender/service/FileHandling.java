@@ -19,8 +19,6 @@ public class FileHandling {
     /**
      * Конвертирование из MultipartFile в File
      *
-     *
-     *
      */
     public File convertMultiPartFileToFile(MultipartFile multipartFile) {
         File convFile = new File(Objects.requireNonNull(multipartFile.getOriginalFilename()));
@@ -35,8 +33,6 @@ public class FileHandling {
 
     /**
      * Переименование файла для уникальности
-     *
-     *
      *
      */
     public File renameFile(File file) {

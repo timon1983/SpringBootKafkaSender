@@ -15,13 +15,15 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 import javax.servlet.ServletException;
 import java.io.IOException;
 import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 
 @Controller
 @RequestMapping("/create")
 public class MessageController {
 
     private final static Logger log = LogManager.getLogger(MessageController.class);
-    private MessageService messageService;
+    private final MessageService messageService;
 
     @Autowired
     public MessageController(MessageService messageService) {
@@ -38,17 +40,23 @@ public class MessageController {
      */
     @PostMapping("")
     public String createMassage(MultipartHttpServletRequest request) throws ServletException, IOException {
-        log.info("Receive message");
+        log.info("Получение сообщения от клиента");
         MultipartFile multipartFile = request.getFile("file");
         Message message = Message.builder()
                 .title(request.getParameter("title"))
                 .size(request.getPart("file").getSize())
                 .dateOfCreate(LocalDate.now())
+                .timeOfCreate(LocalTime.parse(LocalTime.now().format(DateTimeFormatter.ofPattern("HH:mm:ss"))))
                 .author(request.getParameter("author"))
                 .content(request.getPart("file").getSubmittedFileName())
                 .contentType(request.getPart("file").getContentType())
                 .build();
         messageService.save(message, multipartFile);
         return "message-insert-form";
+    }
+
+    @GetMapping
+    public String getAllMessages(){
+        return null;
     }
 }

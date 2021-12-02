@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.time.LocalDate;
+import java.time.LocalTime;
 
 @Entity
 @Data
@@ -26,6 +27,8 @@ public class Message {
     private long size;
     @Column(name = "date_create", nullable = false)
     private LocalDate dateOfCreate;
+    @Column(name = "time_create", nullable = false)
+    private LocalTime timeOfCreate;
     @Column(name = "author", nullable = false)
     private String author;
     @Column(name = "content", nullable = false)
