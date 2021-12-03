@@ -8,14 +8,16 @@
 	<version>0.0.1-SNAPSHOT</version>
     <modules>
         <module>liquibase</module>
-		<module>sbksender</module>
+		<module>sbks</module>
+		<module>uisbks</module>
+		<module>awsS3</module>
 	</modules>
 
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
 		<version>2.6.1</version>
-		<relativePath/> <!-- lookup parent from repository -->
+		<relativePath/> <!-- lookup parent from com.example.awsS3.repository -->
 	</parent>
 
 	<properties>
@@ -29,7 +31,11 @@
 			<artifactId>postgresql</artifactId>
 			<scope>runtime</scope>
 		</dependency>
+		<dependency>
+			<groupId>org.projectlombok</groupId>
+			<artifactId>lombok</artifactId>
+			<optional>true</optional>
+		</dependency>
+
 	</dependencies>
-
-
 </project>
