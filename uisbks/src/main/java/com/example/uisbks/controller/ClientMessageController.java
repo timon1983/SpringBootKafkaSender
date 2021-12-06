@@ -9,15 +9,13 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.http.HttpEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
 import java.io.File;
 import java.io.IOException;
 import java.net.URI;
@@ -76,15 +74,20 @@ public class ClientMessageController {
         return "filesj";
     }
 
-    @GetMapping("/file-delete/{id}")
-    public String deleteFileById(@PathVariable long id){
-        String url = "http://localhost:8085/api/sdk/files";
-        String fileName = restTemplate.postForObject(url, id, String.class);
+    @PostMapping("/file-delete")
+    public String deleteFileById(HttpServletRequest request){
+        Long id = Long.parseLong(request.getParameter("id"));
+        String url = "http://localhost:8085/api/sdk/delete";
+        String fileName = (String) restTemplate.postForObject(url, id, Object.class);
         serviceS3.delete(fileName);
         return "redirect:/files";
     }
 
-    @GetMapping("open-file")
-    public String openFile()
+    @GetMapping("/open-file")
+    public String openFile(HttpServletRequest request){
+        String id = request.getParameter("id");
+
+        return "redirect:https://d2lzjz6kkt1za6.cloudfront.net/"+id;
+    }
 
 }
