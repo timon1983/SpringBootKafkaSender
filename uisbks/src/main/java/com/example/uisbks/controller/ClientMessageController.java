@@ -46,17 +46,6 @@ public class ClientMessageController {
         MultipartFile multipartFile = request.getFile("file");
         File file = fileHandling.convertMultiPartFileToFile(Objects.requireNonNull(multipartFile));
         servicesS3.upload(file);
-
-//        Model message = new ConcurrentModel();
-//        message.addAttribute("title", request.getParameter("title"));
-//        message.addAttribute("size", request.getPart("file").getSize());
-//        message.addAttribute("dateOfCreate", LocalDate.now());
-//        message.addAttribute("timeOfCreate", LocalTime.now().withNano(0));
-//        message.addAttribute("author", request.getParameter("author"));
-//        message.addAttribute("originFileName", multipartFile.getOriginalFilename());
-//        message.addAttribute("fileNameForS3", file.getName());
-//        message.addAttribute("contentType", request.getPart("file").getContentType());
-
         DTOMessage message = DTOMessage.builder()
                 .title(request.getParameter("title"))
                 .size(request.getPart("file").getSize())
@@ -71,8 +60,8 @@ public class ClientMessageController {
         String url = "http://localhost:8085/api/sdk/create";
         URI uri = new URI(url);
         HttpEntity<DTOMessage> messageRequest = new HttpEntity<>(message);
-        restTemplate.postForObject(uri, messageRequest, Object.class);
-        //System.out.println(savedMessage);
+        DTOMessage dtoMessage = restTemplate.postForObject(uri, messageRequest, DTOMessage.class);
+        System.out.println(dtoMessage);
         return "message-insert-form";
     }
 }
