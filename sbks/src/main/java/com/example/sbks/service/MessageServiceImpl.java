@@ -25,7 +25,7 @@ public class MessageServiceImpl implements MessageService {
     @Transactional
     public Message save(Message message) {
 
-        log.info("Запись сообщения в бд, файла в хранилище S3");
+        log.info("Запись сообщения в бд");
         return messageRepository.save(message);
 
     }
@@ -33,7 +33,17 @@ public class MessageServiceImpl implements MessageService {
     @Override
     @Transactional
     public List<Message> getAll() {
-
-        return null;
+        log.info("Получение списка всех файлов");
+        return messageRepository.findAll();
     }
+
+    @Override
+    @Transactional
+    public String deleteById(Long id) {
+        String name = messageRepository.getById(id).getOriginFileName();
+        messageRepository.deleteById(id);
+        return name;
+    }
+
+
 }

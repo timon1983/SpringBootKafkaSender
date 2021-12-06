@@ -18,6 +18,6 @@ public class StartController {
     @GetMapping
     public String startProject() {
         log.info("Start project");
-        return "start-page";
+        return "start";
     }
 }

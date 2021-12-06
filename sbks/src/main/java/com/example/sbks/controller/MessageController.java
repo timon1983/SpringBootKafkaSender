@@ -8,6 +8,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/sdk")
 public class MessageController {
@@ -30,9 +32,21 @@ public class MessageController {
     @PostMapping("/create")
     public ResponseEntity<Message> createMessage(@RequestBody Message message) {
         System.out.println(message);
-        log.info("Получение сообщения от клиента");
+        log.info("Получение сообщения от клиента и запись в БД");
         Message savedMessage = messageService.save(message);
         return new ResponseEntity<>(savedMessage, HttpStatus.OK);
+    }
+
+    @GetMapping("/files")
+    public ResponseEntity<List<Message>> getAllMessages(){
+        List<Message> messages = messageService.getAll();
+        return new ResponseEntity<>(messages, HttpStatus.OK);
+    }
+
+    @PostMapping("/delete")
+    public ResponseEntity<String> deleteById(Long id){
+        String name = messageService.deleteById(id);
+        return new ResponseEntity<>(name, HttpStatus.OK);
     }
 
 }

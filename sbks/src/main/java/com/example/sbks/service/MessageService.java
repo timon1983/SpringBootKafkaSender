@@ -9,4 +9,6 @@ public interface MessageService {
     Message save(Message message);
 
     List<Message> getAll();
+
+    String deleteById(Long id);
 }

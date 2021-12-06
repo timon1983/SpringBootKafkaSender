@@ -22,4 +22,9 @@ public class RepositoryS3Impl implements RepositoryS3 {
         amazonS3.putObject(bucket, fileName, file);
 
     }
+
+    @Override
+    public void delete(String fileName){
+        amazonS3.deleteObject(bucket, fileName);
+    }
 }
