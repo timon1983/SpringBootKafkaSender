@@ -1,7 +1,8 @@
 package com.example.uisbks.controller;
 
-import com.example.awsS3.service.ServiceS3;
-import com.example.uisbks.dto.MessageDTO;
+
+import com.example.awsS3.service.ServicesS3Impl;
+import com.example.uisbks.dtomodel.DTOMessage;
 import com.example.uisbks.service.FileHandling;
 import lombok.RequiredArgsConstructor;
 import org.apache.logging.log4j.LogManager;
@@ -31,8 +32,8 @@ public class ClientMessageController {
 
     private final static Logger log = LogManager.getLogger(ClientMessageController.class);
     private final RestTemplate restTemplate = new RestTemplate();
-    private final ServiceS3 serviceS3;
     private final FileHandling fileHandling;
+    private final ServicesS3Impl servicesS3;
 
     @GetMapping
     public String getCreatePage() {
@@ -45,8 +46,9 @@ public class ClientMessageController {
         log.info("Получение сообщения от клиента");
         MultipartFile multipartFile = request.getFile("file");
         File file = fileHandling.convertMultiPartFileToFile(Objects.requireNonNull(multipartFile));
-        serviceS3.upload(file);
-        MessageDTO message = MessageDTO.builder()
+        servicesS3.upload(file);
+
+        DTOMessage message = DTOMessage.builder()
                 .title(request.getParameter("title"))
                 .size(request.getPart("file").getSize())
                 .dateOfCreate(LocalDate.now())
@@ -59,8 +61,8 @@ public class ClientMessageController {
 
         String url = "http://localhost:8085/api/sdk/create";
         URI uri = new URI(url);
-        HttpEntity<MessageDTO> messageRequest = new HttpEntity<>(message);
-        MessageDTO savedMessage = restTemplate.postForObject(uri, messageRequest, MessageDTO.class);
+        HttpEntity<DTOMessage> messageRequest = new HttpEntity<>(message);
+        DTOMessage savedMessage = restTemplate.postForObject(uri, messageRequest, DTOMessage.class);
         System.out.println(savedMessage);
         return "message-insert-form";
     }

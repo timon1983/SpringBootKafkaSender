@@ -2,8 +2,7 @@ package com.example.sbks.controller;
 
 import com.example.sbks.model.Message;
 import com.example.sbks.service.MessageService;
-
-import com.example.uisbks.dto.MessageDTO;
+import com.example.uisbks.dtomodel.DTOMessage;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.http.HttpStatus;
@@ -30,22 +29,22 @@ public class MessageController {
      * Получение сообщения от клиента
      */
     @PostMapping("/create")
-    public ResponseEntity<MessageDTO> createMessage(@RequestBody MessageDTO messageDTO) {
-        System.out.println(messageDTO);
+    public ResponseEntity<DTOMessage> createMessage(@RequestBody DTOMessage modelMessageDTO) {
+        System.out.println(modelMessageDTO);
         log.info("Получение сообщения от клиента");
         Message message = Message.builder()
-                .title(messageDTO.getTitle())
-                .size(messageDTO.getSize())
-                .dateOfCreate(messageDTO.getDateOfCreate())
-                .timeOfCreate(messageDTO.getTimeOfCreate())
-                .author(messageDTO.getAuthor())
-                .originFileName(messageDTO.getOriginFileName())
-                .fileNameForS3(messageDTO.getFileNameForS3())
-                .contentType(messageDTO.getContentType())
+                .title(modelMessageDTO.getTitle())
+                .size(modelMessageDTO.getSize())
+                .dateOfCreate(modelMessageDTO.getDateOfCreate())
+                .timeOfCreate(modelMessageDTO.getTimeOfCreate())
+                .author(modelMessageDTO.getAuthor())
+                .originFileName(modelMessageDTO.getOriginFileName())
+                .fileNameForS3(modelMessageDTO.getFileNameForS3())
+                .contentType(modelMessageDTO.getContentType())
                 .build();
         Message savedMessage = messageService.save(message);
-        messageDTO.setId(savedMessage.getId());
-        return new ResponseEntity<>(messageDTO, HttpStatus.OK);
+        modelMessageDTO.setId(savedMessage.getId());
+        return new ResponseEntity<>(modelMessageDTO, HttpStatus.OK);
     }
 
 }

@@ -13,13 +13,11 @@ import java.nio.file.Path;
 
 @Service
 @RequiredArgsConstructor
-public class SeviceS3Impl implements ServiceS3 {
+public class ServicesS3Impl {
 
-    private final static Logger log = LogManager.getLogger(SeviceS3Impl.class);
+    private final static Logger log = LogManager.getLogger(ServicesS3Impl.class);
     private final RepositoryS3 repositoryS3;
 
-
-    @Override
     public void upload(File file) {
         var fileName = file.getName();
         repositoryS3.save(file, fileName);
