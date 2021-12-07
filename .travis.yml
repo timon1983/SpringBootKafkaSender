@@ -2,8 +2,10 @@ language: java
 jdk:
   - openjdk11
 
+install:
+  - mvn install -DskipTests=true -Dmaven.javadoc.skip=true -B -V
 script:
-  - mvn clean install -fae
+  - mvn test -B
 
 notifications:
   email: timon1983@yandex.ru
