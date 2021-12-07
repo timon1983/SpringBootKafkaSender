@@ -3,7 +3,7 @@ jdk:
   - openjdk11
 
 script:
-  - mvn clean install
+  - mvn clean test
 
 notifications:
   email: timon1983@yandex.ru
