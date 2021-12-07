@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html lang="en">
 
 <head>
@@ -22,8 +22,9 @@
 </form>
     </td>
     <td>
-        <form method="get" action="/UI/message/"><button type="submit">Back</button></form>
+        <form method="get" action="/create/files"><button type="submit">Получить список всех файлов</button></form>
     </td>
 </table>
 </body>
 </html>
+

@@ -1,6 +1,7 @@
 package com.example.sbks.service;
 
 import com.example.sbks.model.Message;
+import com.example.sbks.model.MessageDeleted;
 import com.example.sbks.repository.MessageRepository;
 import lombok.RequiredArgsConstructor;
 import org.apache.logging.log4j.LogManager;
@@ -8,6 +9,8 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.List;
 
 @Service
@@ -16,6 +19,7 @@ public class MessageServiceImpl implements MessageService {
 
     private final static Logger log = LogManager.getLogger(MessageServiceImpl.class);
     private final MessageRepository messageRepository;
+    private final MessageDeletedService messageDeletedService;
 
 
     /**
@@ -25,15 +29,47 @@ public class MessageServiceImpl implements MessageService {
     @Transactional
     public Message save(Message message) {
 
-        log.info("Запись сообщения в бд, файла в хранилище S3");
+        log.info("Запись сообщения в бд");
         return messageRepository.save(message);
-
     }
 
+    /**
+     * Получение списка всех сохраненных файлов
+     */
     @Override
     @Transactional
     public List<Message> getAll() {
+        log.info("Получение списка всех файлов");
+        return messageRepository.findAll();
+    }
 
-        return null;
+    /**
+     * Удаление данных файла из БД по его ID
+     */
+    @Override
+    @Transactional
+    public Message deleteById(Long id) {
+        Message message = messageRepository.findById(id).orElse(new Message());
+        log.info("Удаление данных файла {} из БД по его ID", message.getOriginFileName());
+        messageRepository.deleteById(id);
+        MessageDeleted messageDeleted = createMessageDeleted(message);
+        log.info("Сохранение данных удаленного файла {} в БД ", message.getOriginFileName());
+        messageDeletedService.save(messageDeleted);
+        return message;
+    }
+
+    /**
+     * Получение объекта MessageDeleted
+     */
+    public MessageDeleted createMessageDeleted(Message message) {
+        return MessageDeleted.builder()
+                .title(message.getTitle())
+                .size(message.getSize())
+                .dateOfDelete(LocalDate.now())
+                .timeOfDelete(LocalTime.now().withNano(0))
+                .author(message.getAuthor())
+                .originFileName(message.getOriginFileName())
+                .contentType(message.getContentType())
+                .build();
     }
 }
