@@ -52,8 +52,6 @@
                 <td>${name.originFileName}</td>
                 <td>${name.fileNameForS3}</td>
                 <td>${name.contentType}</td>
-                <td><a href=https://d2lzjz6kkt1za6.cloudfront.net/${name.fileNameForS3}><button>Открыть</button></a></td>
-                <td><a href=/create/file-delete?id=${name.id}><button>Удалить</button></a></td>
             </tr>
             </c:forEach>
         </table>
@@ -62,9 +60,12 @@
             <input type="number" name="id" placeholder="id"/>
             <button type="submit">Удалить файл</button></form>
 
-<%--        <form method="post" action="/create/open-file">--%>
-<%--            <input type="number" value="id" name="id" placeholder="id"/>--%>
-<%--            <button type="submit">Открыть файл</button></form>--%>
+        <form method="post" action="/create/open-file">
+            <input type="number" value="id" name="id" placeholder="id"/>
+            <button type="submit">Открыть файл</button></form>
+
+        <form method="get" action="/create">
+            <button type="submit">Добавить файл</button></form>
 
 </body>
 </html>

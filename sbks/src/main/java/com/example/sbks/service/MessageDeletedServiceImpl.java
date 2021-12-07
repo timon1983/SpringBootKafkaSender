@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
@@ -21,7 +22,6 @@ public class MessageDeletedServiceImpl implements MessageDeletedService {
      * Запись данных удаленного файла в БД
      */
     @Override
-    @Transactional
     public MessageDeleted save(MessageDeleted messageDeleted) {
 
         log.info("Запись удаленного сообщения в бд");

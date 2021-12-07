@@ -12,6 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -47,15 +48,25 @@ public class MessageServiceImpl implements MessageService {
      * Удаление данных файла из БД по его ID
      */
     @Override
-    @Transactional
+    @Transactional()
     public Message deleteById(Long id) {
-        Message message = messageRepository.findById(id).orElse(new Message());
-        log.info("Удаление данных файла {} из БД по его ID", message.getOriginFileName());
-        messageRepository.deleteById(id);
-        MessageDeleted messageDeleted = createMessageDeleted(message);
-        log.info("Сохранение данных удаленного файла {} в БД ", message.getOriginFileName());
-        messageDeletedService.save(messageDeleted);
+        Message message = getById(id).orElse(null);
+        if (message != null) {
+            MessageDeleted messageDeleted = createMessageDeleted(message);
+            log.info("Удаление данных файла {} из БД по его ID", message.getOriginFileName());
+            messageRepository.deleteById(id);
+            log.info("Сохранение данных удаленного файла {} в БД удаленных файлов", message.getOriginFileName());
+            messageDeletedService.save(messageDeleted);
+        } else {
+            log.error("Нет файла в БД с id={}", id);
+            return new Message();
+        }
         return message;
+    }
+
+    @Override
+    public Optional<Message> getById(Long id) {
+        return messageRepository.findById(id);
     }
 
     /**

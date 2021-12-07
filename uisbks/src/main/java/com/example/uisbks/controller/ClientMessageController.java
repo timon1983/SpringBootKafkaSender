@@ -21,8 +21,11 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import java.io.File;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
@@ -72,8 +75,9 @@ public class ClientMessageController {
 
     @GetMapping("/files")
     public String getAllFiles(Model model) {
+        log.info("Получение списка загруженных файлов");
         String url = "http://localhost:8085/api/sdk/files";
-        List dtoMessages = restTemplate.getForObject(url, List.class);
+        List<Object> dtoMessages = restTemplate.getForObject(url, List.class);
         model.addAttribute("listOfFiles", dtoMessages);
         return "filesj";
     }
@@ -83,16 +87,29 @@ public class ClientMessageController {
         Long id = Long.parseLong(request.getParameter("id"));
         String url = "http://localhost:8085/api/sdk/delete";
         DTOMessage dtoMessage = restTemplate.postForObject(url, id, DTOMessage.class);
-        serviceS3.delete(dtoMessage.getFileNameForS3());
-        log.info("Файл {} удален", dtoMessage.getOriginFileName());
-        return "filesj";
+        if (dtoMessage != null && dtoMessage.getFileNameForS3() != null) {
+            log.info("Файл {} удален", dtoMessage.getOriginFileName());
+            serviceS3.delete(dtoMessage.getFileNameForS3());
+        } else {
+            log.error("Данные о файле с Id={} в БД отсутствуют", id);
+        }
+
+        return "redirect:/create/files";
     }
 
-    @GetMapping("/open-file")
-    public String openFile(HttpServletRequest request) {
-        String id = request.getParameter("id");
-
-        return "redirect:https://d2lzjz6kkt1za6.cloudfront.net/" + id;
+    @PostMapping("/open-file")
+    public String openFile(HttpServletRequest request){
+        Long id = Long.parseLong(request.getParameter("id"));
+        String url = "http://localhost:8085/api/sdk/open";
+        DTOMessage dtoMessage = restTemplate.postForObject(url, id, DTOMessage.class);
+        if (dtoMessage != null && dtoMessage.getFileNameForS3() != null) {
+            String fileNameS3 = dtoMessage.getFileNameForS3();
+            fileNameS3 = URLEncoder.encode(fileNameS3, StandardCharsets.UTF_8);
+            log.info("Файл {} получен", dtoMessage.getOriginFileName());
+            return "redirect:https://d2lzjz6kkt1za6.cloudfront.net/" + fileNameS3;
+        } else {
+            log.error("Данные о файле с Id={} в БД отсутствуют", id);
+            return "redirect:/create/files";
+        }
     }
-
 }
