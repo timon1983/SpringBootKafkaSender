@@ -1,5 +1,6 @@
 package com.example.uisbks.controller;
 
+
 import com.example.awsS3.service.ServiceS3;
 import com.example.uisbks.dtomodel.DTOMessage;
 import com.example.uisbks.service.FileHandling;
@@ -9,7 +10,9 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.http.HttpEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
@@ -46,7 +49,7 @@ public class ClientMessageController {
         log.info("Получение сообщения от клиента");
         MultipartFile multipartFile = request.getFile("file");
         File file = fileHandling.convertMultiPartFileToFile(Objects.requireNonNull(multipartFile));
-        log.info("Запись файла {} в хранилище S3", file.getName());
+        log.info("Загрузка файла {} в хранилище S3", file.getName());
         serviceS3.upload(file);
         DTOMessage message = DTOMessage.builder()
                 .title(request.getParameter("title"))
@@ -66,8 +69,9 @@ public class ClientMessageController {
         System.out.println(dtoMessage);
         return "message-insert-form";
     }
+
     @GetMapping("/files")
-    public String getAllFiles(Model model){
+    public String getAllFiles(Model model) {
         String url = "http://localhost:8085/api/sdk/files";
         List dtoMessages = restTemplate.getForObject(url, List.class);
         model.addAttribute("listOfFiles", dtoMessages);
@@ -75,19 +79,20 @@ public class ClientMessageController {
     }
 
     @PostMapping("/file-delete")
-    public String deleteFileById(HttpServletRequest request){
+    public String deleteFileById(HttpServletRequest request) {
         Long id = Long.parseLong(request.getParameter("id"));
         String url = "http://localhost:8085/api/sdk/delete";
-        String fileName = (String) restTemplate.postForObject(url, id, Object.class);
-        serviceS3.delete(fileName);
-        return "redirect:/files";
+        DTOMessage dtoMessage = restTemplate.postForObject(url, id, DTOMessage.class);
+        serviceS3.delete(dtoMessage.getFileNameForS3());
+        log.info("Файл {} удален", dtoMessage.getOriginFileName());
+        return "filesj";
     }
 
     @GetMapping("/open-file")
-    public String openFile(HttpServletRequest request){
+    public String openFile(HttpServletRequest request) {
         String id = request.getParameter("id");
 
-        return "redirect:https://d2lzjz6kkt1za6.cloudfront.net/"+id;
+        return "redirect:https://d2lzjz6kkt1za6.cloudfront.net/" + id;
     }
 
 }

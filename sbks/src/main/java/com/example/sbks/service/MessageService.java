@@ -10,5 +10,5 @@ public interface MessageService {
 
     List<Message> getAll();
 
-    String deleteById(Long id);
+    Message deleteById(Long id);
 }
