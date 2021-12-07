@@ -6,7 +6,6 @@ import lombok.RequiredArgsConstructor;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
@@ -36,6 +35,16 @@ public class MessageDeletedServiceImpl implements MessageDeletedService {
     public List<MessageDeleted> getAll() {
 
         log.info("Получение списка всех удаленных файлов");
+        return messageDeletedRepository.findAll();
+    }
+
+    /**
+     * Удаление всех записей в таблице messages_deleted
+     */
+    @Override
+    public List<MessageDeleted> deleteAll() {
+        messageDeletedRepository.deleteAll();
+        log.info("Записи в таблице удалены");
         return messageDeletedRepository.findAll();
     }
 }

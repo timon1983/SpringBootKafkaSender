@@ -35,11 +35,10 @@
                 <th>ID</th>
                 <th>Title</th>
                 <th>Size</th>
-                <th>Date of create</th>
-                <th>Time of create</th>
+                <th>Date of delete</th>
+                <th>Time of delete</th>
                 <th>Author</th>
                 <th>Origin file name</th>
-                <th>File name for S3</th>
                 <th>Content type</th>
             </tr>
 
@@ -48,37 +47,24 @@
                     <td>${name.id}</td>
                     <td>${name.title}</td>
                     <td>${name.size} byte</td>
-                    <td>${name.dateOfCreate}</td>
-                    <td>${name.timeOfCreate}</td>
+                    <td>${name.dateOfDelete}</td>
+                    <td>${name.timeOfDelete}</td>
                     <td>${name.author}</td>
                     <td>${name.originFileName}</td>
-                    <td>${name.fileNameForS3}</td>
                     <td>${name.contentType}</td>
                 </tr>
             </c:forEach>
         </table>
 
-        <form method="post" action="/create/file-delete/">
-            <input type="number" name="id" placeholder="id"/>
-            <button type="submit">Удалить файл</button>
+        <form method="get" action="/create/files">
+            <button type="submit">Получить список всех загруженных файлов</button>
         </form>
-
-        <form method="post" action="/create/open-file-id">
-            <input type="number" value="id" name="id" placeholder="id"/>
-            <button type="submit">Открыть файл по id</button>
-        </form>
-
-        <form method="post" action="/create/open-file-name">
-            <input type="text" value="name" name="name" placeholder="name"/>
-            <button type="submit">Открыть файл по имени</button>
+        <form method="get" action="/deleted/clean">
+            <button type="submit">Очистить список удаленных файлов</button>
         </form>
 
         <form method="get" action="/create">
             <button type="submit">Добавить файл</button>
-        </form>
-
-        <form method="get" action="/deleted">
-            <button type="submit">Получить список удаленных файлов</button>
         </form>
 
 </body>
