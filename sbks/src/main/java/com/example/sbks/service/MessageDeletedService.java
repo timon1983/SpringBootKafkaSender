@@ -9,4 +9,6 @@ public interface MessageDeletedService {
     MessageDeleted save(MessageDeleted messageDeleted);
 
     List<MessageDeleted> getAll();
+
+    List<MessageDeleted> deleteAll();
 }

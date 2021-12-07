@@ -23,6 +23,7 @@
     </td>
     <td>
         <form method="get" action="/create/files"><button type="submit">Получить список всех файлов</button></form>
+        <form method="get" action="/deleted"><button type="submit">Получить список удаленных файлов</button></form>
     </td>
 </table>
 </body>

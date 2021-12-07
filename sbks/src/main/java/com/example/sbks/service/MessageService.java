@@ -14,4 +14,8 @@ public interface MessageService {
     Message deleteById(Long id);
 
     Optional<Message> getById(Long id);
+
+    Optional<Message> getByName(String name);
+
+
 }

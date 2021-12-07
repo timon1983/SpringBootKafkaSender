@@ -35,7 +35,7 @@ public class MessageServiceImpl implements MessageService {
     }
 
     /**
-     * Получение списка всех сохраненных файлов
+     * Получение списка всех сохраненных записей о файлах
      */
     @Override
     @Transactional
@@ -64,9 +64,22 @@ public class MessageServiceImpl implements MessageService {
         return message;
     }
 
+    /**
+     * Получение информации о файле по его id
+     */
     @Override
     public Optional<Message> getById(Long id) {
+
+
         return messageRepository.findById(id);
+    }
+
+    /**
+     * Получение информации о файле по имени
+     */
+    @Override
+    public Optional<Message> getByName(String name) {
+        return messageRepository.findByOriginFileName(name);
     }
 
     /**

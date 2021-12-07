@@ -1,12 +1,17 @@
 language: java
+
 jdk:
   - openjdk11
+
 services:
   - postgresql
+
 before_install:
   - psql -c 'CREATE DATABASE kafkasend;'
+
 install:
   - mvn install -DskipTests=true -Dmaven.javadoc.skip=true -B -V
+
 script:
   - mvn test -B
 
