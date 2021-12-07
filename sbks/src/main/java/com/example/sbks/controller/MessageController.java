@@ -49,4 +49,10 @@ public class MessageController {
         return new ResponseEntity<>(deletedMessage, HttpStatus.OK);
     }
 
+    @PostMapping("/open")
+    public ResponseEntity<Message> findById(@RequestBody Long id){
+        Message message = messageService.getById(id).orElse(new Message());
+        return new ResponseEntity<>(message, HttpStatus.OK);
+    }
+
 }
