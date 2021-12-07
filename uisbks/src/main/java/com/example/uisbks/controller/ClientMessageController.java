@@ -21,7 +21,6 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import java.io.File;
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URLEncoder;
@@ -98,7 +97,7 @@ public class ClientMessageController {
     }
 
     @PostMapping("/open-file")
-    public String openFile(HttpServletRequest request){
+    public String openFile(HttpServletRequest request) {
         Long id = Long.parseLong(request.getParameter("id"));
         String url = "http://localhost:8085/api/sdk/open";
         DTOMessage dtoMessage = restTemplate.postForObject(url, id, DTOMessage.class);
