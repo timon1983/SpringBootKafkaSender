@@ -1,6 +1,7 @@
 package com.example.sbks.controller;
 
 import com.example.sbks.model.Message;
+import com.example.sbks.service.MessageSender;
 import com.example.sbks.service.MessageService;
 import lombok.RequiredArgsConstructor;
 import org.apache.logging.log4j.LogManager;
@@ -21,6 +22,7 @@ public class MessageController {
 
     private final static Logger log = LogManager.getLogger(MessageController.class);
     private final MessageService messageService;
+    private final MessageSender messageSender;
 
     @GetMapping
     public String getCreatePage() {
@@ -72,6 +74,14 @@ public class MessageController {
     public ResponseEntity<Message> findByName(@RequestBody String name) throws UnsupportedEncodingException {
         name = URLDecoder.decode(name, StandardCharsets.UTF_8.name());
         Message message = messageService.getByName(name).orElse(new Message());
+        return new ResponseEntity<>(message, HttpStatus.OK);
+    }
+
+    @PostMapping("/send-file")
+    public ResponseEntity<Message> sendMessage(@RequestBody String name) throws UnsupportedEncodingException {
+        name = URLDecoder.decode(name, StandardCharsets.UTF_8.name());
+        Message message = messageService.getByName(name).orElse(new Message());
+        messageSender.send(message);
         return new ResponseEntity<>(message, HttpStatus.OK);
     }
 

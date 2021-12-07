@@ -1,9 +1,7 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<%--<!DOCTYPE html>--%>
 <html>
 
 <head>
-    <%--    <meta charset="UTF-8">--%>
     <title>Modification XML</title>
     <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 </head>
@@ -75,6 +73,11 @@
 
         <form method="get" action="/create">
             <button type="submit">Добавить файл</button>
+        </form>
+
+        <form method="post" action="/create/send">
+            <input type="text" value="name" name="name" placeholder="name"/>
+            <button type="submit">Отправить файл в SBKC</button>
         </form>
 
         <form method="get" action="/deleted">

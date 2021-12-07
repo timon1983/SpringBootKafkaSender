@@ -73,11 +73,10 @@ public class ClientMessageController {
             log.info("Отправка данных по файлу {} в БД", file.getName());
             DTOMessage dtoMessage = restTemplate.postForObject(uri, messageRequest, DTOMessage.class);
             System.out.println(dtoMessage);
-            return "message-insert-form";
         } else {
             log.error("Нет файла для загрузки");
-            return "message-insert-form";
         }
+        return "message-insert-form";
     }
 
     /**
@@ -87,7 +86,7 @@ public class ClientMessageController {
     public String getAllFiles(Model model) {
         log.info("Получение списка загруженных файлов");
         String url = "http://localhost:8085/api/sdk/files";
-        List<Object> dtoMessages = restTemplate.getForObject(url, List.class);
+        Object dtoMessages = restTemplate.getForObject(url, List.class);
         model.addAttribute("listOfFiles", dtoMessages);
         return "filesj";
     }
@@ -128,6 +127,19 @@ public class ClientMessageController {
         name = URLEncoder.encode(name, StandardCharsets.UTF_8);
         String url = "http://localhost:8085/api/sdk/open-name";
         return getFile(name, url);
+    }
+
+    /**
+     * Отправка сообщения в SBKC
+     */
+    @PostMapping("/send")
+    public String sendFile(HttpServletRequest request) {
+        String name = request.getParameter("name");
+        name = URLEncoder.encode(name, StandardCharsets.UTF_8);
+        String url = "http://localhost:8085/api/sdk/send-file";
+        restTemplate.postForObject(url, name, DTOMessage.class);
+        log.info("Сообщение отправлено в SBKC");
+        return "redirect:/create/files";
     }
 
     /**

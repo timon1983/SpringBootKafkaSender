@@ -26,7 +26,7 @@ public class ClientMesssageDeletedController {
     public String getAllFiles(Model model) {
         log.info("Получение списка удаленных файлов");
         String url = "http://localhost:8085/api/sdk/files-deleted";
-        List<Object> dtoMessages = restTemplate.getForObject(url, List.class);
+        Object dtoMessages = restTemplate.getForObject(url, List.class);
         model.addAttribute("listOfFiles", dtoMessages);
         return "filesdeleted";
     }
@@ -37,7 +37,7 @@ public class ClientMesssageDeletedController {
     @GetMapping("/clean")
     public String deleteAll(Model model) {
         String url = "http://localhost:8085/api/sdk/files-clean";
-        List<Object> dtoMessages = restTemplate.getForObject(url, List.class);
+        Object dtoMessages = restTemplate.getForObject(url, List.class);
         model.addAttribute("listOfFiles", dtoMessages);
         log.info("Список удаленных файлов очищен");
         return "filesdeleted";
