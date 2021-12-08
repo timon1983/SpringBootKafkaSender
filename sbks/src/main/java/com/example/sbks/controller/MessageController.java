@@ -1,7 +1,7 @@
 package com.example.sbks.controller;
 
 import com.example.sbks.model.Message;
-import com.example.sbks.service.MessageSender;
+import com.example.sbks.service.MessageSenderService;
 import com.example.sbks.service.MessageService;
 import lombok.RequiredArgsConstructor;
 import org.apache.logging.log4j.LogManager;
@@ -11,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.UnsupportedEncodingException;
+import java.net.URISyntaxException;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
@@ -22,7 +23,7 @@ public class MessageController {
 
     private final static Logger log = LogManager.getLogger(MessageController.class);
     private final MessageService messageService;
-    private final MessageSender messageSender;
+    private final MessageSenderService messageSenderService;
 
     @GetMapping
     public String getCreatePage() {
@@ -77,11 +78,14 @@ public class MessageController {
         return new ResponseEntity<>(message, HttpStatus.OK);
     }
 
+    /**
+     * Оправка файла в MessageSenderSender
+     */
     @PostMapping("/send-file")
-    public ResponseEntity<Message> sendMessage(@RequestBody String name) throws UnsupportedEncodingException {
+    public ResponseEntity<Message> receiveMessageForSendToMessageSender(@RequestBody String name) throws UnsupportedEncodingException, URISyntaxException {
         name = URLDecoder.decode(name, StandardCharsets.UTF_8.name());
         Message message = messageService.getByName(name).orElse(new Message());
-        messageSender.send(message);
+        messageSenderService.sendMessage(message);
         return new ResponseEntity<>(message, HttpStatus.OK);
     }
 
