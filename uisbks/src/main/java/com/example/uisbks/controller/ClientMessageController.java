@@ -1,6 +1,5 @@
 package com.example.uisbks.controller;
 
-
 import com.example.awsS3.service.ServiceS3;
 import com.example.uisbks.dtomodel.DTOMessage;
 import com.example.uisbks.service.FileHandling;
@@ -12,13 +11,13 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
 import java.io.File;
 import java.io.IOException;
 import java.net.URI;
@@ -55,8 +54,8 @@ public class ClientMessageController {
         MultipartFile multipartFile = request.getFile("file");
         if (!Objects.requireNonNull(multipartFile).isEmpty()) {
             File file = fileHandling.convertMultiPartFileToFile(Objects.requireNonNull(multipartFile));
-            log.info("Загрузка файла {} в хранилище S3", file.getName());
             serviceS3.upload(file);
+            log.info("Загрузка файла {} в хранилище S3", file.getName());
             DTOMessage message = DTOMessage.builder()
                     .title(request.getParameter("title"))
                     .size(request.getPart("file").getSize())
@@ -70,9 +69,8 @@ public class ClientMessageController {
             String url = "http://localhost:8085/api/sdk/create";
             URI uri = new URI(url);
             HttpEntity<DTOMessage> messageRequest = new HttpEntity<>(message);
+            restTemplate.postForObject(uri, messageRequest, DTOMessage.class);
             log.info("Отправка данных по файлу {} в БД", file.getName());
-            DTOMessage dtoMessage = restTemplate.postForObject(uri, messageRequest, DTOMessage.class);
-            System.out.println(dtoMessage);
         } else {
             log.error("Нет файла для загрузки");
         }
@@ -95,13 +93,13 @@ public class ClientMessageController {
      * Удаление файла по id
      */
     @PostMapping("/file-delete")
-    public String deleteFileById(HttpServletRequest request) {
-        Long id = Long.parseLong(request.getParameter("id"));
+    public String deleteFileById(@RequestBody Long id) {
+        // Long id = Long.parseLong(request.getParameter("id"));
         String url = "http://localhost:8085/api/sdk/delete";
         DTOMessage dtoMessage = restTemplate.postForObject(url, id, DTOMessage.class);
         if (dtoMessage != null && dtoMessage.getFileNameForS3() != null) {
-            log.info("Файл {} удален", dtoMessage.getOriginFileName());
             serviceS3.delete(dtoMessage.getFileNameForS3());
+            log.info("Файл {} удален", dtoMessage.getOriginFileName());
         } else {
             log.error("Данные о файле с Id={} в БД отсутствуют", id);
         }
@@ -112,8 +110,8 @@ public class ClientMessageController {
      * Получение файла по id
      */
     @PostMapping("/open-file-id")
-    public String openFileById(HttpServletRequest request) {
-        Long id = Long.parseLong(request.getParameter("id"));
+    public String openFileById(@RequestBody Long id) {
+        //Long id = Long.parseLong(request.getParameter("id"));
         String url = "http://localhost:8085/api/sdk/open-id";
         return getFile(id, url);
     }
@@ -122,8 +120,8 @@ public class ClientMessageController {
      * Получение файла по имени
      */
     @PostMapping("/open-file-name")
-    public String openFileByName(HttpServletRequest request) {
-        String name = request.getParameter("name");
+    public String openFileByName(@RequestBody String name) {
+        //String name = request.getParameter("name");
         name = URLEncoder.encode(name, StandardCharsets.UTF_8);
         String url = "http://localhost:8085/api/sdk/open-name";
         return getFile(name, url);
@@ -133,8 +131,8 @@ public class ClientMessageController {
      * Отправка сообщения в SBKC
      */
     @PostMapping("/send")
-    public String sendFile(HttpServletRequest request) {
-        String name = request.getParameter("name");
+    public String sendFile(@RequestBody String name) {
+        // String name = request.getParameter("name");
         name = URLEncoder.encode(name, StandardCharsets.UTF_8);
         String url = "http://localhost:8085/api/sdk/send-file";
         restTemplate.postForObject(url, name, DTOMessage.class);
