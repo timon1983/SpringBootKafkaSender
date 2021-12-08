@@ -22,4 +22,6 @@ public class DTOMessage {
     private String originFileName;
     private String fileNameForS3;
     private String contentType;
+    private LocalDate dateOfDelete;
+    private LocalTime timeOfDelete;
 }

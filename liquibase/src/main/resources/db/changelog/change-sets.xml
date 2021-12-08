@@ -8,8 +8,4 @@
     <changeSet id="create_tables" author="timon">
         <sqlFile path="db/changelog/1.0/create-tables.sql"/>
     </changeSet>
-
-    <changeSet id="create_message_deleted_table" author="timon">
-        <sqlFile path="db/changelog/2.0/create_message_deleted_table.sql"/>
-    </changeSet>
 </databaseChangeLog>

@@ -55,7 +55,7 @@ public class MessageController {
      */
     @PostMapping("/delete")
     public ResponseEntity<Message> deleteById(@RequestBody Long id) {
-        Message deletedMessage = messageService.deleteById(id);
+        Message deletedMessage = messageService.deleteById(id).orElse(new Message());
         return new ResponseEntity<>(deletedMessage, HttpStatus.OK);
     }
 

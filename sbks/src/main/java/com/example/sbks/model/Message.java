@@ -35,4 +35,8 @@ public class Message {
     private String fileNameForS3;
     @Column(name = "type", nullable = false)
     private String contentType;
+    @Column(name = "date_delete")
+    private LocalDate dateOfDelete;
+    @Column(name = "time_delete")
+    private LocalTime timeOfDelete;
 }

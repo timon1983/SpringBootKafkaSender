@@ -3,12 +3,10 @@ package com.example.uisbks.service;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Component;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.Objects;
 
 @Component
 public class FileHandling {
@@ -18,11 +16,10 @@ public class FileHandling {
     /**
      * Конвертирование из MultipartFile в File
      */
-    public File convertMultiPartFileToFile(MultipartFile multipartFile) {
-        var fileName = getNewFileName(Objects.requireNonNull(multipartFile.getOriginalFilename()));
-        File convFile = new File(fileName);
+    public File convertMultiPartFileToFile(String fileName, byte[] multipartFile) {
+        File convFile = new File(getNewFileName(fileName));
         try (var fos = new FileOutputStream(convFile)) {
-            fos.write(multipartFile.getBytes());
+            fos.write(multipartFile);
         } catch (IOException e) {
             log.error("Ошибка при конвертировании файла", e);
         }

@@ -8,4 +8,6 @@ create table if not exists messages(
                                    author varchar(45) not null,
                                    origin_file_name varchar(255) not null,
                                    file_name_for_s3 varchar(255) not null,
-                                   type varchar(255) not null);
+                                   type varchar(255) not null,
+                                   date_delete date default null ,
+                                   time_delete time default null);

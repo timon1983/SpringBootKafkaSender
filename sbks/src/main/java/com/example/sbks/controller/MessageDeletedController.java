@@ -1,6 +1,6 @@
 package com.example.sbks.controller;
 
-import com.example.sbks.model.MessageDeleted;
+import com.example.sbks.model.Message;
 import com.example.sbks.service.MessageDeletedService;
 import lombok.RequiredArgsConstructor;
 import org.apache.logging.log4j.LogManager;
@@ -25,8 +25,8 @@ public class MessageDeletedController {
      * Получение списка удаленных файлов
      */
     @GetMapping("/files-deleted")
-    public ResponseEntity<List<MessageDeleted>> getAllMessages() {
-        List<MessageDeleted> messages = messageDeletedService.getAll();
+    public ResponseEntity<List<Message>> getAllMessages() {
+        List<Message> messages = messageDeletedService.getAll();
         return new ResponseEntity<>(messages, HttpStatus.OK);
     }
 
@@ -34,8 +34,8 @@ public class MessageDeletedController {
      * Очистка списка удаленных файлов
      */
     @GetMapping("/files-clean")
-    public ResponseEntity<List<MessageDeleted>> deleteAllMessages() {
-        List<MessageDeleted> messages = messageDeletedService.deleteAll();
+    public ResponseEntity<List<Message>> deleteAllMessages() {
+        List<Message> messages = messageDeletedService.deleteAll();
         return new ResponseEntity<>(messages, HttpStatus.OK);
     }
 }
