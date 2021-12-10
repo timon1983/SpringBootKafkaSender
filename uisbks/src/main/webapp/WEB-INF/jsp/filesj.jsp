@@ -34,7 +34,6 @@
                 <th>Title</th>
                 <th>Size</th>
                 <th>Date of create</th>
-                <th>Time of create</th>
                 <th>Author</th>
                 <th>Origin file name</th>
                 <th>File name for S3</th>
@@ -47,7 +46,6 @@
                     <td>${name.title}</td>
                     <td>${name.size} byte</td>
                     <td>${name.dateOfCreate}</td>
-                    <td>${name.timeOfCreate}</td>
                     <td>${name.author}</td>
                     <td>${name.originFileName}</td>
                     <td>${name.fileNameForS3}</td>
@@ -69,6 +67,11 @@
         <form method="post" action="/create/open-file-name">
             <input type="text" value="name" name="name" placeholder="name"/>
             <button type="submit">Открыть файл по имени</button>
+        </form>
+
+        <form method="post" action="/downloaded">
+            <input type="number" name="id" placeholder="id"/>
+            <button type="submit">Получить историю загрузки файла</button>
         </form>
 
         <form method="get" action="/create">

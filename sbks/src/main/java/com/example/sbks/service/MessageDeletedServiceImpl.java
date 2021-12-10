@@ -1,6 +1,7 @@
 package com.example.sbks.service;
 
 import com.example.sbks.model.Message;
+import com.example.sbks.model.Status;
 import com.example.sbks.repository.MessageRepository;
 import lombok.RequiredArgsConstructor;
 import org.apache.logging.log4j.LogManager;
@@ -21,13 +22,13 @@ public class MessageDeletedServiceImpl implements MessageDeletedService {
     @Transactional
     public List<Message> getAll() {
         log.info("Service.Получение списка всех удаленных файлов");
-        return messageRepository.findAllDeletedMessages();
+        return messageRepository.findAllByStatus(Status.DELETED);
     }
 
     @Override
     @Transactional
     public List<Message> deleteAll() {
-        messageRepository.deleteAllDeletedMessages();
+        messageRepository.deleteAllByStatus(Status.DELETED);
         log.info("Service.Записи в таблице удалены");
         return getAll();
     }

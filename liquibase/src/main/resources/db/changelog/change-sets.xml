@@ -8,4 +8,7 @@
     <changeSet id="create_tables" author="timon">
         <sqlFile path="db/changelog/1.0/create-tables.sql"/>
     </changeSet>
+    <changeSet id="create_tables_download_history" author="timon">
+        <sqlFile path="db/changelog/1.0/download_history.sql"/>
+    </changeSet>
 </databaseChangeLog>

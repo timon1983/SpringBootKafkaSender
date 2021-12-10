@@ -1,10 +1,11 @@
 package com.example.sbks.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 
 import javax.persistence.*;
-import java.time.LocalDate;
-import java.time.LocalTime;
+import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Setter
@@ -24,19 +25,21 @@ public class Message {
     @Column(name = "size", nullable = false)
     private long size;
     @Column(name = "date_create", nullable = false)
-    private LocalDate dateOfCreate;
-    @Column(name = "time_create", nullable = false)
-    private LocalTime timeOfCreate;
+    private LocalDateTime dateOfCreate;
     @Column(name = "author", nullable = false)
     private String author;
     @Column(name = "origin_file_name", nullable = false)
     private String originFileName;
-    @Column(name = "file_name_for_s3", nullable = false)
+    @Column(name = "file_name_for_s3", nullable = false, unique = true)
     private String fileNameForS3;
     @Column(name = "type", nullable = false)
     private String contentType;
     @Column(name = "date_delete")
-    private LocalDate dateOfDelete;
-    @Column(name = "time_delete")
-    private LocalTime timeOfDelete;
+    private LocalDateTime dateOfDelete;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "status", nullable = false)
+    private Status status;
+    @OneToMany(mappedBy = "message", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JsonIgnore
+    private List<DownloadHistory> downloadHistories;
 }

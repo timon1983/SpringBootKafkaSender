@@ -2,6 +2,7 @@ package com.example.uisbks.controller;
 
 
 import com.example.awsS3.service.ServiceS3;
+import com.example.uisbks.dtomodel.DTODownloadClientInfo;
 import com.example.uisbks.dtomodel.DTOMessage;
 import com.example.uisbks.service.FileHandling;
 import lombok.RequiredArgsConstructor;
@@ -40,7 +41,8 @@ import java.util.List;
 public class ClientMessageController {
 
     private final static Logger log = LogManager.getLogger(ClientMessageController.class);
-    private final RestTemplate restTemplate = new RestTemplate();
+    // TODO: 08.12.2021 singleton prototype
+    private final RestTemplate restTemplate;
     private final FileHandling fileHandling;
     private final ServiceS3 serviceS3;
 
@@ -102,7 +104,7 @@ public class ClientMessageController {
             serviceS3.delete(dtoMessage.getFileNameForS3());
         } else {
             log.error("Данные о файле с Id={} в БД отсутствуют", id);
-            model.addAttribute("error", "Данные о файле с Id=" + id + " в БД отсутствуют");
+            model.addAttribute("error", String.format("Данные о файле с Id =%s в БД отсутствуют"));
             return "error-page";
         }
         return "redirect:/create/files";
@@ -120,7 +122,7 @@ public class ClientMessageController {
         }
         Long id = Long.parseLong(request.getParameter("id"));
         var url = "http://localhost:8085/api/sdk/open-id";
-        return getURLToOpenFile(id, url, model);
+        return getURLToOpenFile(getDTODownloadClientInfo(id, request), url, model);
     }
 
     /**
@@ -136,7 +138,7 @@ public class ClientMessageController {
         var name = request.getParameter("name");
         name = URLEncoder.encode(name, StandardCharsets.UTF_8);
         var url = "http://localhost:8085/api/sdk/open-name";
-        return getURLToOpenFile(name, url, model);
+        return getURLToOpenFile(getDTODownloadClientInfo(name, request), url, model);
     }
 
     /**
@@ -171,18 +173,39 @@ public class ClientMessageController {
         }
     }
 
+    /**
+     * Формирование объекта DTOMessage
+     */
     private DTOMessage getDTOMessage(MultipartHttpServletRequest request, MultipartFile multipartFile, File file)
             throws ServletException, IOException {
-        var now = LocalDateTime.now();
         return DTOMessage.builder()
                 .title(request.getParameter("title"))
                 .size(request.getPart("file").getSize())
-                .dateOfCreate(now.toLocalDate())
-                .timeOfCreate(now.toLocalTime().withNano(0))
+                .dateOfCreate(LocalDateTime.now().withNano(0))
                 .author(request.getParameter("author"))
                 .originFileName(multipartFile.getOriginalFilename())
                 .fileNameForS3(file.getName())
                 .contentType(request.getPart("file").getContentType())
+                .build();
+    }
+
+    /**
+     * Формирование объекта DTODownloadClientInfo
+     */
+    private DTODownloadClientInfo getDTODownloadClientInfo(Object id, HttpServletRequest request) {
+        Long idFile = null;
+        String fileName = null;
+        if (id instanceof Long) {
+            idFile = (Long) id;
+        }
+        if (id instanceof String) {
+            fileName = (String) id;
+        }
+        return DTODownloadClientInfo.builder()
+                .idFile(idFile)
+                .fileName(fileName)
+                .ipUser(request.getRemoteAddr())
+                .dateOfDownload(LocalDateTime.now().withNano(0))
                 .build();
     }
 }

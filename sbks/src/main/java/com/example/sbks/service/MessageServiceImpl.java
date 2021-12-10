@@ -1,6 +1,8 @@
 package com.example.sbks.service;
 
+import com.example.sbks.dto.DownloadClientInfo;
 import com.example.sbks.model.Message;
+import com.example.sbks.model.Status;
 import com.example.sbks.repository.MessageRepository;
 import lombok.RequiredArgsConstructor;
 import org.apache.logging.log4j.LogManager;
@@ -30,22 +32,23 @@ public class MessageServiceImpl implements MessageService {
     @Transactional
     public List<Message> getAll() {
         log.info("Service.Получение списка всех файлов");
-        return messageRepository.findAllSavedMessages();
+        return messageRepository.findAllByStatus(Status.UPLOAD);
     }
 
     @Override
     @Transactional
-    public Optional<Message> deleteById(Long id) {
-        var now = LocalDateTime.now();
+    public Message deleteById(Long id) {
+        Message message = messageRepository.findById(id).orElse(new Message());
+        message.setStatus(Status.DELETED);
+        message.setDateOfDelete(LocalDateTime.now().withNano(0));
         log.info("Service.Удаление данных файла из БД по его ID={}", id);
-        messageRepository.writeDataDelete(now.toLocalDate(), now.toLocalTime().withNano(0), id);
-        return messageRepository.findById(id);
+        return messageRepository.save(message);
     }
 
     @Override
-    public Optional<Message> getById(Long id) {
-        log.info("Service.Получение информации о файле по его id={}", id);
-        return messageRepository.findById(id);
+    public Optional<Message> getById(DownloadClientInfo downloadClientInfo) {
+        log.info("Service.Получение информации о файле по его id={}", downloadClientInfo.getIdFile());
+        return messageRepository.findById(downloadClientInfo.getIdFile());
     }
 
     @Override

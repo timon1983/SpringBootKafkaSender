@@ -1,5 +1,6 @@
 package com.example.sbks.service;
 
+import com.example.sbks.dto.DownloadClientInfo;
 import com.example.sbks.model.Message;
 
 import java.util.List;
@@ -23,12 +24,12 @@ public interface MessageService {
     /**
      * Удаление данных файла из БД по его ID
      */
-    Optional<Message> deleteById(Long id);
+    Message deleteById(Long id);
 
     /**
      * Получение информации о файле по его id
      */
-    Optional<Message> getById(Long id);
+    Optional<Message> getById(DownloadClientInfo downloadClientInfo);
 
     /**
      * Получение информации о файле по имени

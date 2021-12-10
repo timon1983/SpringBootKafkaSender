@@ -17,7 +17,7 @@ import java.util.List;
 public class ClientMesssageDeletedController {
 
     private final static Logger log = LogManager.getLogger(ClientMessageController.class);
-    private final RestTemplate restTemplate = new RestTemplate();
+    private final RestTemplate restTemplate;
 
     /**
      * Получение списка удаленных файлов
