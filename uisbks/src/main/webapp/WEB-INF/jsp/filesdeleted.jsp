@@ -35,11 +35,13 @@
                 <th>ID</th>
                 <th>Title</th>
                 <th>Size</th>
-                <th>Date of delete</th>
-                <th>Time of delete</th>
+                <th>Date of create</th>
+                <th>Time of create</th>
                 <th>Author</th>
                 <th>Origin file name</th>
                 <th>Content type</th>
+                <th>Date of delete</th>
+                <th>Time of delete</th>
             </tr>
 
             <c:forEach var="name" items="${listOfFiles}">
@@ -47,14 +49,26 @@
                     <td>${name.id}</td>
                     <td>${name.title}</td>
                     <td>${name.size} byte</td>
-                    <td>${name.dateOfDelete}</td>
-                    <td>${name.timeOfDelete}</td>
+                    <td>${name.dateOfCreate}</td>
+                    <td>${name.timeOfCreate}</td>
                     <td>${name.author}</td>
                     <td>${name.originFileName}</td>
                     <td>${name.contentType}</td>
+                    <td>${name.dateOfDelete}</td>
+                    <td>${name.timeOfDelete}</td>
                 </tr>
             </c:forEach>
         </table>
+
+        <form method="post" action="/deleted/full">
+            <input type="number" value="id" name="id" placeholder="id"/>
+            <button type="submit">Удалить на совсем файл по id</button>
+        </form>
+
+        <form method="get" action="/deleted/restore">
+            <input type="number" value="id" name="id" placeholder="id"/>
+            <button type="submit">Восстановить файл по id</button>
+        </form>
 
         <form method="get" action="/create/files">
             <button type="submit">Получить список всех загруженных файлов</button>

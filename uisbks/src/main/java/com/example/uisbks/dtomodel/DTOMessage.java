@@ -2,8 +2,7 @@ package com.example.uisbks.dtomodel;
 
 import lombok.*;
 
-import java.time.LocalDate;
-import java.time.LocalTime;
+import java.time.LocalDateTime;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -16,10 +15,10 @@ public class DTOMessage {
     private long id;
     private String title;
     private long size;
-    private LocalDate dateOfCreate;
-    private LocalTime timeOfCreate;
+    private LocalDateTime dateOfCreate;
     private String author;
     private String originFileName;
     private String fileNameForS3;
     private String contentType;
+    private LocalDateTime dateOfDelete;
 }

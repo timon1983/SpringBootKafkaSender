@@ -25,7 +25,6 @@ public class RepositoryS3Impl implements RepositoryS3 {
 
     @Override
     public void delete(String fileName) {
-
         amazonS3.deleteObject(bucket, fileName);
     }
 }

@@ -1,6 +1,9 @@
 package com.example.sbks.controller;
 
+import com.example.sbks.dto.DownloadClientInfo;
 import com.example.sbks.model.Message;
+import com.example.sbks.model.Status;
+import com.example.sbks.service.DownloadHistoryService;
 import com.example.sbks.service.MessageSenderService;
 import com.example.sbks.service.MessageService;
 import lombok.RequiredArgsConstructor;
@@ -16,6 +19,9 @@ import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 
+/**
+ * Контроллер для обработки запросов по основным операциям с файлами
+ */
 @RestController
 @RequestMapping("/api/sdk")
 @RequiredArgsConstructor
@@ -24,7 +30,11 @@ public class MessageController {
     private final static Logger log = LogManager.getLogger(MessageController.class);
     private final MessageService messageService;
     private final MessageSenderService messageSenderService;
+    private final DownloadHistoryService downloadHistoryService;
 
+    /**
+     * Переход на страницу добавления файла
+     */
     @GetMapping
     public String getCreatePage() {
         return "message-insert-form";
@@ -37,6 +47,7 @@ public class MessageController {
     public ResponseEntity<Message> createMessage(@RequestBody Message message) {
         System.out.println(message);
         log.info("Получение сообщения от клиента и запись в БД");
+        message.setStatus(Status.UPLOAD);
         Message savedMessage = messageService.save(message);
         return new ResponseEntity<>(savedMessage, HttpStatus.OK);
     }
@@ -60,11 +71,12 @@ public class MessageController {
     }
 
     /**
-     * Получение файла по id
+     * Скачивание файла по id
      */
     @PostMapping("/open-id")
-    public ResponseEntity<Message> findById(@RequestBody Long id) {
-        Message message = messageService.getById(id).orElse(new Message());
+    public ResponseEntity<Message> findById(@RequestBody DownloadClientInfo downloadClientInfo) {
+        Message message = messageService.getById(downloadClientInfo).orElse(new Message());
+        downloadHistoryService.save(downloadClientInfo, message);
         return new ResponseEntity<>(message, HttpStatus.OK);
     }
 
@@ -72,9 +84,11 @@ public class MessageController {
      * Получение файла по имени
      */
     @PostMapping("/open-name")
-    public ResponseEntity<Message> findByName(@RequestBody String name) throws UnsupportedEncodingException {
+    public ResponseEntity<Message> findByName(@RequestBody DownloadClientInfo downloadClientInfo) throws UnsupportedEncodingException {
+        String name = downloadClientInfo.getFileName();
         name = URLDecoder.decode(name, StandardCharsets.UTF_8.name());
         Message message = messageService.getByName(name).orElse(new Message());
+        downloadHistoryService.save(downloadClientInfo, message);
         return new ResponseEntity<>(message, HttpStatus.OK);
     }
 

@@ -17,12 +17,11 @@ import java.net.URISyntaxException;
 public class MessageSenderKafkaService implements MessageSenderService {
 
     private final static Logger log = LogManager.getLogger(MessageController.class);
-    private final RestTemplate restTemplate;
+    private final RestTemplate restTemplate = new RestTemplate();
 
     @Override
     public void sendMessage(Message message) throws URISyntaxException {
-        String url = "http://localhost:8085/api/sdk/kafka/send";
-        URI uri = new URI(url);
+        URI uri = new URI("http://localhost:8085/api/sdk/kafka/send");
         HttpEntity<Message> messageRequest = new HttpEntity<>(message);
         restTemplate.postForObject(uri, messageRequest, Message.class);
         log.info("Отправка сообщения в Кафка");
