@@ -4,7 +4,6 @@ import com.example.sbks.dto.DownloadClientInfo;
 import com.example.sbks.model.DownloadHistory;
 import com.example.sbks.model.Message;
 import com.example.sbks.repository.DownloadHistoryRepository;
-import com.example.uisbks.controller.ClientMessageController;
 import lombok.RequiredArgsConstructor;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -17,7 +16,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class DownloadHistoryServiceImpl implements DownloadHistoryService {
 
-    private final static Logger log = LogManager.getLogger(ClientMessageController.class);
+    private final static Logger log = LogManager.getLogger(DownloadHistoryServiceImpl.class);
     private final DownloadHistoryRepository downloadHistoryRepository;
 
     @Override
