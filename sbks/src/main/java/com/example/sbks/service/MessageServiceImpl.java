@@ -1,5 +1,9 @@
 package com.example.sbks.service;
 
+import com.example.awsS3.configuration.S3Configurer;
+import com.example.awsS3.repository.RepositoryS3Impl;
+import com.example.awsS3.service.ServiceS3;
+import com.example.awsS3.service.ServicesS3Impl;
 import com.example.sbks.dto.DownloadClientInfo;
 import com.example.sbks.model.Message;
 import com.example.sbks.model.Status;
@@ -10,6 +14,10 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -20,10 +28,18 @@ public class MessageServiceImpl implements MessageService {
 
     private final static Logger log = LogManager.getLogger(MessageServiceImpl.class);
     private final MessageRepository messageRepository;
+    private final ServiceS3 serviceS3 = new ServicesS3Impl();
 
     @Override
     @Transactional
-    public Message save(Message message) {
+    public Message save(Message message){
+        File file = new File(message.getFileNameForS3());
+        try (FileOutputStream outputStream = new FileOutputStream(file)) {
+            outputStream.write(message.getContent());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        serviceS3.upload(file);
         log.info("Service.Запись сообщения в бд");
         return messageRepository.save(message);
     }

@@ -3,7 +3,7 @@ package com.example.uisbks.controller;
 
 import com.example.uisbks.dtomodel.DTODownloadClientInfo;
 import com.example.uisbks.dtomodel.DTOMessage;
-import com.example.uisbks.service.ClientMessageService;
+
 import com.example.uisbks.service.FileHandling;
 import lombok.RequiredArgsConstructor;
 import org.apache.logging.log4j.LogManager;
@@ -44,7 +44,7 @@ public class ClientMessageController {
     // TODO: 08.12.2021 singleton prototype
     private final RestTemplate restTemplate;
     private final FileHandling fileHandling;
-    private final ClientMessageService clientMessageService;
+    //private final ClientMessageService clientMessageService;
 
     @GetMapping
     public String getCreatePage() {
@@ -60,14 +60,15 @@ public class ClientMessageController {
         log.info("Получение сообщения от клиента");
         MultipartFile multipartFile = request.getFile("file");
         if (multipartFile != null && !multipartFile.isEmpty()) {
-            File file = fileHandling.convertMultiPartFileToFile(multipartFile.getOriginalFilename(),
-                    multipartFile.getBytes());
-            log.info("Загрузка файла {} в хранилище S3", file.getName());
-            clientMessageService.saveMessageToS3(file);
+//            File file = fileHandling.convertMultiPartFileToFile(multipartFile.getOriginalFilename(),
+//                    multipartFile.getBytes());
+//            log.info("Загрузка файла {} в хранилище S3", file.getName());
+//            clientMessageService.saveMessageToS3(file);
             URI uri = new URI("http://localhost:8085/api/sdk/create");
-            HttpEntity<DTOMessage> messageRequest = new HttpEntity<>(getDTOMessage(request, multipartFile, file));
-            log.info("Отправка данных по файлу {} в БД", file.getName());
-            restTemplate.postForObject(uri, messageRequest, DTOMessage.class);
+            //HttpEntity<DTOMessage> messageRequest = new HttpEntity<>(getDTOMessage(request, multipartFile));
+            DTOMessage dtoMessage = getDTOMessage(request, multipartFile);
+            log.info("Отправка данных по файлу {} в БД", multipartFile.getOriginalFilename());
+            restTemplate.postForObject(uri, dtoMessage, DTOMessage.class);
         } else {
             log.error("Нет файла для загрузки");
         }
@@ -101,7 +102,6 @@ public class ClientMessageController {
         DTOMessage dtoMessage = restTemplate.postForObject(url, id, DTOMessage.class);
         if (dtoMessage != null && dtoMessage.getFileNameForS3() != null) {
             log.info("Файл {} удален", dtoMessage.getOriginFileName());
-            //clientMessageService.deleteFromS3ByName(dtoMessage.getFileNameForS3());
         } else {
             log.error("Данные о файле с Id={} в БД отсутствуют", id);
             model.addAttribute("error", "Данные о файле с Id = " + id + " в БД отсутствуют");
@@ -176,7 +176,7 @@ public class ClientMessageController {
     /**
      * Формирование объекта DTOMessage
      */
-    private DTOMessage getDTOMessage(MultipartHttpServletRequest request, MultipartFile multipartFile, File file)
+    private DTOMessage getDTOMessage(MultipartHttpServletRequest request, MultipartFile multipartFile)
             throws ServletException, IOException {
         return DTOMessage.builder()
                 .title(request.getParameter("title"))
@@ -184,8 +184,9 @@ public class ClientMessageController {
                 .dateOfCreate(LocalDateTime.now().withNano(0))
                 .author(request.getParameter("author"))
                 .originFileName(multipartFile.getOriginalFilename())
-                .fileNameForS3(file.getName())
+                .fileNameForS3(String.valueOf(System.currentTimeMillis()))
                 .contentType(request.getPart("file").getContentType())
+                .content(multipartFile.getBytes())
                 .build();
     }
 

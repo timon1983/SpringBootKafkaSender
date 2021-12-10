@@ -42,4 +42,6 @@ public class Message {
     @OneToMany(mappedBy = "message", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JsonIgnore
     private List<DownloadHistory> downloadHistories;
+    @Transient
+    private byte[] content;
 }

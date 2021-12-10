@@ -9,11 +9,8 @@ import com.amazonaws.services.s3.AmazonS3ClientBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-@Configuration
 public class S3Configurer {
 
-
-    @Bean
     public static AmazonS3 getAmazonS3Client() {
 
         AWSCredentials credentials = new BasicAWSCredentials("AKIAXKA7I4RJVGT3NCV6",

@@ -1,7 +1,7 @@
 package com.example.uisbks.controller;
 
 import com.example.uisbks.dtomodel.DTOMessage;
-import com.example.uisbks.service.ClientMessageService;
+
 import lombok.RequiredArgsConstructor;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -26,7 +26,7 @@ public class ClientMessageDeletedController {
 
     private final static Logger log = LogManager.getLogger(ClientMessageController.class);
     private final RestTemplate restTemplate;
-    private final ClientMessageService clientMessageService;
+   // private final ClientMessageService clientMessageService;
 
     /**
      * Получение списка удаленных файлов
@@ -47,7 +47,7 @@ public class ClientMessageDeletedController {
     public String deleteAll(Model model) {
         String url = "http://localhost:8085/api/sdk/files-clean";
         List<DTOMessage> dtoMessages = restTemplate.getForObject(url, List.class);
-        clientMessageService.cleanAllDeletedMessageFromS3(dtoMessages);
+        //clientMessageService.cleanAllDeletedMessageFromS3(dtoMessages);
         model.addAttribute("listOfFiles", dtoMessages);
         log.info("Список удаленных файлов очищен");
         return "filesdeleted";
@@ -67,7 +67,7 @@ public class ClientMessageDeletedController {
         var url = "http://localhost:8085/api/sdk/full-delete";
         DTOMessage dtoMessage = restTemplate.postForObject(url, id, DTOMessage.class);
         if (dtoMessage != null && dtoMessage.getFileNameForS3() != null) {
-            clientMessageService.deleteFromS3ByName(dtoMessage.getFileNameForS3());
+            //clientMessageService.deleteFromS3ByName(dtoMessage.getFileNameForS3());
             log.info("Файл {} удален", dtoMessage.getOriginFileName());
         }
         return "redirect:/deleted";

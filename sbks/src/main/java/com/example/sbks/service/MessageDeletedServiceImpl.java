@@ -40,9 +40,19 @@ public class MessageDeletedServiceImpl implements MessageDeletedService {
         if (message != null) {
             messageRepository.deleteById(id);
             log.info("Service.Запись в таблице с id=" + id + " удалена");
+        } else {
+            log.info("Service.Записи в таблице с id=" + id + " нет");
         }
         log.info("Service.Записи в таблице с id=" + id + " нет");
         return message;
+    }
+
+    public void fullDelete2(Long id) {
+        messageRepository.findById(id).ifPresent(message -> {
+                    log.info("Service.Запись в таблице с id=" + id + " удалена");
+                    messageRepository.deleteById(id);
+                }
+        );
     }
 
     @Override
