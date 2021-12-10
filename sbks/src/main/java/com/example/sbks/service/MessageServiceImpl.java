@@ -46,12 +46,14 @@ public class MessageServiceImpl implements MessageService {
     }
 
     @Override
+    @Transactional
     public Optional<Message> getById(DownloadClientInfo downloadClientInfo) {
         log.info("Service.Получение информации о файле по его id={}", downloadClientInfo.getIdFile());
         return messageRepository.findById(downloadClientInfo.getIdFile());
     }
 
     @Override
+    @Transactional
     public Optional<Message> getByName(String name) {
         log.info("Service.Получение информации о файле по его name={}", name);
         return messageRepository.findByOriginFileName(name);

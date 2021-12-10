@@ -6,6 +6,9 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
+/**
+ * Интерфейс для взаимодействия с БД для хранения истории скачивания файлов
+ */
 @Repository
 public interface DownloadHistoryRepository extends JpaRepository<DownloadHistory, Long> {
 

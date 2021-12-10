@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -20,6 +21,7 @@ public class DownloadHistoryServiceImpl implements DownloadHistoryService {
     private final DownloadHistoryRepository downloadHistoryRepository;
 
     @Override
+    @Transactional
     public void save(DownloadClientInfo downloadClientInfo, Message message) {
         if (message.getFileNameForS3() != null) {
             DownloadHistory downloadHistory = DownloadHistory.builder()
@@ -27,13 +29,15 @@ public class DownloadHistoryServiceImpl implements DownloadHistoryService {
                     .dateOfDownload(downloadClientInfo.getDateOfDownload())
                     .message(message)
                     .build();
+            log.info("Запись события скачивания файла");
             downloadHistoryRepository.save(downloadHistory);
         }
-
     }
 
     @Override
+    @Transactional
     public List<DownloadHistory> getAllById(Long id) {
+        log.info("Получили всю историю скачиваний файла с id={}", id);
         return downloadHistoryRepository.findAllByMessageId(id);
     }
 }

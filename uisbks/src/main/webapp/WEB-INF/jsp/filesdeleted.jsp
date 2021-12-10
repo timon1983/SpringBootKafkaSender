@@ -60,6 +60,16 @@
             </c:forEach>
         </table>
 
+        <form method="post" action="/deleted/full">
+            <input type="number" value="id" name="id" placeholder="id"/>
+            <button type="submit">Удалить на совсем файл по id</button>
+        </form>
+
+        <form method="get" action="/deleted/restore">
+            <input type="number" value="id" name="id" placeholder="id"/>
+            <button type="submit">Восстановить файл по id</button>
+        </form>
+
         <form method="get" action="/create/files">
             <button type="submit">Получить список всех загруженных файлов</button>
         </form>

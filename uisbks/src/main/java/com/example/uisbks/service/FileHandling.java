@@ -8,6 +8,9 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
+/**
+ * Класс для конвертирования файла
+ */
 @Component
 public class FileHandling {
 
@@ -17,25 +20,13 @@ public class FileHandling {
      * Конвертирование из MultipartFile в File
      */
     public File convertMultiPartFileToFile(String fileName, byte[] multipartFile) {
-        File convFile = new File(getNewFileName(fileName));
+        File convFile = new File(String.valueOf(System.currentTimeMillis()));
         try (var fos = new FileOutputStream(convFile)) {
             fos.write(multipartFile);
         } catch (IOException e) {
             log.error("Ошибка при конвертировании файла", e);
         }
         return convFile;
-    }
-
-    /**
-     * Получение нового имени для файла
-     */
-    private String getNewFileName(String originalFilename) {
-        return String.join(
-                "",
-                originalFilename.substring(0, originalFilename.lastIndexOf(".")),
-                "-",
-                String.valueOf(System.currentTimeMillis()),
-                originalFilename.substring(originalFilename.lastIndexOf(".")));
     }
 }
 

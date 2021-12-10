@@ -32,4 +32,30 @@ public class MessageDeletedServiceImpl implements MessageDeletedService {
         log.info("Service.Записи в таблице удалены");
         return getAll();
     }
+
+    @Override
+    @Transactional
+    public Message fullDelete(Long id) {
+        Message message = messageRepository.findById(id).orElse(null);
+        if (message != null) {
+            messageRepository.deleteById(id);
+            log.info("Service.Запись в таблице с id=" + id + " удалена");
+        }
+        log.info("Service.Записи в таблице с id=" + id + " нет");
+        return message;
+    }
+
+    @Override
+    @Transactional
+    public Message changeMessage(Long id) {
+        Message message = messageRepository.findById(id).orElse(null);
+        if (message != null) {
+            message.setStatus(Status.UPLOAD);
+            message.setDateOfDelete(null);
+            log.info("Service.Восстановление данных файла из БД по его ID={}", id);
+            return messageRepository.save(message);
+        }
+        log.info("Service.Записи в таблице с id=" + id + " нет");
+        return message;
+    }
 }

@@ -6,9 +6,18 @@ import com.example.sbks.model.Message;
 
 import java.util.List;
 
+/**
+ * Сервис для работы с историей скачивания файлов
+ */
 public interface DownloadHistoryService {
 
-   void save(DownloadClientInfo downloadClientInfo, Message message);
+    /**
+     * Запись события о скачивании файла
+     */
+    void save(DownloadClientInfo downloadClientInfo, Message message);
 
-   List<DownloadHistory> getAllById(Long id);
+    /**
+     * Получение всей истории скачивания файла по его id
+     */
+    List<DownloadHistory> getAllById(Long id);
 }

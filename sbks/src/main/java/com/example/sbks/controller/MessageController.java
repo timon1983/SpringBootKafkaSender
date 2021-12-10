@@ -19,6 +19,9 @@ import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 
+/**
+ * Контроллер для обработки запросов по основным операциям с файлами
+ */
 @RestController
 @RequestMapping("/api/sdk")
 @RequiredArgsConstructor
@@ -29,6 +32,9 @@ public class MessageController {
     private final MessageSenderService messageSenderService;
     private final DownloadHistoryService downloadHistoryService;
 
+    /**
+     * Переход на страницу добавления файла
+     */
     @GetMapping
     public String getCreatePage() {
         return "message-insert-form";

@@ -15,6 +15,7 @@ import java.time.Duration;
  */
 @Configuration
 public class GlobalConfig {
+
     @Bean
     public WebServerFactoryCustomizer<TomcatServletWebServerFactory> customizer() {
         return (factory) -> factory.addContextCustomizers((context) -> {

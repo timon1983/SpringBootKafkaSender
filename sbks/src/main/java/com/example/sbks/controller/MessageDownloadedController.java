@@ -15,6 +15,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
+/**
+ * Контроллер для обработки запросов по истории скачивания файлов
+ */
 @RestController
 @RequestMapping("/api/sdk")
 @RequiredArgsConstructor
@@ -23,6 +26,9 @@ public class MessageDownloadedController {
     private final static Logger log = LogManager.getLogger(MessageServiceImpl.class);
     private final DownloadHistoryService downloadHistoryService;
 
+    /**
+     * Обработка запроса для получения истории скачивания файла по его id
+     */
     @PostMapping("/download-history")
     public ResponseEntity<List<DownloadHistory>> getDownloadHistory(@RequestBody Long id) {
         List<DownloadHistory> downloadHistories = downloadHistoryService.getAllById(id);

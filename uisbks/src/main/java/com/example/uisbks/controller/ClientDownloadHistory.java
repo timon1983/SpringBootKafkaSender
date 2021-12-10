@@ -1,6 +1,5 @@
 package com.example.uisbks.controller;
 
-import com.example.uisbks.dtomodel.DTODownloadClientInfo;
 import com.example.uisbks.dtomodel.DTODownloadHistory;
 import lombok.RequiredArgsConstructor;
 import org.apache.logging.log4j.LogManager;
@@ -14,6 +13,9 @@ import org.springframework.web.client.RestTemplate;
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
+/**
+ * Контроллер для работы с историей загрузок
+ */
 @Controller
 @RequestMapping("/downloaded")
 @RequiredArgsConstructor
@@ -22,6 +24,9 @@ public class ClientDownloadHistory {
     private final static Logger log = LogManager.getLogger(ClientMessageController.class);
     private final RestTemplate restTemplate;
 
+    /**
+     * Получение истории скачивания файла по его id
+     */
     @PostMapping
     public String getDownloadHistoryByFileId(HttpServletRequest request, Model model) {
         if (request.getParameter("id").equals("")) {

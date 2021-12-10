@@ -1,9 +1,9 @@
 package com.example.uisbks.controller;
 
 
-import com.example.awsS3.service.ServiceS3;
 import com.example.uisbks.dtomodel.DTODownloadClientInfo;
 import com.example.uisbks.dtomodel.DTOMessage;
+import com.example.uisbks.service.ClientMessageService;
 import com.example.uisbks.service.FileHandling;
 import lombok.RequiredArgsConstructor;
 import org.apache.logging.log4j.LogManager;
@@ -44,7 +44,7 @@ public class ClientMessageController {
     // TODO: 08.12.2021 singleton prototype
     private final RestTemplate restTemplate;
     private final FileHandling fileHandling;
-    private final ServiceS3 serviceS3;
+    private final ClientMessageService clientMessageService;
 
     @GetMapping
     public String getCreatePage() {
@@ -63,7 +63,7 @@ public class ClientMessageController {
             File file = fileHandling.convertMultiPartFileToFile(multipartFile.getOriginalFilename(),
                     multipartFile.getBytes());
             log.info("Загрузка файла {} в хранилище S3", file.getName());
-            serviceS3.upload(file);
+            clientMessageService.saveMessageToS3(file);
             URI uri = new URI("http://localhost:8085/api/sdk/create");
             HttpEntity<DTOMessage> messageRequest = new HttpEntity<>(getDTOMessage(request, multipartFile, file));
             log.info("Отправка данных по файлу {} в БД", file.getName());
@@ -101,10 +101,10 @@ public class ClientMessageController {
         DTOMessage dtoMessage = restTemplate.postForObject(url, id, DTOMessage.class);
         if (dtoMessage != null && dtoMessage.getFileNameForS3() != null) {
             log.info("Файл {} удален", dtoMessage.getOriginFileName());
-            serviceS3.delete(dtoMessage.getFileNameForS3());
+            //clientMessageService.deleteFromS3ByName(dtoMessage.getFileNameForS3());
         } else {
             log.error("Данные о файле с Id={} в БД отсутствуют", id);
-            model.addAttribute("error", String.format("Данные о файле с Id =%s в БД отсутствуют"));
+            model.addAttribute("error", "Данные о файле с Id = " + id + " в БД отсутствуют");
             return "error-page";
         }
         return "redirect:/create/files";
