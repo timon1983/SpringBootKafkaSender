@@ -11,15 +11,13 @@ import org.springframework.stereotype.Repository;
 
 import java.io.File;
 
-
+@Repository
 @RequiredArgsConstructor
-@AllArgsConstructor
-@NoArgsConstructor
 public class RepositoryS3Impl implements RepositoryS3 {
 
     private final static Logger log = LogManager.getLogger(RepositoryS3Impl.class);
     private final String bucket = "springbootkafkasender";
-    private final AmazonS3 amazonS3 = S3Configurer.getAmazonS3Client();
+    private final AmazonS3 amazonS3;
 
     @Override
     public void save(File file, String fileName) {

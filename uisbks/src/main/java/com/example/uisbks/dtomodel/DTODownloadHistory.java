@@ -12,6 +12,7 @@ import java.time.LocalDateTime;
 @Builder
 public class DTODownloadHistory {
     private long id;
+    private String fileName;
     private String ipUser;
     private LocalDateTime dateOfDownload;
 }

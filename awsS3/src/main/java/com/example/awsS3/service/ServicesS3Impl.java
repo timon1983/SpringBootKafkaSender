@@ -14,14 +14,12 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
-//@Service
+@Service
 @RequiredArgsConstructor
-@AllArgsConstructor
-@NoArgsConstructor
 public class ServicesS3Impl implements ServiceS3{
 
     private final static Logger log = LogManager.getLogger(ServicesS3Impl.class);
-    private final RepositoryS3 repositoryS3 = new RepositoryS3Impl();
+    private final RepositoryS3 repositoryS3;
 
     public void upload(File file) {
         var fileName = file.getName();

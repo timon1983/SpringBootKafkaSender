@@ -5,10 +5,12 @@
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
                       http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
 
-    <changeSet id="create_tables" author="timon">
-        <sqlFile path="db/changelog/1.0/create-tables.sql"/>
+    <changeSet id="create_table_messages" author="timon">
+        <sqlFile path="db/changelog/1.0/messages.sql"/>
     </changeSet>
+
     <changeSet id="create_tables_download_history" author="timon">
         <sqlFile path="db/changelog/1.0/download_history.sql"/>
     </changeSet>
+
 </databaseChangeLog>

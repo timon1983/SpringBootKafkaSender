@@ -1,8 +1,6 @@
 package com.example.sbks.service;
 
-import com.example.sbks.dto.DownloadClientInfo;
 import com.example.sbks.model.DownloadHistory;
-import com.example.sbks.model.Message;
 import com.example.sbks.repository.DownloadHistoryRepository;
 import lombok.RequiredArgsConstructor;
 import org.apache.logging.log4j.LogManager;
@@ -21,17 +19,11 @@ public class DownloadHistoryServiceImpl implements DownloadHistoryService {
 
     @Override
     @Transactional
-    public void save(DownloadClientInfo downloadClientInfo, Message message) {
-        if (message.getFileNameForS3() != null) {
-            DownloadHistory downloadHistory = DownloadHistory.builder()
-                    .ipUser(downloadClientInfo.getIpUser())
-                    .dateOfDownload(downloadClientInfo.getDateOfDownload())
-                    .message(message)
-                    .build();
-            log.info("Запись события скачивания файла");
-            downloadHistoryRepository.save(downloadHistory);
-        }
+    public DownloadHistory save(DownloadHistory downloadHistory) {
+        log.info("Запись события скачивания файла");
+        return downloadHistoryRepository.save(downloadHistory);
     }
+
 
     @Override
     @Transactional

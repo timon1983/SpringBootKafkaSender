@@ -37,8 +37,7 @@ public class ClientDownloadHistory {
         log.info("Получение истории скачивания файла " + request.getParameter("id"));
         var url = "http://localhost:8085/api/sdk/download-history";
         Long id = Long.valueOf(request.getParameter("id"));
-        List<DTODownloadHistory> dtoDownloadClientInfos = restTemplate
-                .postForObject(url, id, List.class);
+        List<DTODownloadHistory> dtoDownloadClientInfos = restTemplate.postForObject(url, id, List.class);
         model.addAttribute("downloadList", dtoDownloadClientInfos);
         return "download-history";
     }

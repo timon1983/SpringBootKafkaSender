@@ -1,5 +1,6 @@
 package com.example.sbks.service;
 
+import com.example.awsS3.service.ServiceS3;
 import com.example.sbks.model.Message;
 import com.example.sbks.model.Status;
 import com.example.sbks.repository.MessageRepository;
@@ -17,6 +18,7 @@ public class MessageDeletedServiceImpl implements MessageDeletedService {
 
     private final static Logger log = LogManager.getLogger(MessageServiceImpl.class);
     private final MessageRepository messageRepository;
+    private final ServiceS3 serviceS3;
 
     @Override
     @Transactional
@@ -28,6 +30,7 @@ public class MessageDeletedServiceImpl implements MessageDeletedService {
     @Override
     @Transactional
     public List<Message> deleteAll() {
+
         messageRepository.deleteAllByStatus(Status.DELETED);
         log.info("Service.Записи в таблице удалены");
         return getAll();
