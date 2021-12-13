@@ -3,7 +3,6 @@ package com.example.uisbks.controller;
 
 import com.example.uisbks.dtomodel.DTODownloadHistory;
 import com.example.uisbks.dtomodel.DTOMessage;
-import com.example.uisbks.utilcomponing.ClassBuilder;
 import lombok.RequiredArgsConstructor;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -18,7 +17,6 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URLEncoder;
@@ -36,7 +34,7 @@ public class ClientMessageController {
 
     private final static Logger log = LogManager.getLogger(ClientMessageController.class);
     private final RestTemplate restTemplate;
-    private final ClassBuilder classBuilder;
+    private final UtilityMethods utilityMethods;
 
     @GetMapping
     public String getCreatePage() {
@@ -50,7 +48,7 @@ public class ClientMessageController {
     public String createMessage(MultipartHttpServletRequest request) throws ServletException,
             IOException, URISyntaxException {
         log.info("Получение сообщения от клиента");
-        DTOMessage dtoMessage = classBuilder.getDTOMessage(request);
+        DTOMessage dtoMessage = utilityMethods.getDTOMessage(request);
         if (dtoMessage != null) {
             URI uri = new URI("http://localhost:8085/api/sdk/create");
             log.info("Отправка данных по файлу {} в БД", dtoMessage.getOriginFileName());
@@ -79,9 +77,7 @@ public class ClientMessageController {
     @PostMapping("/file-delete")
     public String deleteFileById(HttpServletRequest request, Model model) {
         if (request.getParameter("id").equals("")) {
-            log.error("Не введено id для удаления файла");
-            model.addAttribute("error", "Введите id для удаления файла");
-            return "error-page";
+            utilityMethods.checkingForId(model, log);
         }
         Long id = Long.parseLong(request.getParameter("id"));
         var url = "http://localhost:8085/api/sdk/delete";
@@ -90,7 +86,7 @@ public class ClientMessageController {
             log.info("Файл {} удален", dtoMessage.getOriginFileName());
         } else {
             log.error("Данные о файле с Id={} в БД отсутствуют", id);
-            model.addAttribute("error", "Данные о файле с Id = " + id + " в БД отсутствуют");
+            model.addAttribute("error", String.format("Файл с id=%d в БД не найден", id));
             return "error-page";
         }
         return "redirect:/create/files";
@@ -102,21 +98,18 @@ public class ClientMessageController {
     @PostMapping("/open-file-id")
     public String openFileById(HttpServletRequest request, Model model) {
         if (request.getParameter("id").equals("")) {
-            log.error("Не введено id для открытия файла");
-            model.addAttribute("error", "Введите id файла для открытия");
-            return "error-page";
+            utilityMethods.checkingForId(model, log);
         }
         Long id = Long.parseLong(request.getParameter("id"));
         var url = "http://localhost:8085/api/sdk/open-id";
-        DTODownloadHistory downloadHistory = classBuilder.getDTODownloadHistory(request);
+        DTODownloadHistory downloadHistory = utilityMethods.getDTODownloadHistory(request);
         DTOMessage dtoMessage = restTemplate.postForObject(url, downloadHistory, DTOMessage.class);
         if (dtoMessage != null) {
             log.info("Файл {} получен", dtoMessage.getOriginFileName());
-            return "redirect:https://d2lzjz6kkt1za6.cloudfront.net/" + dtoMessage.getFileNameForS3();
+            return String.format("redirect:https://d2lzjz6kkt1za6.cloudfront.net/%s", dtoMessage.getFileNameForS3());
         } else {
             log.error("Данные о файле с id={} в БД отсутствуют", id);
-            model.addAttribute("error", "Данные о файле с атрибутом \"" + id
-                    + "\" в БД отсутствуют");
+            model.addAttribute("error", String.format("Файл с id=%d в БД не найден", id));
             return "error-page";
         }
     }
@@ -127,21 +120,18 @@ public class ClientMessageController {
     @PostMapping("/open-file-name")
     public String openFileByName(HttpServletRequest request, Model model) {
         if (request.getParameter("name").equals("")) {
-            log.error("Не введено name для открытия файла");
-            model.addAttribute("error", "Введите name файла для открытия");
-            return "error-page";
+            utilityMethods.checkingForId(model, log);
         }
         var name = request.getParameter("name");
         var url = "http://localhost:8085/api/sdk/open-name";
-        DTODownloadHistory downloadHistory = classBuilder.getDTODownloadHistory(request);
+        DTODownloadHistory downloadHistory = utilityMethods.getDTODownloadHistory(request);
         DTOMessage dtoMessage = restTemplate.postForObject(url, downloadHistory, DTOMessage.class);
         if (dtoMessage != null) {
             log.info("Файл {} получен", dtoMessage.getOriginFileName());
-            return "redirect:https://d2lzjz6kkt1za6.cloudfront.net/" + dtoMessage.getFileNameForS3();
+            return String.format("redirect:https://d2lzjz6kkt1za6.cloudfront.net/%s", dtoMessage.getFileNameForS3());
         } else {
             log.error("Данные о файле с именем {} в БД отсутствуют", name);
-            model.addAttribute("error", "Данные о файле с атрибутом \"" + name
-                    + "\" в БД отсутствуют");
+            model.addAttribute("error", String.format("Файл с именем %s в БД не найден", name));
             return "error-page";
         }
     }

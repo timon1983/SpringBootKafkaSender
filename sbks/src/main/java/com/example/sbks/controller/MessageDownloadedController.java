@@ -23,7 +23,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class MessageDownloadedController {
 
-    private final static Logger log = LogManager.getLogger(MessageServiceImpl.class);
+    private final static Logger log = LogManager.getLogger(MessageDownloadedController.class);
     private final DownloadHistoryService downloadHistoryService;
 
     /**
@@ -32,6 +32,7 @@ public class MessageDownloadedController {
     @PostMapping("/download-history")
     public ResponseEntity<List<DownloadHistory>> getDownloadHistory(@RequestBody Long id) {
         List<DownloadHistory> downloadHistories = downloadHistoryService.getAllById(id);
+        log.info("Получение истории скачивания файла по id={}", id);
         return new ResponseEntity<>(downloadHistories, HttpStatus.OK);
     }
 }

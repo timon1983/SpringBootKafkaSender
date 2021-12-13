@@ -1,8 +1,12 @@
-package com.example.uisbks.utilcomponing;
+package com.example.uisbks.controller;
 
 import com.example.uisbks.dtomodel.DTODownloadHistory;
 import com.example.uisbks.dtomodel.DTOMessage;
+import lombok.RequiredArgsConstructor;
+import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Component;
+import org.springframework.ui.Model;
+import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
@@ -12,9 +16,55 @@ import java.io.IOException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
+import java.util.List;
 
+/**
+ * Класс со вспомогательными методами
+ */
 @Component
-public class ClassBuilder {
+@RequiredArgsConstructor
+public class UtilityMethods {
+
+    private final RestTemplate restTemplate;
+
+    /**
+     * Метод для выполнения операций с файлами в корзине(полное удаление, восстановление)
+     */
+    protected String doOperationWithDeletedFile(String urlEndPoint, String action, HttpServletRequest request,
+                                                Model model, Logger log) {
+        if (request.getParameter("id").equals("")) {
+            return checkingForId(model, log);
+        }
+        Long id = Long.parseLong(request.getParameter("id"));
+        var url = String.format("http://localhost:8085/api/sdk/%s", urlEndPoint);
+        DTOMessage dtoMessage = restTemplate.postForObject(url, id, DTOMessage.class);
+        if (dtoMessage != null && dtoMessage.getFileNameForS3() != null) {
+            log.info("Файл {} {}", dtoMessage.getOriginFileName(), action);
+        } else {
+            log.error("Файл с id={} в БД не найден", id);
+            model.addAttribute("error", String.format("Файл с id=%d в БД не найден", id));
+            return "error-page";
+        }
+        return "redirect:/deleted";
+    }
+
+    /**
+     * Метод для выполнения оперций над списком файлов в корзине(получение списка, очистка корзины)
+     */
+    protected void doOperationWithListOfDeletedFile(Model model, String urlEndPoint) {
+        var url = String.format("http://localhost:8085/api/sdk/%s", urlEndPoint);
+        List<DTOMessage> dtoMessages = restTemplate.getForObject(url, List.class);
+        model.addAttribute("listOfFiles", dtoMessages);
+    }
+
+    /**
+     * Метод для проверки поля ввода ID на "null"
+     */
+    protected String checkingForId(Model model, Logger log) {
+        log.error("Не введено id для восстановления файла");
+        model.addAttribute("error", "Введите id для удаления файла");
+        return "error-page";
+    }
 
     /**
      * Формирование объекта DTOMessage

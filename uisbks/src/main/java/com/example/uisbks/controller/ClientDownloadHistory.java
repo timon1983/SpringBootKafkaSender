@@ -21,8 +21,9 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ClientDownloadHistory {
 
-    private final static Logger log = LogManager.getLogger(ClientMessageController.class);
+    private final static Logger log = LogManager.getLogger(ClientDownloadHistory.class);
     private final RestTemplate restTemplate;
+    private final UtilityMethods utilityMethods;
 
     /**
      * Получение истории скачивания файла по его id
@@ -30,9 +31,7 @@ public class ClientDownloadHistory {
     @PostMapping
     public String getDownloadHistoryByFileId(HttpServletRequest request, Model model) {
         if (request.getParameter("id").equals("")) {
-            log.error("Не введено id для открытия файла");
-            model.addAttribute("error", "Введите id файла для открытия");
-            return "error-page";
+            utilityMethods.checkingForId(model, log);
         }
         log.info("Получение истории скачивания файла " + request.getParameter("id"));
         var url = "http://localhost:8085/api/sdk/download-history";

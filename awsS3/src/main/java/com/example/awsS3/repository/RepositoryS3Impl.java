@@ -1,9 +1,6 @@
 package com.example.awsS3.repository;
 
 import com.amazonaws.services.s3.AmazonS3;
-import com.example.awsS3.configuration.S3Configurer;
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;

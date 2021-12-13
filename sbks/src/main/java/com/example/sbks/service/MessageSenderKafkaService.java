@@ -1,6 +1,5 @@
 package com.example.sbks.service;
 
-import com.example.sbks.controller.MessageController;
 import com.example.sbks.model.Message;
 import lombok.RequiredArgsConstructor;
 import org.apache.logging.log4j.LogManager;
@@ -16,7 +15,7 @@ import java.net.URISyntaxException;
 @RequiredArgsConstructor
 public class MessageSenderKafkaService implements MessageSenderService {
 
-    private final static Logger log = LogManager.getLogger(MessageController.class);
+    private final static Logger log = LogManager.getLogger(MessageSenderKafkaService.class);
     private final RestTemplate restTemplate = new RestTemplate();
 
     @Override

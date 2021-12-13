@@ -11,12 +11,13 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
 public class MessageDeletedServiceImpl implements MessageDeletedService {
 
-    private final static Logger log = LogManager.getLogger(MessageServiceImpl.class);
+    private final static Logger log = LogManager.getLogger(MessageDeletedServiceImpl.class);
     private final MessageRepository messageRepository;
     private final ServiceS3 serviceS3;
 
@@ -29,46 +30,34 @@ public class MessageDeletedServiceImpl implements MessageDeletedService {
 
     @Override
     @Transactional
-    public List<Message> deleteAll() {
-
+    public void deleteAll() {
+        List<Message> messages = getAll();
+        messages.forEach(message -> serviceS3.delete(message.getFileNameForS3()));
         messageRepository.deleteAllByStatus(Status.DELETED);
         log.info("Service.Записи в таблице удалены");
-        return getAll();
     }
 
     @Override
     @Transactional
-    public Message fullDelete(Long id) {
-        Message message = messageRepository.findById(id).orElse(null);
-        if (message != null) {
-            messageRepository.deleteById(id);
-            log.info("Service.Запись в таблице с id=" + id + " удалена");
-        } else {
-            log.info("Service.Записи в таблице с id=" + id + " нет");
-        }
-        log.info("Service.Записи в таблице с id=" + id + " нет");
-        return message;
-    }
-
-    public void fullDelete2(Long id) {
-        messageRepository.findById(id).ifPresent(message -> {
-                    log.info("Service.Запись в таблице с id=" + id + " удалена");
-                    messageRepository.deleteById(id);
-                }
-        );
+    public void fullDelete(Long id) {
+        messageRepository
+                .findById(id)
+                .ifPresent(message -> serviceS3.delete(message.getFileNameForS3()));
+        messageRepository.deleteById(id);
+        log.info("Service.Файл с id={} полностью удален", id);
     }
 
     @Override
     @Transactional
-    public Message changeMessage(Long id) {
-        Message message = messageRepository.findById(id).orElse(null);
-        if (message != null) {
-            message.setStatus(Status.UPLOAD);
-            message.setDateOfDelete(null);
+    public Message restoreMessage(Long id) {
+        Optional<Message> message = messageRepository.findById(id);
+        if (message.isPresent()) {
+            message.get().setStatus(Status.UPLOAD);
+            message.get().setDateOfDelete(null);
             log.info("Service.Восстановление данных файла из БД по его ID={}", id);
-            return messageRepository.save(message);
+            return messageRepository.save(message.get());
         }
-        log.info("Service.Записи в таблице с id=" + id + " нет");
-        return message;
+        log.info(String.format("Service.Записи в таблице с id=%d нет", id));
+        return null;
     }
 }

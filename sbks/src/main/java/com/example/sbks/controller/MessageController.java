@@ -93,7 +93,7 @@ public class MessageController {
         String name = downloadHistory.getFileName();
         name = URLDecoder.decode(name, StandardCharsets.UTF_8.name());
         Optional<Message> message = messageService.getByName(name);
-        if(message.isPresent()) {
+        if (message.isPresent()) {
             downloadHistory.setFileName(name);
             downloadHistory.setId(message.get().getId());
             downloadHistory.setMessage(message.get());

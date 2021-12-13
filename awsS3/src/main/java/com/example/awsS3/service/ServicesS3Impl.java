@@ -1,9 +1,6 @@
 package com.example.awsS3.service;
 
 import com.example.awsS3.repository.RepositoryS3;
-import com.example.awsS3.repository.RepositoryS3Impl;
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -16,7 +13,7 @@ import java.nio.file.Path;
 
 @Service
 @RequiredArgsConstructor
-public class ServicesS3Impl implements ServiceS3{
+public class ServicesS3Impl implements ServiceS3 {
 
     private final static Logger log = LogManager.getLogger(ServicesS3Impl.class);
     private final RepositoryS3 repositoryS3;
