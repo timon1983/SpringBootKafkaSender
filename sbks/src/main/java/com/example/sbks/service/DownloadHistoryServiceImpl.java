@@ -28,7 +28,7 @@ public class DownloadHistoryServiceImpl implements DownloadHistoryService {
     @Override
     @Transactional
     public List<DownloadHistory> getAllById(Long id) {
-        log.info("Получили всю историю скачиваний файла с id={}", id);
+        log.info("Получение всю историю скачиваний файла с id={}", id);
         return downloadHistoryRepository.findAllByMessageId(id);
     }
 }

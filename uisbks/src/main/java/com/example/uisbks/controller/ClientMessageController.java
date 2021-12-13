@@ -3,6 +3,8 @@ package com.example.uisbks.controller;
 
 import com.example.uisbks.dtomodel.DTODownloadHistory;
 import com.example.uisbks.dtomodel.DTOMessage;
+import com.example.uisbks.service.ClientDTOMessageService;
+import com.example.uisbks.service.ClientMessageService;
 import lombok.RequiredArgsConstructor;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -34,7 +36,8 @@ public class ClientMessageController {
 
     private final static Logger log = LogManager.getLogger(ClientMessageController.class);
     private final RestTemplate restTemplate;
-    private final UtilityMethods utilityMethods;
+    private final ClientMessageService clientMessageService;
+    private final ClientDTOMessageService clientDTOMessageService;
 
     @GetMapping
     public String getCreatePage() {
@@ -45,18 +48,10 @@ public class ClientMessageController {
      * Загрузка файла с UI
      */
     @PostMapping
-    public String createMessage(MultipartHttpServletRequest request) throws ServletException,
-            IOException, URISyntaxException {
+    public String createMessage(MultipartHttpServletRequest request) throws URISyntaxException, ServletException, IOException {
         log.info("Получение сообщения от клиента");
-        DTOMessage dtoMessage = utilityMethods.getDTOMessage(request);
-        if (dtoMessage != null) {
-            URI uri = new URI("http://localhost:8085/api/sdk/create");
-            log.info("Отправка данных по файлу {} в БД", dtoMessage.getOriginFileName());
-            restTemplate.postForObject(uri, dtoMessage, DTOMessage.class);
-        } else {
-            log.error("Нет файла для загрузки");
-        }
-        return "message-insert-form";
+        DTOMessage dtoMessage = clientDTOMessageService.getDTOMessage(request);
+       return clientMessageService.doOperationToSaveFiles(dtoMessage, log);
     }
 
     /**
@@ -76,20 +71,10 @@ public class ClientMessageController {
      */
     @PostMapping("/file-delete")
     public String deleteFileById(HttpServletRequest request, Model model) {
-        if (request.getParameter("id").equals("")) {
-            utilityMethods.checkingForId(model, log);
+        if (request.getParameter("id").isBlank()) {
+            clientMessageService.checkingForId(model, log);
         }
-        Long id = Long.parseLong(request.getParameter("id"));
-        var url = "http://localhost:8085/api/sdk/delete";
-        DTOMessage dtoMessage = restTemplate.postForObject(url, id, DTOMessage.class);
-        if (dtoMessage != null) {
-            log.info("Файл {} удален", dtoMessage.getOriginFileName());
-        } else {
-            log.error("Данные о файле с Id={} в БД отсутствуют", id);
-            model.addAttribute("error", String.format("Файл с id=%d в БД не найден", id));
-            return "error-page";
-        }
-        return "redirect:/create/files";
+       return clientMessageService.doOperationToDeleteFiles("delete", request, model, log);
     }
 
     /**
@@ -97,21 +82,12 @@ public class ClientMessageController {
      */
     @PostMapping("/open-file-id")
     public String openFileById(HttpServletRequest request, Model model) {
-        if (request.getParameter("id").equals("")) {
-            utilityMethods.checkingForId(model, log);
+        if (request.getParameter("id").isBlank()) {
+            clientMessageService.checkingForId(model, log);
         }
-        Long id = Long.parseLong(request.getParameter("id"));
-        var url = "http://localhost:8085/api/sdk/open-id";
-        DTODownloadHistory downloadHistory = utilityMethods.getDTODownloadHistory(request);
-        DTOMessage dtoMessage = restTemplate.postForObject(url, downloadHistory, DTOMessage.class);
-        if (dtoMessage != null) {
-            log.info("Файл {} получен", dtoMessage.getOriginFileName());
-            return String.format("redirect:https://d2lzjz6kkt1za6.cloudfront.net/%s", dtoMessage.getFileNameForS3());
-        } else {
-            log.error("Данные о файле с id={} в БД отсутствуют", id);
-            model.addAttribute("error", String.format("Файл с id=%d в БД не найден", id));
-            return "error-page";
-        }
+        DTODownloadHistory downloadHistory = clientDTOMessageService.getDTODownloadHistoryById(request);
+        return clientMessageService.doOperationWithFilesForOpenByIdOrName("open-id", downloadHistory, model, log);
+
     }
 
     /**
@@ -119,33 +95,18 @@ public class ClientMessageController {
      */
     @PostMapping("/open-file-name")
     public String openFileByName(HttpServletRequest request, Model model) {
-        if (request.getParameter("name").equals("")) {
-            utilityMethods.checkingForId(model, log);
+        if (request.getParameter("name").isBlank()) {
+            clientMessageService.checkingForId(model, log);
         }
-        var name = request.getParameter("name");
-        var url = "http://localhost:8085/api/sdk/open-name";
-        DTODownloadHistory downloadHistory = utilityMethods.getDTODownloadHistory(request);
-        DTOMessage dtoMessage = restTemplate.postForObject(url, downloadHistory, DTOMessage.class);
-        if (dtoMessage != null) {
-            log.info("Файл {} получен", dtoMessage.getOriginFileName());
-            return String.format("redirect:https://d2lzjz6kkt1za6.cloudfront.net/%s", dtoMessage.getFileNameForS3());
-        } else {
-            log.error("Данные о файле с именем {} в БД отсутствуют", name);
-            model.addAttribute("error", String.format("Файл с именем %s в БД не найден", name));
-            return "error-page";
-        }
+        DTODownloadHistory downloadHistory = clientDTOMessageService.getDTODownloadHistoryByName(request);
+        return clientMessageService.doOperationWithFilesForOpenByIdOrName("open-name",downloadHistory,model,log);
     }
 
     /**
      * Отправка сообщения в SBKC
      */
     @PostMapping("/send")
-    public String sendFile(HttpServletRequest request) {
-        var name = request.getParameter("name");
-        name = URLEncoder.encode(name, StandardCharsets.UTF_8);
-        var url = "http://localhost:8085/api/sdk/send-file";
-        restTemplate.postForObject(url, name, DTOMessage.class);
-        log.info("Сообщение отправлено в SBKC");
-        return "redirect:/create/files";
+    public String sendFile(HttpServletRequest request, Model model) {
+        return clientMessageService.doOperationToSendFiles("send-file", request, model, log);
     }
 }

@@ -1,5 +1,6 @@
 package com.example.uisbks.controller;
 
+import com.example.uisbks.service.ClientMessageService;
 import lombok.RequiredArgsConstructor;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -21,7 +22,7 @@ import javax.servlet.http.HttpServletRequest;
 public class ClientMessageDeletedController {
 
     private final static Logger log = LogManager.getLogger(ClientMessageDeletedController.class);
-    private final UtilityMethods utilityMethods;
+    private final ClientMessageService clientMessageService;
 
 
     /**
@@ -29,7 +30,7 @@ public class ClientMessageDeletedController {
      */
     @GetMapping
     public String getAllFiles(Model model) {
-        utilityMethods.doOperationWithListOfDeletedFile(model, "files-deleted");
+        clientMessageService.doOperationWithListOfDeletedFile(model, "files-deleted");
         log.info("Получение списка удаленных файлов");
         return "filesdeleted";
     }
@@ -39,7 +40,7 @@ public class ClientMessageDeletedController {
      */
     @GetMapping("/clean")
     public String deleteAll(Model model) {
-        utilityMethods.doOperationWithListOfDeletedFile(model, "files-clean");
+        clientMessageService.doOperationWithListOfDeletedFile(model, "files-clean");
         log.info("Список удаленных файлов очищен");
         return "filesdeleted";
     }
@@ -49,7 +50,7 @@ public class ClientMessageDeletedController {
      */
     @PostMapping("/full")
     public String fullDelete(HttpServletRequest request, Model model) {
-        return utilityMethods.doOperationWithDeletedFile("full-delete", "полностью удален", request, model, log);
+        return clientMessageService.doOperationWithDeletedFile("full-delete", "полностью удален", request, model, log);
     }
 
     /**
@@ -57,7 +58,7 @@ public class ClientMessageDeletedController {
      */
     @GetMapping("/restore")
     public String restoreFile(HttpServletRequest request, Model model) {
-        return utilityMethods.doOperationWithDeletedFile("restore-file", "восстановлен", request, model, log);
+        return clientMessageService.doOperationWithDeletedFile("restore-file", "восстановлен", request, model, log);
     }
 
 }

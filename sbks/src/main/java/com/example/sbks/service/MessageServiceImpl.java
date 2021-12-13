@@ -50,13 +50,12 @@ public class MessageServiceImpl implements MessageService {
     @Override
     @Transactional
     public void deleteById(Long id) {
-        Optional<Message> message = messageRepository.findById(id);
-        if (message.isPresent()) {
-            message.get().setStatus(Status.DELETED);
-            message.get().setDateOfDelete(LocalDateTime.now().withNano(0));
+        messageRepository.findById(id).ifPresent(message -> {
+            message.setStatus(Status.DELETED);
+            message.setDateOfDelete(LocalDateTime.now().withNano(0));
             log.info("Service.Удаление данных файла из БД по его ID={}", id);
-            messageRepository.save(message.get());
-        }
+            messageRepository.save(message);
+        });
     }
 
     @Override

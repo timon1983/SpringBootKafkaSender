@@ -51,15 +51,12 @@ public class MessageDeletedController {
      */
     @PostMapping("/full-delete")
     public ResponseEntity<Message> deletingTheFileAtAll(@RequestBody Long id) {
-        Optional<Message> message = messageService.getById(id);
-        if (message.isPresent()) {
+        return messageService.getById(id).map(message -> {
             messageDeletedService.fullDelete(id);
             log.info("Контроллер.Запрос на удаление файла на совсем по id={}", id);
-            return new ResponseEntity<>(message.get(), HttpStatus.OK);
-        } else {
-            log.info(String.format("Service.Записи в таблице с id=%d нет", id));
-            return new ResponseEntity<>(null, HttpStatus.OK);
-        }
+            // todo boolean
+            return new ResponseEntity<>(messageService.getById(id).get(), HttpStatus.OK);
+        }).orElseGet(() -> new ResponseEntity<>(null, HttpStatus.OK));
     }
 
     /**

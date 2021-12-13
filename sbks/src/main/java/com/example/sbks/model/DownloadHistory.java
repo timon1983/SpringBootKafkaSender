@@ -19,12 +19,16 @@ public class DownloadHistory {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
     private long id;
+
     @Column(name = "file_name")
     private String fileName;
+
     @Column(name = "date_create", nullable = false)
     private LocalDateTime dateOfDownload;
+
     @Column(name = "ip_user", nullable = false)
     private String ipUser;
+
     @ManyToOne
     @JoinColumn(name = "message_id")
     @JsonIgnore
