@@ -12,7 +12,6 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class S3Configurer {
 
-
     @Bean
     public static AmazonS3 getAmazonS3Client() {
 

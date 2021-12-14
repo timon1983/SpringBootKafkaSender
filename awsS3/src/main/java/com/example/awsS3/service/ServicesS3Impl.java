@@ -13,7 +13,7 @@ import java.nio.file.Path;
 
 @Service
 @RequiredArgsConstructor
-public class ServicesS3Impl implements ServiceS3{
+public class ServicesS3Impl implements ServiceS3 {
 
     private final static Logger log = LogManager.getLogger(ServicesS3Impl.class);
     private final RepositoryS3 repositoryS3;

@@ -11,7 +11,8 @@ import java.time.LocalDateTime;
 @ToString
 @Builder
 public class DTODownloadHistory {
-    private long id;
+    private Long id;
+    private String fileName;
     private String ipUser;
     private LocalDateTime dateOfDownload;
 }

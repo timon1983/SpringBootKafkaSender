@@ -1,8 +1,7 @@
 package com.example.sbks.controller;
 
-import com.example.sbks.dto.DownloadClientInfo;
+import com.example.sbks.model.DownloadHistory;
 import com.example.sbks.model.Message;
-import com.example.sbks.model.Status;
 import com.example.sbks.service.DownloadHistoryService;
 import com.example.sbks.service.MessageSenderService;
 import com.example.sbks.service.MessageService;
@@ -45,9 +44,7 @@ public class MessageController {
      */
     @PostMapping("/create")
     public ResponseEntity<Message> createMessage(@RequestBody Message message) {
-        System.out.println(message);
-        log.info("Получение сообщения от клиента и запись в БД");
-        message.setStatus(Status.UPLOAD);
+        log.info("Получение сообщения от клиента и запись в БД: {}", message);
         Message savedMessage = messageService.save(message);
         return new ResponseEntity<>(savedMessage, HttpStatus.OK);
     }
@@ -66,41 +63,64 @@ public class MessageController {
      */
     @PostMapping("/delete")
     public ResponseEntity<Message> deleteById(@RequestBody Long id) {
-        Message deletedMessage = messageService.deleteById(id);
-        return new ResponseEntity<>(deletedMessage, HttpStatus.OK);
+        messageService.deleteById(id);
+        return messageService.getById(id)
+                .map(message -> new ResponseEntity<>(message, HttpStatus.OK))
+                .orElseGet(() -> new ResponseEntity<>(null, HttpStatus.OK));
     }
 
     /**
      * Скачивание файла по id
      */
     @PostMapping("/open-id")
-    public ResponseEntity<Message> findById(@RequestBody DownloadClientInfo downloadClientInfo) {
-        Message message = messageService.getById(downloadClientInfo).orElse(new Message());
-        downloadHistoryService.save(downloadClientInfo, message);
-        return new ResponseEntity<>(message, HttpStatus.OK);
+    public ResponseEntity<Message> findById(@RequestBody DownloadHistory downloadHistory) {
+        return messageService.getById(downloadHistory.getId())
+                .map(message -> {
+                    downloadHistory.setFileName(message.getOriginFileName());
+                    downloadHistory.setMessage(message);
+                    Message messageResponse = downloadHistoryService.save(downloadHistory).getMessage();
+                    return new ResponseEntity<>(messageResponse, HttpStatus.OK);
+                })
+                .orElseGet(() -> new ResponseEntity<>(null, HttpStatus.OK));
     }
 
     /**
      * Получение файла по имени
      */
     @PostMapping("/open-name")
-    public ResponseEntity<Message> findByName(@RequestBody DownloadClientInfo downloadClientInfo) throws UnsupportedEncodingException {
-        String name = downloadClientInfo.getFileName();
+    public ResponseEntity<Message> findByName(@RequestBody DownloadHistory downloadHistory)
+            throws UnsupportedEncodingException {
+        String name = downloadHistory.getFileName();
         name = URLDecoder.decode(name, StandardCharsets.UTF_8.name());
-        Message message = messageService.getByName(name).orElse(new Message());
-        downloadHistoryService.save(downloadClientInfo, message);
-        return new ResponseEntity<>(message, HttpStatus.OK);
+        String finalName = name;
+        return messageService.getByName(name)
+                .map(message -> {
+                    downloadHistory.setFileName(finalName);
+                    downloadHistory.setId(message.getId());
+                    downloadHistory.setMessage(message);
+                    Message messageResponse = downloadHistoryService.save(downloadHistory).getMessage();
+                    return new ResponseEntity<>(messageResponse, HttpStatus.OK);
+                })
+                .orElseGet(() -> new ResponseEntity<>(null, HttpStatus.OK));
     }
 
     /**
      * Оправка файла в MessageSenderSender
      */
     @PostMapping("/send-file")
-    public ResponseEntity<Message> receiveMessageForSendToMessageSender(@RequestBody String name) throws UnsupportedEncodingException, URISyntaxException {
+    public ResponseEntity<Message> receiveMessageForSendToMessageSender(@RequestBody String name)
+            throws UnsupportedEncodingException, URISyntaxException {
         name = URLDecoder.decode(name, StandardCharsets.UTF_8.name());
-        Message message = messageService.getByName(name).orElse(new Message());
-        messageSenderService.sendMessage(message);
-        return new ResponseEntity<>(message, HttpStatus.OK);
+        return messageService.getByName(name)
+                .map(message -> {
+                    try {
+                        messageSenderService.sendMessage(message);
+                    } catch (URISyntaxException e) {
+                        log.error("Ошибка отправки", e);
+                    }
+                    return new ResponseEntity<>(message, HttpStatus.OK);
+                })
+                .orElseGet(() -> new ResponseEntity<>(null, HttpStatus.OK));
     }
 
 }
