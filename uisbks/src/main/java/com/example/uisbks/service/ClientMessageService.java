@@ -81,7 +81,6 @@ public class ClientMessageService {
                                            Model model, Logger log) {
         Long id = Long.parseLong(request.getParameter("id"));
         var url = String.format("http://localhost:8085/api/sdk/%s", urlEndPoint);
-        ;
         DTOMessage dtoMessage = restTemplate.postForObject(url, id, DTOMessage.class);
         if (dtoMessage != null) {
             log.info("Файл {} удален", dtoMessage.getOriginFileName());
@@ -99,7 +98,6 @@ public class ClientMessageService {
         var name = request.getParameter("name");
         name = URLEncoder.encode(name, StandardCharsets.UTF_8);
         var url = String.format("http://localhost:8085/api/sdk/%s", urlEndPoint);
-        ;
         DTOMessage dtoMessage = restTemplate.postForObject(url, name, DTOMessage.class);
         if (dtoMessage != null) {
             log.info("Файл {} отправлен в kafka", dtoMessage.getOriginFileName());

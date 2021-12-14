@@ -50,7 +50,8 @@ public class ClientMessageDeletedController {
      */
     @PostMapping("/full")
     public String fullDelete(HttpServletRequest request, Model model) {
-        return clientMessageService.doOperationWithDeletedFile("full-delete", "полностью удален", request, model, log);
+        return clientMessageService.doOperationWithDeletedFile("full-delete", "полностью удален",
+                request, model, log);
     }
 
     /**
@@ -58,7 +59,8 @@ public class ClientMessageDeletedController {
      */
     @GetMapping("/restore")
     public String restoreFile(HttpServletRequest request, Model model) {
-        return clientMessageService.doOperationWithDeletedFile("restore-file", "восстановлен", request, model, log);
+        return clientMessageService.doOperationWithDeletedFile("restore-file", "восстановлен",
+                request, model, log);
     }
 
 }
