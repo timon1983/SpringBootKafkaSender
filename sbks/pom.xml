@@ -32,11 +32,6 @@
             <version>0.0.1-SNAPSHOT</version>
         </dependency>
         <dependency>
-            <groupId>com.example.uisbks</groupId>
-            <artifactId>uisbks</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
-        </dependency>
-        <dependency>
             <groupId>com.example.kafka</groupId>
             <artifactId>kafka</artifactId>
             <version>0.0.1-SNAPSHOT</version>
@@ -65,6 +60,7 @@
             <version>${jaxb-api}</version>
         </dependency>
     </dependencies>
+
     <build>
         <plugins>
             <plugin>
