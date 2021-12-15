@@ -77,7 +77,7 @@ public class ClientMessageController {
             throw new NoIdException("Введите id для открытия файла");
         }
         DTODownloadHistory downloadHistory = clientDTOMessageService.getDTODownloadHistoryById(request);
-        return clientMessageService.doOperationWithFilesForOpenById("open-id", downloadHistory, log);
+        return clientMessageService.doOperationWithFilesForOpenByIdOrByName("open-id", downloadHistory, log);
     }
 
     /**
@@ -89,7 +89,7 @@ public class ClientMessageController {
             throw new NoIdException("Введите имя для открытия файла");
         }
         DTODownloadHistory downloadHistory = clientDTOMessageService.getDTODownloadHistoryByName(request);
-        return clientMessageService.doOperationWithFilesForOpenByName("open-name", downloadHistory, log);
+        return clientMessageService.doOperationWithFilesForOpenByIdOrByName("open-name", downloadHistory, log);
     }
 
     /**

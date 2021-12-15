@@ -36,17 +36,19 @@ public class ClientMessageService {
     }
 
     /**
-     * Метод для выполнения операций скачивания файла по id
+     * Метод для выполнения операций скачивания файла по id или по имени
      */
-    public String doOperationWithFilesForOpenById(String urlEndPoint, DTODownloadHistory downloadHistory, Logger log) {
-        return getStringResultOfOpenFile(urlEndPoint, downloadHistory, log);
-    }
-
-    /**
-     * Метод для выполнения операций скачивания файла по имени
-     */
-    public String doOperationWithFilesForOpenByName(String urlEndPoint, DTODownloadHistory downloadHistory, Logger log) {
-        return getStringResultOfOpenFile(urlEndPoint, downloadHistory, log);
+    public String doOperationWithFilesForOpenByIdOrByName(String urlEndPoint, DTODownloadHistory downloadHistory, Logger log) {
+        DTOInfoModelClient dtoInfoModelClient = restTemplate.postForObject(clientDTOMessageService.getUrl(urlEndPoint),
+                downloadHistory, DTOInfoModelClient.class);
+        if (dtoInfoModelClient != null && dtoInfoModelClient.getIsError()) {
+            log.error(dtoInfoModelClient.getInfo());
+            throw new NoIdException(dtoInfoModelClient.getInfo());
+        } else if (dtoInfoModelClient != null && !dtoInfoModelClient.getIsError()) {
+            log.info("Файл получен: [id: {}, name: {}]", downloadHistory.getId(), downloadHistory.getFileName());
+            return String.format("redirect:https://d2lzjz6kkt1za6.cloudfront.net/%s", dtoInfoModelClient.getInfo());
+        }
+        return "redirect:/create/files";
     }
 
     /**
@@ -95,19 +97,4 @@ public class ClientMessageService {
         }
         return "message-insert-form";
     }
-
-
-    private String getStringResultOfOpenFile(String urlEndPoint, DTODownloadHistory downloadHistory, Logger log) {
-        DTOInfoModelClient dtoInfoModelClient = restTemplate.postForObject(clientDTOMessageService.getUrl(urlEndPoint),
-                downloadHistory, DTOInfoModelClient.class);
-        if (dtoInfoModelClient != null && dtoInfoModelClient.getIsError()) {
-            log.error(dtoInfoModelClient.getInfo());
-            throw new NoIdException(dtoInfoModelClient.getInfo());
-        } else if (dtoInfoModelClient != null && !dtoInfoModelClient.getIsError()) {
-            log.info("Файл получен: [id: {}, name: {}]", downloadHistory.getId(), downloadHistory.getFileName());
-            return String.format("redirect:https://d2lzjz6kkt1za6.cloudfront.net/%s", dtoInfoModelClient.getInfo());
-        }
-        return "redirect:/create/files";
-    }
-
 }
