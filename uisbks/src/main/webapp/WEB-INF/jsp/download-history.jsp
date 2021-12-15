@@ -33,13 +33,15 @@
         <table class="brd">
             <tr>
                 <th>ID</th>
-                <th>Date of create</th>
+                <th>File name</th>
+                <th>Date of download</th>
                 <th>IP User</th>
             </tr>
 
             <c:forEach var="name" items="${downloadList}">
                 <tr>
                     <td>${name.id}</td>
+                    <td>${name.fileName}</td>
                     <td>${name.dateOfDownload}</td>
                     <td>${name.ipUser}</td>
                 </tr>
