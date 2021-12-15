@@ -14,7 +14,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import javax.servlet.ServletException;
@@ -62,7 +61,7 @@ public class ClientMessageController {
      * Удаление файла по id
      */
     @PostMapping("/file-delete")
-    public String deleteFileById(HttpServletRequest request, Model model) {
+    public String deleteFileById(HttpServletRequest request) {
         if (request.getParameter("id").isBlank()) {
             throw new NoIdException("Введите id для удаления файла");
         }
@@ -73,32 +72,31 @@ public class ClientMessageController {
      * Получение файла по id
      */
     @PostMapping("/open-file-id")
-    public String openFileById(HttpServletRequest request, Model model) {
+    public String openFileById(HttpServletRequest request) {
         if (request.getParameter("id").isBlank()) {
             throw new NoIdException("Введите id для открытия файла");
         }
         DTODownloadHistory downloadHistory = clientDTOMessageService.getDTODownloadHistoryById(request);
-        return clientMessageService.doOperationWithFilesForOpenByIdOrName("open-id", downloadHistory, model, log);
-
+        return clientMessageService.doOperationWithFilesForOpenById("open-id", downloadHistory, log);
     }
 
     /**
      * Получение файла по имени
      */
     @PostMapping("/open-file-name")
-    public String openFileByName(HttpServletRequest request, Model model) {
+    public String openFileByName(HttpServletRequest request) {
         if (request.getParameter("name").isBlank()) {
             throw new NoIdException("Введите имя для открытия файла");
         }
         DTODownloadHistory downloadHistory = clientDTOMessageService.getDTODownloadHistoryByName(request);
-        return clientMessageService.doOperationWithFilesForOpenByIdOrName("open-name", downloadHistory, model, log);
+        return clientMessageService.doOperationWithFilesForOpenByName("open-name", downloadHistory, log);
     }
 
     /**
      * Отправка сообщения в SBKC
      */
     @PostMapping("/send")
-    public String sendFile(HttpServletRequest request, Model model) {
-        return clientMessageService.doOperationToSendFiles("send-file", request, model, log);
+    public String sendFile(HttpServletRequest request) {
+        return clientMessageService.doOperationToSendFiles("send-file", request, log);
     }
 }

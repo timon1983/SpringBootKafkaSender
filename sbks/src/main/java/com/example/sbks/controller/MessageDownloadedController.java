@@ -2,7 +2,6 @@ package com.example.sbks.controller;
 
 import com.example.sbks.model.DownloadHistory;
 import com.example.sbks.service.DownloadHistoryService;
-import com.example.sbks.service.MessageServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;

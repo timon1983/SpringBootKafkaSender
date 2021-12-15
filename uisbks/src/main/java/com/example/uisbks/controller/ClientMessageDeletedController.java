@@ -69,5 +69,4 @@ public class ClientMessageDeletedController {
         return clientMessageDeletedService.doOperationWithDeletedFile("restore-file", "восстановлен",
                 request, log);
     }
-
 }

@@ -66,5 +66,12 @@ public class ClientDTOMessageService {
                     .dateOfDownload(LocalDateTime.now().withNano(0))
                     .build();
     }
+
+    /**
+     * Формирование URL для запроса
+     */
+    public String getUrl(String urlEndPoint) {
+        return String.format("http://localhost:8085/api/sdk/%s", urlEndPoint);
+    }
 }
 

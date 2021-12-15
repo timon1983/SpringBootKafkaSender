@@ -2,7 +2,6 @@ package com.example.uisbks.controller;
 
 import com.example.uisbks.exception.NoIdException;
 import com.example.uisbks.service.ClientDownloadHistoryService;
-import com.example.uisbks.service.ClientMessageService;
 import lombok.RequiredArgsConstructor;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;

@@ -42,12 +42,15 @@ public class MessageDeletedServiceImpl implements MessageDeletedService {
     public void fullDelete(Long id) {
         messageRepository
                 .findById(id)
-                .ifPresentOrElse(message -> serviceS3.delete(message.getFileNameForS3()),
+                .ifPresentOrElse(message -> {
+                            serviceS3.delete(message.getFileNameForS3());
+                            messageRepository.deleteById(id);
+                            log.info("Service.Файл с id={} полностью удален", id);
+                        },
                         () -> {
-                            throw new NoSuchDataFileException(String.format("Данные о файле с id=%d в БД отсутствуют", id));
+                            throw new NoSuchDataFileException(String.format("Данные о файле с id=%d в БД отсутствуют",
+                                    id));
                         });
-        messageRepository.deleteById(id);
-        log.info("Service.Файл с id={} полностью удален", id);
     }
 
     @Override
@@ -61,7 +64,8 @@ public class MessageDeletedServiceImpl implements MessageDeletedService {
                             messageRepository.save(message);
                         },
                         () -> {
-                            throw new NoSuchDataFileException(String.format("Данные о файле с id=%d в БД отсутствуют", id));
+                            throw new NoSuchDataFileException(String.format("Данные о файле с id=%d в БД отсутствуют",
+                                    id));
                         });
     }
 }

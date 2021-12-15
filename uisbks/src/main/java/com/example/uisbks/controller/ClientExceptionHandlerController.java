@@ -5,11 +5,14 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
+/**
+ * Контроллер для обработки искключений NoIdException
+ */
 @ControllerAdvice
 public class ClientExceptionHandlerController {
 
     @ExceptionHandler(NoIdException.class)
-    public String handleNotException(NoIdException e, Model model){
+    public String handleNotException(NoIdException e, Model model) {
         model.addAttribute("error", e.getMessage());
         return "error-page";
     }

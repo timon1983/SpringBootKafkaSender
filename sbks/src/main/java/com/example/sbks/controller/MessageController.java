@@ -1,5 +1,6 @@
 package com.example.sbks.controller;
 
+import com.example.sbks.dto.DTOInfoModel;
 import com.example.sbks.model.DownloadHistory;
 import com.example.sbks.model.Message;
 import com.example.sbks.service.DownloadHistoryService;
@@ -73,35 +74,21 @@ public class MessageController {
      * Скачивание файла по id
      */
     @PostMapping("/open-id")
-    public ResponseEntity<Message> findById(@RequestBody DownloadHistory downloadHistory) {
-        return messageService.getById(downloadHistory.getId())
-                .map(message -> {
-                    downloadHistory.setFileName(message.getOriginFileName());
-                    downloadHistory.setMessage(message);
-                    Message messageResponse = downloadHistoryService.save(downloadHistory).getMessage();
-                    return new ResponseEntity<>(messageResponse, HttpStatus.OK);
-                })
-                .orElseGet(() -> new ResponseEntity<>(null, HttpStatus.OK));
+    public ResponseEntity<DTOInfoModel> findById(@RequestBody DownloadHistory downloadHistory) {
+        DTOInfoModel dtoInfoModel = downloadHistoryService.saveById(downloadHistory);
+        return new ResponseEntity<>(dtoInfoModel, HttpStatus.OK);
     }
 
     /**
      * Получение файла по имени
      */
     @PostMapping("/open-name")
-    public ResponseEntity<Message> findByName(@RequestBody DownloadHistory downloadHistory)
+    public ResponseEntity<DTOInfoModel> findByName(@RequestBody DownloadHistory downloadHistory)
             throws UnsupportedEncodingException {
-        String name = downloadHistory.getFileName();
-        name = URLDecoder.decode(name, StandardCharsets.UTF_8.name());
-        String finalName = name;
-        return messageService.getByName(name)
-                .map(message -> {
-                    downloadHistory.setFileName(finalName);
-                    downloadHistory.setId(message.getId());
-                    downloadHistory.setMessage(message);
-                    Message messageResponse = downloadHistoryService.save(downloadHistory).getMessage();
-                    return new ResponseEntity<>(messageResponse, HttpStatus.OK);
-                })
-                .orElseGet(() -> new ResponseEntity<>(null, HttpStatus.OK));
+        String fileName = downloadHistory.getFileName();
+        downloadHistory.setFileName(URLDecoder.decode(fileName, StandardCharsets.UTF_8.name()));
+        DTOInfoModel dtoInfoModel = downloadHistoryService.saveByName(downloadHistory);
+        return new ResponseEntity<>(dtoInfoModel, HttpStatus.OK);
     }
 
     /**
@@ -109,7 +96,7 @@ public class MessageController {
      */
     @PostMapping("/send-file")
     public ResponseEntity<Message> receiveMessageForSendToMessageSender(@RequestBody String name)
-            throws UnsupportedEncodingException, URISyntaxException {
+            throws UnsupportedEncodingException {
         name = URLDecoder.decode(name, StandardCharsets.UTF_8.name());
         return messageService.getByName(name)
                 .map(message -> {
@@ -122,5 +109,4 @@ public class MessageController {
                 })
                 .orElseGet(() -> new ResponseEntity<>(null, HttpStatus.OK));
     }
-
 }

@@ -15,12 +15,13 @@ import java.util.List;
 public class ClientDownloadHistoryService {
 
     private final RestTemplate restTemplate;
+    private final ClientDTOMessageService clientDTOMessageService;
 
-    public String getAllDownloadHistory(HttpServletRequest request, Model model, Logger log){
+    public String getAllDownloadHistory(HttpServletRequest request, Model model, Logger log) {
         log.info("Получение истории скачивания файла " + request.getParameter("id"));
-        var url = "http://localhost:8085/api/sdk/download-history";
         Long id = Long.valueOf(request.getParameter("id"));
-        List<DTODownloadHistory> dtoDownloadClientInfos = restTemplate.postForObject(url, id, List.class);
+        List<DTODownloadHistory> dtoDownloadClientInfos =
+                restTemplate.postForObject(clientDTOMessageService.getUrl("download-history"), id, List.class);
         model.addAttribute("downloadList", dtoDownloadClientInfos);
         return "download-history";
     }
