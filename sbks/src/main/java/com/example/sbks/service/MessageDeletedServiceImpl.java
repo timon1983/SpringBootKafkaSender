@@ -1,6 +1,7 @@
 package com.example.sbks.service;
 
 import com.example.awsS3.service.ServiceS3;
+import com.example.sbks.exception.NoSuchDataFileException;
 import com.example.sbks.model.Message;
 import com.example.sbks.model.Status;
 import com.example.sbks.repository.MessageRepository;
@@ -11,7 +12,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -42,22 +42,26 @@ public class MessageDeletedServiceImpl implements MessageDeletedService {
     public void fullDelete(Long id) {
         messageRepository
                 .findById(id)
-                .ifPresent(message -> serviceS3.delete(message.getFileNameForS3()));
+                .ifPresentOrElse(message -> serviceS3.delete(message.getFileNameForS3()),
+                        () -> {
+                            throw new NoSuchDataFileException(String.format("Данные о файле с id=%d в БД отсутствуют", id));
+                        });
         messageRepository.deleteById(id);
         log.info("Service.Файл с id={} полностью удален", id);
     }
 
     @Override
     @Transactional
-    public Message restoreMessage(Long id) {
-        Optional<Message> message = messageRepository.findById(id);
-        if (message.isPresent()) {
-            message.get().setStatus(Status.UPLOAD);
-            message.get().setDateOfDelete(null);
-            log.info("Service.Восстановление данных файла из БД по его ID={}", id);
-            return messageRepository.save(message.get());
-        }
-        log.info(String.format("Service.Записи в таблице с id=%d нет", id));
-        return null;
+    public void restoreMessage(Long id) {
+        messageRepository
+                .findById(id)
+                .ifPresentOrElse(message -> {
+                            message.setStatus(Status.UPLOAD);
+                            message.setDateOfDelete(null);
+                            messageRepository.save(message);
+                        },
+                        () -> {
+                            throw new NoSuchDataFileException(String.format("Данные о файле с id=%d в БД отсутствуют", id));
+                        });
     }
 }

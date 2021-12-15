@@ -2,6 +2,7 @@ package com.example.uisbks.service;
 
 import com.example.uisbks.dtomodel.DTODownloadHistory;
 import com.example.uisbks.dtomodel.DTOMessage;
+import com.example.uisbks.exception.NoIdException;
 import lombok.RequiredArgsConstructor;
 import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Service;
@@ -22,40 +23,14 @@ public class ClientMessageService {
     private final RestTemplate restTemplate;
 
     /**
-     * Метод для выполнения операций с файлами в корзине(полное удаление, восстановление)
+     * Метод для получения списка всех загруженных файлов
      */
-    public String doOperationWithDeletedFile(String urlEndPoint, String action, HttpServletRequest request,
-                                             Model model, Logger log) {
-        if (request.getParameter("id").isBlank()) {
-            return checkingForId(model, log);
-        }
-        Long id = Long.parseLong(request.getParameter("id"));
-        var url = String.format("http://localhost:8085/api/sdk/%s", urlEndPoint);
-        DTOMessage dtoMessage = restTemplate.postForObject(url, id, DTOMessage.class);
-        if (dtoMessage != null && dtoMessage.getFileNameForS3() != null) {
-            log.info("Файл {} {}", dtoMessage.getOriginFileName(), action);
-        } else {
-            return getErrorPage(log, model);
-        }
-        return "redirect:/deleted";
-    }
-
-    /**
-     * Метод для выполнения оперций над списком файлов в корзине(получение списка, очистка корзины)
-     */
-    public void doOperationWithListOfDeletedFile(Model model, String urlEndPoint) {
-        var url = String.format("http://localhost:8085/api/sdk/%s", urlEndPoint);
+    public String getListOfFiles(Model model, Logger log){
+        log.info("Получение списка загруженных файлов");
+        var url = "http://localhost:8085/api/sdk/files";
         List<DTOMessage> dtoMessages = restTemplate.getForObject(url, List.class);
         model.addAttribute("listOfFiles", dtoMessages);
-    }
-
-    /**
-     * Метод для проверки поля ввода ID на "null"
-     */
-    public String checkingForId(Model model, Logger log) {
-        log.error("Не введено id для восстановления файла");
-        model.addAttribute("error", "Введите id для удаления файла");
-        return "error-page";
+        return "filesj";
     }
 
     /**
@@ -77,16 +52,14 @@ public class ClientMessageService {
     /**
      * Метод для выполнения операций по удалению файла
      */
-    public String doOperationToDeleteFiles(String urlEndPoint, HttpServletRequest request,
-                                           Model model, Logger log) {
+    public String doOperationToDeleteFiles(String urlEndPoint, HttpServletRequest request, Logger log) {
         Long id = Long.parseLong(request.getParameter("id"));
         var url = String.format("http://localhost:8085/api/sdk/%s", urlEndPoint);
         DTOMessage dtoMessage = restTemplate.postForObject(url, id, DTOMessage.class);
-        if (dtoMessage != null) {
-            log.info("Файл {} удален", dtoMessage.getOriginFileName());
-        } else {
-            return getErrorPage(log, model);
+        if (dtoMessage == null) {
+            throw new NoIdException(String.format("Данные о файле с id=%d в БД отсутствуют", id));
         }
+        log.info("Файл {} удален", dtoMessage.getOriginFileName());
         return "redirect:/create/files";
     }
 

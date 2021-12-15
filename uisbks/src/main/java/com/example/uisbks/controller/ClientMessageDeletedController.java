@@ -1,6 +1,7 @@
 package com.example.uisbks.controller;
 
-import com.example.uisbks.service.ClientMessageService;
+import com.example.uisbks.exception.NoIdException;
+import com.example.uisbks.service.ClientMessageDeletedService;
 import lombok.RequiredArgsConstructor;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -22,7 +23,7 @@ import javax.servlet.http.HttpServletRequest;
 public class ClientMessageDeletedController {
 
     private final static Logger log = LogManager.getLogger(ClientMessageDeletedController.class);
-    private final ClientMessageService clientMessageService;
+    private final ClientMessageDeletedService clientMessageDeletedService;
 
 
     /**
@@ -30,7 +31,7 @@ public class ClientMessageDeletedController {
      */
     @GetMapping
     public String getAllFiles(Model model) {
-        clientMessageService.doOperationWithListOfDeletedFile(model, "files-deleted");
+        clientMessageDeletedService.doOperationWithListOfDeletedFile(model, "files-deleted");
         log.info("Получение списка удаленных файлов");
         return "filesdeleted";
     }
@@ -40,7 +41,7 @@ public class ClientMessageDeletedController {
      */
     @GetMapping("/clean")
     public String deleteAll(Model model) {
-        clientMessageService.doOperationWithListOfDeletedFile(model, "files-clean");
+        clientMessageDeletedService.doOperationWithListOfDeletedFile(model, "files-clean");
         log.info("Список удаленных файлов очищен");
         return "filesdeleted";
     }
@@ -50,8 +51,11 @@ public class ClientMessageDeletedController {
      */
     @PostMapping("/full")
     public String fullDelete(HttpServletRequest request, Model model) {
-        return clientMessageService.doOperationWithDeletedFile("full-delete", "полностью удален",
-                request, model, log);
+        if (request.getParameter("id").isBlank()) {
+            throw new NoIdException("Введите id для полного удаления файла");
+        }
+        return clientMessageDeletedService.doOperationWithDeletedFile("full-delete", "полностью удален",
+                request, log);
     }
 
     /**
@@ -59,8 +63,11 @@ public class ClientMessageDeletedController {
      */
     @GetMapping("/restore")
     public String restoreFile(HttpServletRequest request, Model model) {
-        return clientMessageService.doOperationWithDeletedFile("restore-file", "восстановлен",
-                request, model, log);
+        if (request.getParameter("id").isBlank()) {
+            throw new NoIdException("Введите id для восстановления файла");
+        }
+        return clientMessageDeletedService.doOperationWithDeletedFile("restore-file", "восстановлен",
+                request, log);
     }
 
 }

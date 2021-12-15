@@ -11,7 +11,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 
 /**
  * Контроллер для обработки запросов по операциям с удаленными файлами
@@ -50,23 +49,20 @@ public class MessageDeletedController {
      * Удаление файла на совсем
      */
     @PostMapping("/full-delete")
-    public ResponseEntity<Message> deletingTheFileAtAll(@RequestBody Long id) {
-        return messageService.getById(id).map(message -> {
-            messageDeletedService.fullDelete(id);
-            log.info("Контроллер.Запрос на удаление файла на совсем по id={}", id);
-            // todo boolean
-            return new ResponseEntity<>(messageService.getById(id).get(), HttpStatus.OK);
-        }).orElseGet(() -> new ResponseEntity<>(null, HttpStatus.OK));
+    public ResponseEntity<String> deletingTheFileAtAll(@RequestBody Long id) {
+        log.info("Контроллер.Запрос на полное удаление файла по id={}", id);
+        messageDeletedService.fullDelete(id);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     /**
      * Восстановление файла из корзины по его id
      */
     @PostMapping("/restore-file")
-    public ResponseEntity<Message> restoreMessageById(@RequestBody Long id) {
-        Message message = messageDeletedService.restoreMessage(id);
+    public ResponseEntity<String> restoreMessageById(@RequestBody Long id) {
         log.info("Контроллер.Запрос на восстановление файла по id={}", id);
-        return new ResponseEntity<>(message, HttpStatus.OK);
+        messageDeletedService.restoreMessage(id);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
 }
