@@ -2,6 +2,7 @@ package com.example.uisbks.service;
 
 import com.example.uisbks.dtomodel.DTODownloadHistory;
 import com.example.uisbks.dtomodel.DTOMessage;
+import com.example.uisbks.exception.NoIdException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -39,7 +40,7 @@ public class ClientDTOMessageService {
                     .content(multipartFile.getBytes())
                     .build();
         } else {
-            return null;
+        throw new NoIdException("Файл не выбран");
         }
     }
 

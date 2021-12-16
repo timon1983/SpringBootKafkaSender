@@ -19,3 +19,5 @@ dependencies {
 
 group = 'com.example.uisbks'
 description = 'uisbks'
+
+//project.getAllTasks()

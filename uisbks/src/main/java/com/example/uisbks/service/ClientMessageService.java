@@ -73,33 +73,26 @@ public class ClientMessageService {
         name = URLEncoder.encode(name, StandardCharsets.UTF_8);
         DTOInfoModelClient dtoInfoModelClient =
                 restTemplate.postForObject(clientDTOMessageService.getUrl(urlEndPoint), name, DTOInfoModelClient.class);
-
         if (dtoInfoModelClient == null) {
             return "redirect:/create/files";
         }
 
-        if ( dtoInfoModelClient.getIsError()) {
+        if (dtoInfoModelClient.getIsError()) {
             log.error(dtoInfoModelClient.getInfo());
             throw new NoIdException(dtoInfoModelClient.getInfo());
         } else {
             log.info("Файл {} отправлен в kafka", name);
             return "redirect:/create/files";
         }
-
     }
 
     /**
      * Метод для выполнения операций по сохранению файла
      */
     public String doOperationToSaveFiles(DTOMessage dtoMessage, Logger log) throws URISyntaxException {
-        if (dtoMessage != null) {
-            URI uri = new URI(clientDTOMessageService.getUrl("create"));
-            log.info("Отправка данных по файлу {} в БД", dtoMessage.getOriginFileName());
-            restTemplate.postForObject(uri, dtoMessage, DTOMessage.class);
-        } else {
-            log.error("Нет файла для загрузки");
-            throw new NoIdException("Нет файла для загрузки");
-        }
+        URI uri = new URI(clientDTOMessageService.getUrl("create"));
+        log.info("Отправка данных по файлу {} в БД", dtoMessage.getOriginFileName());
+        restTemplate.postForObject(uri, dtoMessage, DTOMessage.class);
         return "message-insert-form";
     }
 }
