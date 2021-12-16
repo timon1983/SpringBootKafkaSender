@@ -69,7 +69,7 @@ public class ClientMessageService {
      * Метод для выполнения операций по отправлению файла
      */
     public String doOperationToSendFiles(String urlEndPoint, HttpServletRequest request, Logger log) {
-        var name = request.getParameter("name");
+        String name = request.getParameter("name");
         name = URLEncoder.encode(name, StandardCharsets.UTF_8);
         DTOInfoModelClient dtoInfoModelClient =
                 restTemplate.postForObject(clientDTOMessageService.getUrl(urlEndPoint), name, DTOInfoModelClient.class);
