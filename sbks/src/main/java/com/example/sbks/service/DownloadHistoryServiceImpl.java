@@ -47,8 +47,8 @@ public class DownloadHistoryServiceImpl implements DownloadHistoryService {
                     downloadHistoryRepository.save(downloadHistory);
                     return message;
                 }).orElseThrow(() -> new NoSuchDataFileException(
-                        String.format("Данные о файле с именем %s в БД отсутствуют",
-                                downloadHistory.getFileName()))
+                        String.format("Данные о файле с id=%d в БД отсутствуют",
+                                downloadHistory.getId()))
                 );
         return getDtoInfoModel(downloadHistory);
     }
@@ -63,7 +63,6 @@ public class DownloadHistoryServiceImpl implements DownloadHistoryService {
     private DTOInfoModel getDtoInfoModel(DownloadHistory downloadHistory) {
         return DTOInfoModel.builder()
                 .info(downloadHistory.getMessage().getFileNameForS3())
-                .isError(false)
                 .build();
     }
 }
