@@ -28,7 +28,7 @@ public class MessageServiceImpl implements MessageService {
     @Override
     @Transactional
     public Message save(Message message) {
-        File file = new File(message.getFileNameForS3());
+        File file = new File("files/" + message.getFileNameForS3());
         try (FileOutputStream outputStream = new FileOutputStream(file)) {
             outputStream.write(message.getContent());
         } catch (IOException e) {

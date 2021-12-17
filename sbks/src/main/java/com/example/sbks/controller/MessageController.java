@@ -33,14 +33,6 @@ public class MessageController {
     private final DownloadHistoryService downloadHistoryService;
 
     /**
-     * Переход на страницу добавления файла
-     */
-    @GetMapping
-    public String getCreatePage() {
-        return "message-insert-form";
-    }
-
-    /**
      * Получение сообщения от клиента
      */
     @PostMapping("/create")

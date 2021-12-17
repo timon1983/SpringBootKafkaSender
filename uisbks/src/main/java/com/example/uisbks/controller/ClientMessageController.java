@@ -2,6 +2,7 @@ package com.example.uisbks.controller;
 
 import com.example.uisbks.dtomodel.DTODownloadHistory;
 import com.example.uisbks.dtomodel.DTOMessage;
+import com.example.uisbks.dtomodel.JspPage;
 import com.example.uisbks.exception.NoIdException;
 import com.example.uisbks.service.ClientDTOMessageService;
 import com.example.uisbks.service.ClientMessageService;
@@ -33,9 +34,12 @@ public class ClientMessageController {
     private final ClientMessageService clientMessageService;
     private final ClientDTOMessageService clientDTOMessageService;
 
+    /**
+     * Переход на страницу добавления файла
+     */
     @GetMapping
     public String getCreatePage() {
-        return "message-insert-form";
+        return JspPage.FILE_INSERT;
     }
 
     /**
