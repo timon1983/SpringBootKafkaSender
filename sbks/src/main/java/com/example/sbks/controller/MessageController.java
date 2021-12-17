@@ -95,18 +95,10 @@ public class MessageController {
      * Оправка файла в MessageSenderSender
      */
     @PostMapping("/send-file")
-    public ResponseEntity<Message> receiveMessageForSendToMessageSender(@RequestBody String name)
-            throws UnsupportedEncodingException {
+    public ResponseEntity<DTOInfoModel> receiveMessageForSendToMessageSender(@RequestBody String name)
+            throws UnsupportedEncodingException, URISyntaxException {
         name = URLDecoder.decode(name, StandardCharsets.UTF_8.name());
-        return messageService.getByName(name)
-                .map(message -> {
-                    try {
-                        messageSenderService.sendMessage(message);
-                    } catch (URISyntaxException e) {
-                        log.error("Ошибка отправки", e);
-                    }
-                    return new ResponseEntity<>(message, HttpStatus.OK);
-                })
-                .orElseGet(() -> new ResponseEntity<>(null, HttpStatus.OK));
+        messageSenderService.sendMessage(name);
+        return new ResponseEntity<>(new DTOInfoModel(), HttpStatus.OK);
     }
 }

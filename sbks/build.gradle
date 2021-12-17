@@ -10,8 +10,8 @@ dependencies {
     implementation project(':awsS3')
     implementation project(':liquibase')
     implementation project(':kafka')
-    annotationProcessor 'org.projectlombok:lombok:1.18.22'
-    compileOnly 'org.projectlombok:lombok:1.18.22'
+//    annotationProcessor 'org.projectlombok:lombok:1.18.22'
+//    compileOnly 'org.projectlombok:lombok:1.18.22'
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa:2.6.1'
     implementation 'org.springframework.boot:spring-boot-starter-web:2.6.1'
     implementation 'javax.xml.bind:jaxb-api:2.3.1'
@@ -21,3 +21,14 @@ dependencies {
 
 group = 'com.example.sbks'
 description = 'sbks'
+
+class GradleTasks extends DefaultTask {
+
+    @TaskAction
+    void printLine(){
+        System.out.println("Hello, Gradle!!!!");
+    }
+}
+task printJ(type : GradleTasks) {
+
+}

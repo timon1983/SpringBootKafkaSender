@@ -11,5 +11,5 @@ import lombok.*;
 public class DTOInfoModel {
     private Long id;
     private String info;
-    private Boolean isError;
+    private Boolean isError = false;
 }

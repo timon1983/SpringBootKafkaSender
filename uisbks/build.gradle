@@ -22,6 +22,15 @@ dependencies {
 group = 'com.example.uisbks'
 description = 'uisbks'
 
+task printDependencies {
+    doLast {
+        tasks.all {
+            println("$name dependsOn $dependsOn")
+        }
+    }
+}
+
+//printDependencies.enabled(false)
 ////project.getAllTasks()
 //
 //tasks.named("compileJava") {

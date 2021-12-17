@@ -34,4 +34,10 @@ public class ServicesS3Impl implements ServiceS3 {
         repositoryS3.delete(fileName);
     }
 
+    @Override
+    public File getFile(String fileName) throws IOException {
+        return repositoryS3.download(fileName);
+    }
+
+
 }
