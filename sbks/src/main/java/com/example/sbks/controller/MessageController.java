@@ -36,7 +36,7 @@ public class MessageController {
      * Получение сообщения от клиента
      */
     @PostMapping("/create")
-    public ResponseEntity<Message> createMessage(@RequestBody Message message) {
+    public ResponseEntity<Message> createMessage(@RequestBody Message message) { //todo сделать dto
         log.info("Получение сообщения от клиента и запись в БД: {}", message);
         Message savedMessage = messageService.save(message);
         return new ResponseEntity<>(savedMessage, HttpStatus.OK);
@@ -66,7 +66,7 @@ public class MessageController {
      * Скачивание файла по id
      */
     @PostMapping("/open-id")
-    public ResponseEntity<DTOInfoModel> findById(@RequestBody DownloadHistory downloadHistory) {
+    public ResponseEntity<DTOInfoModel> findById(@RequestBody DownloadHistory downloadHistory) { //todo сделать dto
         DTOInfoModel dtoInfoModel = downloadHistoryService.saveById(downloadHistory);
         return new ResponseEntity<>(dtoInfoModel, HttpStatus.OK);
     }
@@ -74,8 +74,9 @@ public class MessageController {
     /**
      * Получение файла по имени
      */
+
     @PostMapping("/open-name")
-    public ResponseEntity<DTOInfoModel> findByName(@RequestBody DownloadHistory downloadHistory)
+    public ResponseEntity<DTOInfoModel> findByName(@RequestBody DownloadHistory downloadHistory)//todo сделать dto
             throws UnsupportedEncodingException {
         String fileName = downloadHistory.getFileName();
         downloadHistory.setFileName(URLDecoder.decode(fileName, StandardCharsets.UTF_8.name()));
