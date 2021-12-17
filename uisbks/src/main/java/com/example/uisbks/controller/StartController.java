@@ -1,5 +1,6 @@
 package com.example.uisbks.controller;
 
+import com.example.uisbks.dtomodel.JspPage;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Controller;
@@ -18,6 +19,6 @@ public class StartController {
     @GetMapping
     public String startProject() {
         log.info("Start project");
-        return "start";
+        return JspPage.START_PAGE;
     }
 }

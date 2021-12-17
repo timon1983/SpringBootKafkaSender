@@ -14,7 +14,11 @@
     <c:out value="${error}"/>
 </c:forEach>
 
-
-<form method="get" action="/create/files"><button type="submit">Back</button></form>
+<br/>
+<br/>
+<form method="get" action="/create/files"><button type="submit">Список всех загруженных файлов</button></form>
+<br/>
+<br/>
+<form method="get" action="/create"><button type="submit">Добавить файл</button></form>
 </body>
 </html>

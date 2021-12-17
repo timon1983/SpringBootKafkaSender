@@ -1,5 +1,7 @@
 package com.example.sbks.service;
 
+import com.example.sbks.dto.DTOInfoModel;
+import com.example.sbks.exception.NoSuchDataFileException;
 import com.example.sbks.model.DownloadHistory;
 import com.example.sbks.repository.DownloadHistoryRepository;
 import lombok.RequiredArgsConstructor;
@@ -16,19 +18,52 @@ public class DownloadHistoryServiceImpl implements DownloadHistoryService {
 
     private final static Logger log = LogManager.getLogger(DownloadHistoryServiceImpl.class);
     private final DownloadHistoryRepository downloadHistoryRepository;
+    private final MessageService messageService;
 
-    @Override
     @Transactional
-    public DownloadHistory save(DownloadHistory downloadHistory) {
-        log.info("Запись события скачивания файла");
-        return downloadHistoryRepository.save(downloadHistory);
+    @Override
+    public DTOInfoModel saveByName(DownloadHistory downloadHistory) {
+        messageService.getByName(downloadHistory.getFileName())
+                .map(message -> {
+                    downloadHistory.setMessage(message);
+                    log.info("Запись события скачивания файла");
+                    downloadHistoryRepository.save(downloadHistory);
+                    return message;
+                }).orElseThrow(() -> new NoSuchDataFileException(
+                        String.format("Данные о файле с именем %s в БД отсутствуют",
+                                downloadHistory.getFileName()))
+                );
+        return getDtoInfoModel(downloadHistory);
     }
 
+    @Transactional
+    @Override
+    public DTOInfoModel saveById(DownloadHistory downloadHistory) {
+        messageService.getById(downloadHistory.getId())
+                .map(message -> {
+                    downloadHistory.setMessage(message);
+                    downloadHistory.setFileName(message.getOriginFileName());
+                    log.info("Запись события скачивания файла");
+                    downloadHistoryRepository.save(downloadHistory);
+                    return message;
+                }).orElseThrow(() -> new NoSuchDataFileException(
+                        String.format("Данные о файле с именем %s в БД отсутствуют",
+                                downloadHistory.getFileName()))
+                );
+        return getDtoInfoModel(downloadHistory);
+    }
 
     @Override
     @Transactional
     public List<DownloadHistory> getAllById(Long id) {
         log.info("Получение всю историю скачиваний файла с id={}", id);
         return downloadHistoryRepository.findAllByMessageId(id);
+    }
+
+    private DTOInfoModel getDtoInfoModel(DownloadHistory downloadHistory) {
+        return DTOInfoModel.builder()
+                .info(downloadHistory.getMessage().getFileNameForS3())
+                .isError(false)
+                .build();
     }
 }

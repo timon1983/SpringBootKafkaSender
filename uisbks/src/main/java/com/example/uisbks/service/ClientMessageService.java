@@ -1,7 +1,10 @@
 package com.example.uisbks.service;
 
 import com.example.uisbks.dtomodel.DTODownloadHistory;
+import com.example.uisbks.dtomodel.DTOInfoModelClient;
 import com.example.uisbks.dtomodel.DTOMessage;
+import com.example.uisbks.dtomodel.JspPage;
+import com.example.uisbks.exception.NoIdException;
 import lombok.RequiredArgsConstructor;
 import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Service;
@@ -20,90 +23,67 @@ import java.util.List;
 public class ClientMessageService {
 
     private final RestTemplate restTemplate;
+    private final ClientDTOMessageService clientDTOMessageService;
 
     /**
-     * Метод для выполнения операций с файлами в корзине(полное удаление, восстановление)
+     * Метод для получения списка всех загруженных файлов
      */
-    public String doOperationWithDeletedFile(String urlEndPoint, String action, HttpServletRequest request,
-                                             Model model, Logger log) {
-        if (request.getParameter("id").isBlank()) {
-            return checkingForId(model, log);
-        }
-        Long id = Long.parseLong(request.getParameter("id"));
-        var url = String.format("http://localhost:8085/api/sdk/%s", urlEndPoint);
-        DTOMessage dtoMessage = restTemplate.postForObject(url, id, DTOMessage.class);
-        if (dtoMessage != null && dtoMessage.getFileNameForS3() != null) {
-            log.info("Файл {} {}", dtoMessage.getOriginFileName(), action);
-        } else {
-            return getErrorPage(log, model);
-        }
-        return "redirect:/deleted";
-    }
-
-    /**
-     * Метод для выполнения оперций над списком файлов в корзине(получение списка, очистка корзины)
-     */
-    public void doOperationWithListOfDeletedFile(Model model, String urlEndPoint) {
-        var url = String.format("http://localhost:8085/api/sdk/%s", urlEndPoint);
-        List<DTOMessage> dtoMessages = restTemplate.getForObject(url, List.class);
+    public String getListOfFiles(Model model, Logger log) {
+        log.info("Получение списка загруженных файлов");
+        List<DTOMessage> dtoMessages =
+                restTemplate.getForObject(clientDTOMessageService.getUrl("files"), List.class);
         model.addAttribute("listOfFiles", dtoMessages);
+        return JspPage.FILE_LIST;
     }
 
     /**
-     * Метод для проверки поля ввода ID на "null"
+     * Метод для выполнения операций скачивания файла по id или по имени
      */
-    public String checkingForId(Model model, Logger log) {
-        log.error("Не введено id для восстановления файла");
-        model.addAttribute("error", "Введите id для удаления файла");
-        return "error-page";
-    }
-
-    /**
-     * Метод для выполнения операций скачивания файла по id или имени
-     */
-    public String doOperationWithFilesForOpenByIdOrName(String urlEndPoint, DTODownloadHistory downloadHistory,
-                                                        Model model, Logger log) {
-
-        var url = String.format("http://localhost:8085/api/sdk/%s", urlEndPoint);
-        DTOMessage dtoMessage = restTemplate.postForObject(url, downloadHistory, DTOMessage.class);
-        if (dtoMessage != null) {
-            log.info("Файл получен: [id: {}, name: {}]", dtoMessage.getId(), dtoMessage.getOriginFileName());
-            return String.format("redirect:https://d2lzjz6kkt1za6.cloudfront.net/%s", dtoMessage.getFileNameForS3());
-        } else {
-            return getErrorPage(log, model);
+    public String doOperationWithFilesForOpenByIdOrByName(String urlEndPoint, DTODownloadHistory downloadHistory, Logger log) {
+        DTOInfoModelClient dtoInfoModelClient = restTemplate.postForObject(clientDTOMessageService.getUrl(urlEndPoint),
+                downloadHistory, DTOInfoModelClient.class);
+        if (dtoInfoModelClient != null && dtoInfoModelClient.getIsError()) {
+            log.error(dtoInfoModelClient.getInfo());
+            throw new NoIdException(dtoInfoModelClient.getInfo());
+        } else if (dtoInfoModelClient != null && !dtoInfoModelClient.getIsError()) {
+            log.info("Файл получен: [id: {}, name: {}]", downloadHistory.getId(), downloadHistory.getFileName());
+            return String.format("redirect:https://d2lzjz6kkt1za6.cloudfront.net/%s", dtoInfoModelClient.getInfo());
         }
+        return "redirect:/create/files";
     }
 
     /**
      * Метод для выполнения операций по удалению файла
      */
-    public String doOperationToDeleteFiles(String urlEndPoint, HttpServletRequest request,
-                                           Model model, Logger log) {
+    public String doOperationToDeleteFiles(String urlEndPoint, HttpServletRequest request, Logger log) {
         Long id = Long.parseLong(request.getParameter("id"));
-        var url = String.format("http://localhost:8085/api/sdk/%s", urlEndPoint);
-        DTOMessage dtoMessage = restTemplate.postForObject(url, id, DTOMessage.class);
-        if (dtoMessage != null) {
-            log.info("Файл {} удален", dtoMessage.getOriginFileName());
-        } else {
-            return getErrorPage(log, model);
+        DTOMessage dtoMessage =
+                restTemplate.postForObject(clientDTOMessageService.getUrl(urlEndPoint), id, DTOMessage.class);
+        if (dtoMessage == null) {
+            throw new NoIdException(String.format("Данные о файле с id=%d в БД отсутствуют", id));
         }
+        log.info("Файл {} удален", dtoMessage.getOriginFileName());
         return "redirect:/create/files";
     }
 
     /**
      * Метод для выполнения операций по отправлению файла
      */
-    public String doOperationToSendFiles(String urlEndPoint, HttpServletRequest request,
-                                         Model model, Logger log) {
-        var name = request.getParameter("name");
+    public String doOperationToSendFiles(String urlEndPoint, HttpServletRequest request, Logger log) {
+        String name = request.getParameter("name");
         name = URLEncoder.encode(name, StandardCharsets.UTF_8);
-        var url = String.format("http://localhost:8085/api/sdk/%s", urlEndPoint);
-        DTOMessage dtoMessage = restTemplate.postForObject(url, name, DTOMessage.class);
-        if (dtoMessage != null) {
-            log.info("Файл {} отправлен в kafka", dtoMessage.getOriginFileName());
+        DTOInfoModelClient dtoInfoModelClient =
+                restTemplate.postForObject(clientDTOMessageService.getUrl(urlEndPoint), name, DTOInfoModelClient.class);
+        if (dtoInfoModelClient == null) {
             return "redirect:/create/files";
+        }
+
+        if (dtoInfoModelClient.getIsError()) {
+            log.error(dtoInfoModelClient.getInfo());
+            throw new NoIdException(dtoInfoModelClient.getInfo());
         } else {
-            return getErrorPage(log, model);
+            log.info("Файл {} отправлен в kafka", name);
+            return "redirect:/create/files";
         }
     }
 
@@ -111,22 +91,9 @@ public class ClientMessageService {
      * Метод для выполнения операций по сохранению файла
      */
     public String doOperationToSaveFiles(DTOMessage dtoMessage, Logger log) throws URISyntaxException {
-        if (dtoMessage != null) {
-            URI uri = new URI("http://localhost:8085/api/sdk/create");
-            log.info("Отправка данных по файлу {} в БД", dtoMessage.getOriginFileName());
-            restTemplate.postForObject(uri, dtoMessage, DTOMessage.class);
-        } else {
-            log.error("Нет файла для загрузки");
-        }
-        return "message-insert-form";
-    }
-
-    /**
-     * Метод для редиректа на страницу ошибки
-     */
-    public String getErrorPage(Logger log, Model model) {
-        log.error("Данные о файле в БД отсутствуют");
-        model.addAttribute("error", "Данные о файле в БД отсутствуют");
-        return "error-page";
+        URI uri = new URI(clientDTOMessageService.getUrl("create"));
+        log.info("Отправка данных по файлу {} в БД", dtoMessage.getOriginFileName());
+        restTemplate.postForObject(uri, dtoMessage, DTOMessage.class);
+        return JspPage.FILE_INSERT;
     }
 }

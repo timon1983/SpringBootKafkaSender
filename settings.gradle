@@ -1,0 +1,6 @@
+rootProject.name = 'com.example.SpringBootKafkaSender'
+include(':uisbks')
+include(':liquibase')
+include(':sbks')
+include(':kafka')
+include(':awsS3')

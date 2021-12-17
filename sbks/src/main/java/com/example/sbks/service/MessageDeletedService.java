@@ -27,5 +27,5 @@ public interface MessageDeletedService {
     /**
      * Восстановление записи(установка значения status = UPLOAD)
      */
-    Message restoreMessage(Long id);
+    void restoreMessage(Long id);
 }
