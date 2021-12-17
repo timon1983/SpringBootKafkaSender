@@ -26,6 +26,16 @@ public class ClientMessageService {
     private final ClientDTOMessageService clientDTOMessageService;
 
     /**
+     * Метод для выполнения операций по сохранению файла
+     */
+    public String doOperationToSaveFiles(DTOMessage dtoMessage, Logger log) throws URISyntaxException {
+        URI uri = new URI(clientDTOMessageService.getUrl("create"));
+        log.info("Отправка данных по файлу {} в БД", dtoMessage.getOriginFileName());
+        restTemplate.postForObject(uri, dtoMessage, DTOMessage.class);
+        return JspPage.FILE_INSERT;
+    }
+
+    /**
      * Метод для получения списка всех загруженных файлов
      */
     public String getListOfFiles(Model model, Logger log) {
@@ -84,15 +94,5 @@ public class ClientMessageService {
         } else {
             throw new NoIdException("Ошибка при отправке");
         }
-    }
-
-    /**
-     * Метод для выполнения операций по сохранению файла
-     */
-    public String doOperationToSaveFiles(DTOMessage dtoMessage, Logger log) throws URISyntaxException {
-        URI uri = new URI(clientDTOMessageService.getUrl("create"));
-        log.info("Отправка данных по файлу {} в БД", dtoMessage.getOriginFileName());
-        restTemplate.postForObject(uri, dtoMessage, DTOMessage.class);
-        return JspPage.FILE_INSERT;
     }
 }
