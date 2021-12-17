@@ -1,6 +1,7 @@
 package com.example.uisbks.service;
 
 import com.example.uisbks.dtomodel.DTODownloadHistory;
+import com.example.uisbks.dtomodel.JspPage;
 import lombok.RequiredArgsConstructor;
 import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Service;
@@ -23,6 +24,6 @@ public class ClientDownloadHistoryService {
         List<DTODownloadHistory> dtoDownloadClientInfos =
                 restTemplate.postForObject(clientDTOMessageService.getUrl("download-history"), id, List.class);
         model.addAttribute("downloadList", dtoDownloadClientInfos);
-        return "download-history";
+        return JspPage.DOWNLOAD_HISTORY;
     }
 }

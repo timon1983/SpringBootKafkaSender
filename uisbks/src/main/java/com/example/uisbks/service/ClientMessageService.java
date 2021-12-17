@@ -3,6 +3,7 @@ package com.example.uisbks.service;
 import com.example.uisbks.dtomodel.DTODownloadHistory;
 import com.example.uisbks.dtomodel.DTOInfoModelClient;
 import com.example.uisbks.dtomodel.DTOMessage;
+import com.example.uisbks.dtomodel.JspPage;
 import com.example.uisbks.exception.NoIdException;
 import lombok.RequiredArgsConstructor;
 import org.apache.logging.log4j.Logger;
@@ -32,7 +33,7 @@ public class ClientMessageService {
         List<DTOMessage> dtoMessages =
                 restTemplate.getForObject(clientDTOMessageService.getUrl("files"), List.class);
         model.addAttribute("listOfFiles", dtoMessages);
-        return "filesj";
+        return JspPage.FILE_LIST;
     }
 
     /**
@@ -93,6 +94,6 @@ public class ClientMessageService {
         URI uri = new URI(clientDTOMessageService.getUrl("create"));
         log.info("Отправка данных по файлу {} в БД", dtoMessage.getOriginFileName());
         restTemplate.postForObject(uri, dtoMessage, DTOMessage.class);
-        return "message-insert-form";
+        return JspPage.FILE_INSERT;
     }
 }

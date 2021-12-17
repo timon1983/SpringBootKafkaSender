@@ -1,5 +1,6 @@
 package com.example.uisbks.controller;
 
+import com.example.uisbks.dtomodel.JspPage;
 import com.example.uisbks.exception.NoIdException;
 import com.example.uisbks.service.ClientMessageDeletedService;
 import lombok.RequiredArgsConstructor;
@@ -33,7 +34,7 @@ public class ClientMessageDeletedController {
     public String getAllFiles(Model model) {
         clientMessageDeletedService.doOperationWithListOfDeletedFile(model, "files-deleted");
         log.info("Получение списка удаленных файлов");
-        return "filesdeleted";
+        return JspPage.FILE_LIST_DELETED;
     }
 
     /**
@@ -43,14 +44,14 @@ public class ClientMessageDeletedController {
     public String deleteAll(Model model) {
         clientMessageDeletedService.doOperationWithListOfDeletedFile(model, "files-clean");
         log.info("Список удаленных файлов очищен");
-        return "filesdeleted";
+        return JspPage.FILE_LIST_DELETED;
     }
 
     /**
      * Удаление файла на совсем по его id
      */
     @PostMapping("/full")
-    public String fullDelete(HttpServletRequest request, Model model) {
+    public String fullDelete(HttpServletRequest request) {
         if (request.getParameter("id").isBlank()) {
             throw new NoIdException("Введите id для полного удаления файла");
         }
@@ -62,7 +63,7 @@ public class ClientMessageDeletedController {
      * Восстановление файла
      */
     @GetMapping("/restore")
-    public String restoreFile(HttpServletRequest request, Model model) {
+    public String restoreFile(HttpServletRequest request) {
         if (request.getParameter("id").isBlank()) {
             throw new NoIdException("Введите id для восстановления файла");
         }
