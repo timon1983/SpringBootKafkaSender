@@ -17,7 +17,7 @@ import java.net.URISyntaxException;
 public class MessageSenderKafkaService implements MessageSenderService {
 
     private final static Logger log = LogManager.getLogger(MessageSenderKafkaService.class);
-    private final RestTemplate restTemplate = new RestTemplate();
+    private final RestTemplate restTemplate;
     @Value("${kafka-url}")
     private final String url;
 
