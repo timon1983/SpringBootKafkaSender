@@ -1,5 +1,6 @@
 package com.example.sbks.service;
 
+import com.example.sbks.exception.NoSuchDataFileException;
 import com.example.sbks.model.Message;
 
 import java.net.URISyntaxException;
@@ -12,5 +13,5 @@ public interface MessageSenderService {
     /**
      * Метод для отправки сообщения
      */
-    void sendMessage(Message message) throws URISyntaxException;
+    void sendMessage(String name) throws URISyntaxException, NoSuchDataFileException;
 }

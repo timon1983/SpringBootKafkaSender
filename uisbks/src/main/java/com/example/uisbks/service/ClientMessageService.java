@@ -74,16 +74,15 @@ public class ClientMessageService {
         name = URLEncoder.encode(name, StandardCharsets.UTF_8);
         DTOInfoModelClient dtoInfoModelClient =
                 restTemplate.postForObject(clientDTOMessageService.getUrl(urlEndPoint), name, DTOInfoModelClient.class);
-        if (dtoInfoModelClient == null) {
+        if (dtoInfoModelClient != null && !dtoInfoModelClient.getIsError()) {
+            log.info("Файл {} отправлен в kafka", name);
             return "redirect:/create/files";
         }
-
-        if (dtoInfoModelClient.getIsError()) {
+        if (dtoInfoModelClient != null && dtoInfoModelClient.getIsError()) {
             log.error(dtoInfoModelClient.getInfo());
             throw new NoIdException(dtoInfoModelClient.getInfo());
         } else {
-            log.info("Файл {} отправлен в kafka", name);
-            return "redirect:/create/files";
+            throw new NoIdException("Ошибка при отправке");
         }
     }
 

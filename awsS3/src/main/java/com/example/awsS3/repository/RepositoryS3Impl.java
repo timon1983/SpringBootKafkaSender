@@ -1,12 +1,15 @@
 package com.example.awsS3.repository;
 
 import com.amazonaws.services.s3.AmazonS3;
+import com.amazonaws.services.s3.model.S3ObjectInputStream;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.io.FileUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Repository;
 
 import java.io.File;
+import java.io.IOException;
 
 @Repository
 @RequiredArgsConstructor
@@ -26,5 +29,16 @@ public class RepositoryS3Impl implements RepositoryS3 {
     @Override
     public void delete(String fileName) {
         amazonS3.deleteObject(bucket, fileName);
+
     }
+
+    @Override
+    public File download(String fileName) throws IOException {
+        File file = new File(fileName);
+        S3ObjectInputStream inputStream = amazonS3.getObject(bucket, fileName).getObjectContent();
+        FileUtils.copyInputStreamToFile(inputStream, file);
+        return file;
+    }
+
+
 }
