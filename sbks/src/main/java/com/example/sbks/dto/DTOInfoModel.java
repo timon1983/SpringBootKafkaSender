@@ -11,5 +11,6 @@ import lombok.*;
 public class DTOInfoModel {
     private Long id;
     private String info;
+    @Builder.Default
     private Boolean isError = false;
 }
