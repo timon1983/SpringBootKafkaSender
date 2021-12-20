@@ -1,5 +1,6 @@
 package com.example.sbks.service;
 
+import com.example.sbks.dto.MessageDto;
 import com.example.sbks.model.Message;
 
 import java.util.List;
@@ -12,7 +13,7 @@ public interface MessageDeletedService {
     /**
      * Получение списка всех удаленных файлов
      */
-    List<Message> getAll();
+    List<MessageDto> getAll();
 
     /**
      * Удаление всех записей в таблице messages_deleted
@@ -22,7 +23,7 @@ public interface MessageDeletedService {
     /**
      * Удаление всех записи на совсем в таблице по id
      */
-    void fullDelete(Long id);
+    String fullDelete(Long id);
 
     /**
      * Восстановление записи(установка значения status = UPLOAD)

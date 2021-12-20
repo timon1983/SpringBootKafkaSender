@@ -49,7 +49,7 @@ public class ClientMessageController {
     public String createMessage(MultipartHttpServletRequest request) throws URISyntaxException, ServletException, IOException {
         log.info("Получение сообщения от клиента");
         DTOMessage dtoMessage = clientDTOMessageService.getDTOMessage(request);
-        return clientMessageService.doOperationToSaveFiles(dtoMessage, log);
+        return clientMessageService.doOperationToSaveFiles(dtoMessage);
     }
 
     /**
@@ -57,7 +57,7 @@ public class ClientMessageController {
      */
     @GetMapping("/files")
     public String getAllFiles(Model model) {
-        return clientMessageService.getListOfFiles(model, log);
+        return clientMessageService.getListOfFiles(model);
     }
 
     /**
@@ -68,7 +68,7 @@ public class ClientMessageController {
         if (request.getParameter("id").isBlank()) {
             throw new NoIdException("Введите id для удаления файла");
         }
-        return clientMessageService.doOperationToDeleteFiles("delete", request, log);
+        return clientMessageService.doOperationToDeleteFiles("delete", request);
     }
 
     /**
@@ -80,7 +80,7 @@ public class ClientMessageController {
             throw new NoIdException("Введите id для открытия файла");
         }
         DTODownloadHistory downloadHistory = clientDTOMessageService.getDTODownloadHistoryById(request);
-        return clientMessageService.doOperationWithFilesForOpenByIdOrByName("open-id", downloadHistory, log);
+        return clientMessageService.doOperationWithFilesForOpenByIdOrByName("open-id", downloadHistory);
     }
 
     /**
@@ -92,7 +92,7 @@ public class ClientMessageController {
             throw new NoIdException("Введите имя для открытия файла");
         }
         DTODownloadHistory downloadHistory = clientDTOMessageService.getDTODownloadHistoryByName(request);
-        return clientMessageService.doOperationWithFilesForOpenByIdOrByName("open-name", downloadHistory, log);
+        return clientMessageService.doOperationWithFilesForOpenByIdOrByName("open-name", downloadHistory);
     }
 
     /**

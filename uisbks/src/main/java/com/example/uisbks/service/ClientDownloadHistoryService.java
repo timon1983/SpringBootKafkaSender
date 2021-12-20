@@ -3,6 +3,7 @@ package com.example.uisbks.service;
 import com.example.uisbks.dtomodel.DTODownloadHistory;
 import com.example.uisbks.dtomodel.JspPage;
 import lombok.RequiredArgsConstructor;
+import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Service;
 import org.springframework.ui.Model;
@@ -15,10 +16,11 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ClientDownloadHistoryService {
 
+    private final static Logger log = LogManager.getLogger(ClientDownloadHistoryService.class);
     private final RestTemplate restTemplate;
     private final ClientDTOMessageService clientDTOMessageService;
 
-    public String getAllDownloadHistory(HttpServletRequest request, Model model, Logger log) {
+    public String getAllDownloadHistory(HttpServletRequest request, Model model) {
         log.info("Получение истории скачивания файла " + request.getParameter("id"));
         Long id = Long.valueOf(request.getParameter("id"));
         List<DTODownloadHistory> dtoDownloadClientInfos =

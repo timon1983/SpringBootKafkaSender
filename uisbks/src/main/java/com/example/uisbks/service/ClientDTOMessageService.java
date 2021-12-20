@@ -40,7 +40,7 @@ public class ClientDTOMessageService {
                     .content(multipartFile.getBytes())
                     .build();
         } else {
-        throw new NoIdException("Файл не выбран");
+            throw new NoIdException("Файл не выбран");
         }
     }
 
@@ -49,23 +49,23 @@ public class ClientDTOMessageService {
      */
     public DTODownloadHistory getDTODownloadHistoryByName(HttpServletRequest request) {
         return DTODownloadHistory.builder()
-                    .id(null)
-                    .fileName(URLEncoder.encode(request.getParameter("name"), StandardCharsets.UTF_8))
-                    .ipUser(request.getRemoteAddr())
-                    .dateOfDownload(LocalDateTime.now().withNano(0))
-                    .build();
+                .id(null)
+                .fileName(URLEncoder.encode(request.getParameter("name"), StandardCharsets.UTF_8))
+                .ipUser(request.getRemoteAddr())
+                .dateOfDownload(LocalDateTime.now().withNano(0))
+                .build();
     }
 
     /**
      * Формирование объекта DTODownloadHistory по ID
      */
     public DTODownloadHistory getDTODownloadHistoryById(HttpServletRequest request) {
-            return DTODownloadHistory.builder()
-                    .id(Long.parseLong(request.getParameter("id")))
-                    .fileName(null)
-                    .ipUser(request.getRemoteAddr())
-                    .dateOfDownload(LocalDateTime.now().withNano(0))
-                    .build();
+        return DTODownloadHistory.builder()
+                .id(Long.parseLong(request.getParameter("id")))
+                .fileName(null)
+                .ipUser(request.getRemoteAddr())
+                .dateOfDownload(LocalDateTime.now().withNano(0))
+                .build();
     }
 
     /**

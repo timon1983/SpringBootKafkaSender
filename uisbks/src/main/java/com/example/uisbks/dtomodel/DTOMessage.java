@@ -11,7 +11,6 @@ import java.time.LocalDateTime;
 @ToString
 @Builder
 public class DTOMessage {
-
     private Long id;
     private String title;
     private Long size;

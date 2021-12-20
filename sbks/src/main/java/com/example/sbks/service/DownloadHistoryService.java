@@ -1,6 +1,7 @@
 package com.example.sbks.service;
 
 import com.example.sbks.dto.DownloadHistoryDto;
+import com.example.sbks.dto.InfoDto;
 import com.example.sbks.model.DownloadHistory;
 
 import java.util.List;
@@ -13,12 +14,12 @@ public interface DownloadHistoryService {
     /**
      * Запись события о скачивании файла
      */
-    DownloadHistoryDto saveByName(DownloadHistory downloadHistory);
+    InfoDto saveByName(DownloadHistoryDto downloadHistoryDto);
 
     /**
      * Получение всей истории скачивания файла по его id
      */
-    List<DownloadHistory> getAllById(Long id);
+    List<DownloadHistoryDto> getAllById(Long id);
 
-    DownloadHistoryDto saveById(DownloadHistory downloadHistory);
+    InfoDto saveById(DownloadHistoryDto downloadHistoryDto);
 }

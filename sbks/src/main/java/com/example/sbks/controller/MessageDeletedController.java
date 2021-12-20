@@ -1,6 +1,7 @@
 package com.example.sbks.controller;
 
-import com.example.sbks.model.Message;
+import com.example.sbks.dto.InfoDto;
+import com.example.sbks.dto.MessageDto;
 import com.example.sbks.service.MessageDeletedService;
 import com.example.sbks.service.MessageService;
 import lombok.RequiredArgsConstructor;
@@ -28,19 +29,19 @@ public class MessageDeletedController {
      * Получение списка удаленных файлов
      */
     @GetMapping("/files-deleted")
-    public ResponseEntity<List<Message>> getAllMessages() {
-        List<Message> messages = messageDeletedService.getAll();
+    public ResponseEntity<List<MessageDto>> getAllMessages() {
+        List<MessageDto> messageDtoList = messageDeletedService.getAll();
         log.info("Контроллер.Запрос в сервис на получение списка удаленных файлов");
-        return new ResponseEntity<>(messages, HttpStatus.OK);
+        return new ResponseEntity<>(messageDtoList, HttpStatus.OK);
     }
 
     /**
      * Очистка списка удаленных файлов
      */
     @GetMapping("/files-clean")
-    public ResponseEntity<List<Message>> deleteAllMessages() {
+    public ResponseEntity<List<MessageDto>> deleteAllMessages() {
+        List<MessageDto> messages = messageDeletedService.getAll();
         messageDeletedService.deleteAll();
-        List<Message> messages = messageDeletedService.getAll();
         log.info("Контроллер.Запрос на очистку списка удаленных файлов");
         return new ResponseEntity<>(messages, HttpStatus.OK);
     }
@@ -49,20 +50,21 @@ public class MessageDeletedController {
      * Удаление файла на совсем
      */
     @PostMapping("/full-delete")
-    public ResponseEntity<String> deletingTheFileAtAll(@RequestBody Long id) {
+    public ResponseEntity<InfoDto> deletingTheFileAtAll(@RequestBody Long id) {
         log.info("Контроллер.Запрос на полное удаление файла по id={}", id);
-        messageDeletedService.fullDelete(id);
-        return new ResponseEntity<>(HttpStatus.OK);
+        InfoDto infoDto = new InfoDto();
+        infoDto.setInfo(messageDeletedService.fullDelete(id));
+        return new ResponseEntity<>(infoDto,HttpStatus.OK);
     }
 
     /**
      * Восстановление файла из корзины по его id
      */
     @PostMapping("/restore-file")
-    public ResponseEntity<String> restoreMessageById(@RequestBody Long id) {
+    public ResponseEntity<InfoDto> restoreMessageById(@RequestBody Long id) {
         log.info("Контроллер.Запрос на восстановление файла по id={}", id);
-        messageDeletedService.restoreMessage(id);
-        return new ResponseEntity<>(HttpStatus.OK);
+        messageDeletedService.fullDelete(id);
+        return new ResponseEntity<>(new InfoDto(),HttpStatus.OK);
     }
 
 }

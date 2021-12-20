@@ -11,6 +11,7 @@ import java.time.LocalDateTime;
 @ToString
 @Builder
 public class MessageDto {
+    private Long id;
     private String title;
     private Long size;
     private LocalDateTime dateOfCreate;

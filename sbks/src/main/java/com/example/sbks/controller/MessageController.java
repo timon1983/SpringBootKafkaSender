@@ -1,8 +1,8 @@
 package com.example.sbks.controller;
 
 import com.example.sbks.dto.DownloadHistoryDto;
-import com.example.sbks.model.DownloadHistory;
-import com.example.sbks.model.Message;
+import com.example.sbks.dto.InfoDto;
+import com.example.sbks.dto.MessageDto;
 import com.example.sbks.service.DownloadHistoryService;
 import com.example.sbks.service.MessageSenderService;
 import com.example.sbks.service.MessageService;
@@ -36,9 +36,9 @@ public class MessageController {
      * Получение сообщения от клиента
      */
     @PostMapping("/create")
-    public ResponseEntity<Message> createMessage(@RequestBody Message message) { //todo сделать dto
-        log.info("Получение сообщения от клиента и запись в БД: {}", message);
-        Message savedMessage = messageService.save(message);
+    public ResponseEntity<MessageDto> createMessage(@RequestBody MessageDto messageDto) {
+        log.info("Получение сообщения от клиента и запись в БД");
+        MessageDto savedMessage = messageService.save(messageDto);
         return new ResponseEntity<>(savedMessage, HttpStatus.OK);
     }
 
@@ -46,29 +46,27 @@ public class MessageController {
      * Получение списка всех загруженных файлов
      */
     @GetMapping("/files")
-    public ResponseEntity<List<Message>> getAllMessages() {
-        List<Message> messages = messageService.getAll();
-        return new ResponseEntity<>(messages, HttpStatus.OK);
+    public ResponseEntity<List<MessageDto>> getAllMessages() {
+        List<MessageDto> messageDtoList = messageService.getAll();
+        return new ResponseEntity<>(messageDtoList, HttpStatus.OK);
     }
 
     /**
      * Удаление файла по id
      */
     @PostMapping("/delete")
-    public ResponseEntity<Message> deleteById(@RequestBody Long id) {
+    public ResponseEntity<InfoDto> deleteById(@RequestBody Long id) {
         messageService.deleteById(id);
-        return messageService.getById(id)
-                .map(message -> new ResponseEntity<>(message, HttpStatus.OK))
-                .orElseGet(() -> new ResponseEntity<>(null, HttpStatus.OK));
+        return new ResponseEntity<>(new InfoDto(), HttpStatus.OK);
     }
 
     /**
      * Скачивание файла по id
      */
     @PostMapping("/open-id")
-    public ResponseEntity<DownloadHistoryDto> findById(@RequestBody DownloadHistory downloadHistory) { //todo сделать dto
-        DownloadHistoryDto downloadHistoryDto = downloadHistoryService.saveById(downloadHistory);
-        return new ResponseEntity<>(downloadHistoryDto, HttpStatus.OK);
+    public ResponseEntity<InfoDto> findById(@RequestBody DownloadHistoryDto downloadHistoryDto) {
+        InfoDto infoDto = downloadHistoryService.saveById(downloadHistoryDto);
+        return new ResponseEntity<>(infoDto, HttpStatus.OK);
     }
 
     /**
@@ -76,12 +74,12 @@ public class MessageController {
      */
 
     @PostMapping("/open-name")
-    public ResponseEntity<DownloadHistoryDto> findByName(@RequestBody DownloadHistory downloadHistory)//todo сделать dto
+    public ResponseEntity<InfoDto> findByName(@RequestBody DownloadHistoryDto downloadHistoryDto)
             throws UnsupportedEncodingException {
-        String fileName = downloadHistory.getFileName();
-        downloadHistory.setFileName(URLDecoder.decode(fileName, StandardCharsets.UTF_8.name()));
-        DownloadHistoryDto downloadHistoryDto = downloadHistoryService.saveByName(downloadHistory);
-        return new ResponseEntity<>(downloadHistoryDto, HttpStatus.OK);
+        String fileName = downloadHistoryDto.getFileName();
+        downloadHistoryDto.setFileName(URLDecoder.decode(fileName, StandardCharsets.UTF_8.name()));
+        InfoDto infoDto = downloadHistoryService.saveByName(downloadHistoryDto);
+        return new ResponseEntity<>(infoDto, HttpStatus.OK);
     }
 
     /**

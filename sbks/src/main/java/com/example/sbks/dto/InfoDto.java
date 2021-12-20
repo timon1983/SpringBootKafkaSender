@@ -1,4 +1,4 @@
-package com.example.uisbks.dtomodel;
+package com.example.sbks.dto;
 
 import lombok.*;
 
@@ -8,7 +8,8 @@ import lombok.*;
 @Setter
 @ToString
 @Builder
-public class DTOInfoModelClient {
+public class InfoDto {
     private String info;
-    private Boolean isError;
+    @Builder.Default
+    private Boolean isError = false;
 }

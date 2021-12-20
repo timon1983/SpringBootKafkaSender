@@ -1,37 +1,44 @@
 package com.example.sbks.service;
 
 import com.example.awsS3.service.ServiceS3;
+import com.example.sbks.dto.MessageDto;
 import com.example.sbks.exception.NoSuchDataFileException;
-import com.example.sbks.model.Message;
+import com.example.sbks.mapper.MapperForModel;
 import com.example.sbks.model.Status;
 import com.example.sbks.repository.MessageRepository;
 import lombok.RequiredArgsConstructor;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.mapstruct.factory.Mappers;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 public class MessageDeletedServiceImpl implements MessageDeletedService {
 
     private final static Logger log = LogManager.getLogger(MessageDeletedServiceImpl.class);
+    private final MapperForModel mapper = Mappers.getMapper(MapperForModel.class);
     private final MessageRepository messageRepository;
     private final ServiceS3 serviceS3;
 
     @Override
     @Transactional
-    public List<Message> getAll() {
+    public List<MessageDto> getAll() {
         log.info("Service.Получение списка всех удаленных файлов");
-        return messageRepository.findAllByStatus(Status.DELETED);
+        return messageRepository.findAllByStatus(Status.DELETED)
+                .stream()
+                .map(mapper::messageToDto)
+                .collect(Collectors.toList());
     }
 
     @Override
     @Transactional
     public void deleteAll() {
-        List<Message> messages = getAll();
+        List<MessageDto> messages = getAll();
         messages.forEach(message -> serviceS3.delete(message.getFileNameForS3()));
         messageRepository.deleteAllByStatus(Status.DELETED);
         log.info("Service.Записи в таблице удалены");
@@ -39,15 +46,18 @@ public class MessageDeletedServiceImpl implements MessageDeletedService {
 
     @Override
     @Transactional
-    public void fullDelete(Long id) {
-        messageRepository
+    public String fullDelete(Long id) {
+        return messageRepository
                 .findById(id)
-                .ifPresentOrElse(message -> {
-                            serviceS3.delete(message.getFileNameForS3());
-                            messageRepository.deleteById(id);
-                            log.info("Service.Файл с id={} полностью удален", id);
-                        },
+                .map(message -> {
+                    serviceS3.delete(message.getFileNameForS3());
+                    messageRepository.deleteById(id);
+                    log.info("Service.Файл с id={} полностью удален", id);
+                    return message.getFileNameForS3();
+                })
+                .orElseThrow(
                         () -> {
+
                             throw new NoSuchDataFileException(String.format("Данные о файле с id=%d в БД отсутствуют",
                                     id));
                         });
