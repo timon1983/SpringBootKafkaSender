@@ -56,7 +56,7 @@ tasks.register("newFile"){
     }
     it.dependsOn("newDirectory")
 }
-tasks.openApiGenerate {
+openApiGenerate {
     generatorName = "spring"
     inputSpec = "$projectDir/api-docs.yaml"
     outputDir = "$buildDir/generated"
