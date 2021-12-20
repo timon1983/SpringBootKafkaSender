@@ -6,12 +6,12 @@ import com.example.sbks.model.DownloadHistory;
 import com.example.sbks.model.Message;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import org.mapstruct.ReportingPolicy;
 
 
-@Mapper
+@Mapper(unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public interface MapperForModel {
 
-    @Mapping(target = "status", constant = "UPLOAD")
     Message dtoToMessage(MessageDto messageDto);
 
     MessageDto messageToDto(Message message);

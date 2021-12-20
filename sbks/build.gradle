@@ -56,4 +56,19 @@ tasks.register("newFile"){
     }
     it.dependsOn("newDirectory")
 }
+tasks.openApiGenerate {
+    generatorName = "spring"
+    inputSpec = "$projectDir/api-docs.yaml"
+    outputDir = "$buildDir/generated"
+    apiPackage = "org.openapi.example.api"
+    invokerPackage = "org.openapi.example.invoker"
+    modelPackage = "org.openapi.example.model"
+    configOptions = [
+            dateLibrary: "java11"
+    ]
+}
 
+compileJava {
+    dependsOn  tasks.openApiGenerate
+    source "${buildDir}/generated/openapi/src/main/java"
+}
