@@ -1,4 +1,4 @@
-package com.example.uisbks.dtomodel;
+package com.example.sbks.dto;
 
 import lombok.*;
 
@@ -10,7 +10,7 @@ import java.time.LocalDateTime;
 @Setter
 @ToString
 @Builder
-public class DTOMessage {
+public class MessageDto {
     private Long id;
     private String title;
     private Long size;
@@ -21,4 +21,5 @@ public class DTOMessage {
     private String contentType;
     private LocalDateTime dateOfDelete;
     private byte[] content;
+
 }

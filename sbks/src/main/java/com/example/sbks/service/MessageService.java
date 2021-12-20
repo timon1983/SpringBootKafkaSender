@@ -1,5 +1,6 @@
 package com.example.sbks.service;
 
+import com.example.sbks.dto.MessageDto;
 import com.example.sbks.model.Message;
 
 import java.util.List;
@@ -13,12 +14,12 @@ public interface MessageService {
     /**
      * Запись сообщения в БД
      */
-    Message save(Message message);
+    MessageDto save(MessageDto messageDto);
 
     /**
      * Получение списка всех сохраненных записей о файлах
      */
-    List<Message> getAll();
+    List<MessageDto> getAll();
 
     /**
      * Удаление данных файла из БД по его ID

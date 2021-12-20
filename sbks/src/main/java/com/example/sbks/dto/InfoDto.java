@@ -8,8 +8,7 @@ import lombok.*;
 @Setter
 @ToString
 @Builder
-public class DTOInfoModel {
-    private Long id;
+public class InfoDto {
     private String info;
     @Builder.Default
     private Boolean isError = false;

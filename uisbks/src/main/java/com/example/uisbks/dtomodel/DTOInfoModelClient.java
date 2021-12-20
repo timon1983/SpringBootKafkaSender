@@ -9,7 +9,6 @@ import lombok.*;
 @ToString
 @Builder
 public class DTOInfoModelClient {
-    private Long id;
     private String info;
     private Boolean isError;
 }

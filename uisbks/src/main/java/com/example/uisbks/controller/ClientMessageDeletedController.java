@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
 
 
 /**
@@ -51,23 +52,23 @@ public class ClientMessageDeletedController {
      * Удаление файла на совсем по его id
      */
     @PostMapping("/full")
-    public String fullDelete(HttpServletRequest request) {
+    public String fullDelete(HttpServletRequest request) throws IOException {
         if (request.getParameter("id").isBlank()) {
             throw new NoIdException("Введите id для полного удаления файла");
         }
         return clientMessageDeletedService.doOperationWithDeletedFile("full-delete", "полностью удален",
-                request, log);
+                request);
     }
 
     /**
      * Восстановление файла
      */
     @GetMapping("/restore")
-    public String restoreFile(HttpServletRequest request) {
+    public String restoreFile(HttpServletRequest request) throws IOException {
         if (request.getParameter("id").isBlank()) {
             throw new NoIdException("Введите id для восстановления файла");
         }
         return clientMessageDeletedService.doOperationWithDeletedFile("restore-file", "восстановлен",
-                request, log);
+                request);
     }
 }

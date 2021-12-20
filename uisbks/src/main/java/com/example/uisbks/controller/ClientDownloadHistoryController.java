@@ -31,6 +31,6 @@ public class ClientDownloadHistoryController {
         if (request.getParameter("id").isBlank()) {
             throw new NoIdException("Введите id для получения истории загрузки файла");
         }
-        return clientDownloadHistoryService.getAllDownloadHistory(request, model, log);
+        return clientDownloadHistoryService.getAllDownloadHistory(request, model);
     }
 }

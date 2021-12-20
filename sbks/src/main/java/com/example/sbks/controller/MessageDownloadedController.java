@@ -1,6 +1,6 @@
 package com.example.sbks.controller;
 
-import com.example.sbks.model.DownloadHistory;
+import com.example.sbks.dto.DownloadHistoryDto;
 import com.example.sbks.service.DownloadHistoryService;
 import lombok.RequiredArgsConstructor;
 import org.apache.logging.log4j.LogManager;
@@ -29,9 +29,9 @@ public class MessageDownloadedController {
      * Обработка запроса для получения истории скачивания файла по его id
      */
     @PostMapping("/download-history")
-    public ResponseEntity<List<DownloadHistory>> getDownloadHistory(@RequestBody Long id) {
-        List<DownloadHistory> downloadHistories = downloadHistoryService.getAllById(id);
+    public ResponseEntity<List<DownloadHistoryDto>> getDownloadHistory(@RequestBody Long id) {
+        List<DownloadHistoryDto> downloadHistoryDtoList = downloadHistoryService.getAllById(id);
         log.info("Получение истории скачивания файла по id={}", id);
-        return new ResponseEntity<>(downloadHistories, HttpStatus.OK);
+        return new ResponseEntity<>(downloadHistoryDtoList, HttpStatus.OK);
     }
 }
