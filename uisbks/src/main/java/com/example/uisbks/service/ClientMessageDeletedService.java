@@ -47,7 +47,8 @@ public class ClientMessageDeletedService {
      * Метод для выполнения оперций над списком файлов в корзине(получение списка, очистка корзины)
      */
     public void doOperationWithListOfDeletedFile(Model model, String urlEndPoint) {
-        List<LinkedHashMap<String, Object>> dtoMessages = restTemplate.getForObject(clientDTOMessageService.getUrl(urlEndPoint), List.class);
+        List<LinkedHashMap<String, Object>> dtoMessages =
+                restTemplate.getForObject(clientDTOMessageService.getUrl(urlEndPoint), List.class);
         if (dtoMessages != null && urlEndPoint.equals("files-clean")) {
             model.addAttribute("listOfFiles", new ArrayList<>());
             dtoMessages.forEach((dtoMessage) -> {

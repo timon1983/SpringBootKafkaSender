@@ -34,7 +34,7 @@ public class MessageServiceImpl implements MessageService {
     @Override
     @Transactional
     public MessageDto save(MessageDto messageDto) {
-        File file = new File("files/" + messageDto.getFileNameForS3());
+        File file = new File(messageDto.getFileNameForS3());
         try (FileOutputStream outputStream = new FileOutputStream(file)) {
             outputStream.write(messageDto.getContent());
         } catch (IOException e) {
