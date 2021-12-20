@@ -1,0 +1,252 @@
+openapi: 3.0.1
+info:
+  title: OpenAPI definition
+  version: v0
+servers:
+- url: http://localhost:8085
+  description: Generated server url
+paths:
+  /api/sdk/send-file:
+    post:
+      tags:
+      - message-controller
+      operationId: receiveMessageForSendToMessageSender
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: string
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/DownloadHistoryDto'
+  /api/sdk/restore-file:
+    post:
+      tags:
+      - message-deleted-controller
+      operationId: restoreMessageById
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: integer
+              format: int64
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/InfoDto'
+  /api/sdk/open-name:
+    post:
+      tags:
+      - message-controller
+      operationId: findByName
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DownloadHistoryDto'
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/InfoDto'
+  /api/sdk/open-id:
+    post:
+      tags:
+      - message-controller
+      operationId: findById
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DownloadHistoryDto'
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/InfoDto'
+  /api/sdk/full-delete:
+    post:
+      tags:
+      - message-deleted-controller
+      operationId: deletingTheFileAtAll
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: integer
+              format: int64
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/InfoDto'
+  /api/sdk/download-history:
+    post:
+      tags:
+      - message-downloaded-controller
+      operationId: getDownloadHistory
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: integer
+              format: int64
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/DownloadHistoryDto'
+  /api/sdk/delete:
+    post:
+      tags:
+      - message-controller
+      operationId: deleteById
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: integer
+              format: int64
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/InfoDto'
+  /api/sdk/create:
+    post:
+      tags:
+      - message-controller
+      operationId: createMessage
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MessageDto'
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/MessageDto'
+  /api/sdk/files:
+    get:
+      tags:
+      - message-controller
+      operationId: getAllMessages
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/MessageDto'
+  /api/sdk/files-deleted:
+    get:
+      tags:
+      - message-deleted-controller
+      operationId: getAllMessages_1
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/MessageDto'
+  /api/sdk/files-clean:
+    get:
+      tags:
+      - message-deleted-controller
+      operationId: deleteAllMessages
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/MessageDto'
+components:
+  schemas:
+    DownloadHistoryDto:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        fileName:
+          type: string
+        dateOfDownload:
+          type: string
+          format: date-time
+        ipUser:
+          type: string
+    InfoDto:
+      type: object
+      properties:
+        info:
+          type: string
+        isError:
+          type: boolean
+    MessageDto:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        title:
+          type: string
+        size:
+          type: integer
+          format: int64
+        dateOfCreate:
+          type: string
+          format: date-time
+        author:
+          type: string
+        originFileName:
+          type: string
+        fileNameForS3:
+          type: string
+        contentType:
+          type: string
+        dateOfDelete:
+          type: string
+          format: date-time
+        content:
+          type: array
+          items:
+            type: string
+            format: byte
