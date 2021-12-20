@@ -1,6 +1,6 @@
 package com.example.sbks.controller;
 
-import com.example.sbks.dto.DTOInfoModel;
+import com.example.sbks.dto.DownloadHistoryDto;
 import com.example.sbks.model.DownloadHistory;
 import com.example.sbks.model.Message;
 import com.example.sbks.service.DownloadHistoryService;
@@ -66,9 +66,9 @@ public class MessageController {
      * Скачивание файла по id
      */
     @PostMapping("/open-id")
-    public ResponseEntity<DTOInfoModel> findById(@RequestBody DownloadHistory downloadHistory) { //todo сделать dto
-        DTOInfoModel dtoInfoModel = downloadHistoryService.saveById(downloadHistory);
-        return new ResponseEntity<>(dtoInfoModel, HttpStatus.OK);
+    public ResponseEntity<DownloadHistoryDto> findById(@RequestBody DownloadHistory downloadHistory) { //todo сделать dto
+        DownloadHistoryDto downloadHistoryDto = downloadHistoryService.saveById(downloadHistory);
+        return new ResponseEntity<>(downloadHistoryDto, HttpStatus.OK);
     }
 
     /**
@@ -76,22 +76,22 @@ public class MessageController {
      */
 
     @PostMapping("/open-name")
-    public ResponseEntity<DTOInfoModel> findByName(@RequestBody DownloadHistory downloadHistory)//todo сделать dto
+    public ResponseEntity<DownloadHistoryDto> findByName(@RequestBody DownloadHistory downloadHistory)//todo сделать dto
             throws UnsupportedEncodingException {
         String fileName = downloadHistory.getFileName();
         downloadHistory.setFileName(URLDecoder.decode(fileName, StandardCharsets.UTF_8.name()));
-        DTOInfoModel dtoInfoModel = downloadHistoryService.saveByName(downloadHistory);
-        return new ResponseEntity<>(dtoInfoModel, HttpStatus.OK);
+        DownloadHistoryDto downloadHistoryDto = downloadHistoryService.saveByName(downloadHistory);
+        return new ResponseEntity<>(downloadHistoryDto, HttpStatus.OK);
     }
 
     /**
      * Оправка файла в MessageSenderSender
      */
     @PostMapping("/send-file")
-    public ResponseEntity<DTOInfoModel> receiveMessageForSendToMessageSender(@RequestBody String name)
+    public ResponseEntity<DownloadHistoryDto> receiveMessageForSendToMessageSender(@RequestBody String name)
             throws UnsupportedEncodingException, URISyntaxException {
         name = URLDecoder.decode(name, StandardCharsets.UTF_8.name());
         messageSenderService.sendMessage(name);
-        return new ResponseEntity<>(new DTOInfoModel(), HttpStatus.OK);
+        return new ResponseEntity<>(new DownloadHistoryDto(), HttpStatus.OK);
     }
 }

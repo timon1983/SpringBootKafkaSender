@@ -18,7 +18,7 @@ public class DownloadHistory {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
-    private long id;
+    private Long id;
 
     @Column(name = "file_name")
     private String fileName;

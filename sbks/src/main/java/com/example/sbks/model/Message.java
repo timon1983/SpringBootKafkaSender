@@ -19,13 +19,13 @@ public class Message {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
-    private long id;
+    private Long id;
 
     @Column(name = "title", nullable = false)
     private String title;
 
     @Column(name = "size", nullable = false)
-    private long size;
+    private Long size;
 
     @Column(name = "date_create", nullable = false)
     private LocalDateTime dateOfCreate;

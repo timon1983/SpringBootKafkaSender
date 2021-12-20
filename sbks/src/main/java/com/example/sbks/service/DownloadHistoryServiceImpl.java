@@ -1,6 +1,6 @@
 package com.example.sbks.service;
 
-import com.example.sbks.dto.DTOInfoModel;
+import com.example.sbks.dto.DownloadHistoryDto;
 import com.example.sbks.exception.NoSuchDataFileException;
 import com.example.sbks.model.DownloadHistory;
 import com.example.sbks.repository.DownloadHistoryRepository;
@@ -22,7 +22,7 @@ public class DownloadHistoryServiceImpl implements DownloadHistoryService {
 
     @Transactional
     @Override
-    public DTOInfoModel saveByName(DownloadHistory downloadHistory) {
+    public DownloadHistoryDto saveByName(DownloadHistory downloadHistory) {
         messageService.getByName(downloadHistory.getFileName())
                 .map(message -> {
                     downloadHistory.setMessage(message);
@@ -38,7 +38,7 @@ public class DownloadHistoryServiceImpl implements DownloadHistoryService {
 
     @Transactional
     @Override
-    public DTOInfoModel saveById(DownloadHistory downloadHistory) {
+    public DownloadHistoryDto saveById(DownloadHistory downloadHistory) {
         messageService.getById(downloadHistory.getId())
                 .map(message -> {
                     downloadHistory.setMessage(message);
@@ -60,8 +60,8 @@ public class DownloadHistoryServiceImpl implements DownloadHistoryService {
         return downloadHistoryRepository.findAllByMessageId(id);
     }
 
-    private DTOInfoModel getDtoInfoModel(DownloadHistory downloadHistory) {
-        return DTOInfoModel.builder()
+    private DownloadHistoryDto getDtoInfoModel(DownloadHistory downloadHistory) {
+        return DownloadHistoryDto.builder()
                 .info(downloadHistory.getMessage().getFileNameForS3())
                 .build();
     }
