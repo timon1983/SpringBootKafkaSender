@@ -8,6 +8,7 @@ import com.example.uisbks.exception.NoIdException;
 import lombok.RequiredArgsConstructor;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.ui.Model;
 import org.springframework.web.client.RestTemplate;
@@ -33,6 +34,8 @@ public class ClientMessageService {
     private final static Logger log = LogManager.getLogger(ClientMessageService.class);
     private final RestTemplate restTemplate;
     private final ClientDTOMessageService clientDTOMessageService;
+    @Value("${public-S3-reference}")
+    private String publicS3Reference;
 
     /**
      * Метод для выполнения операций по сохранению файла
@@ -72,7 +75,11 @@ public class ClientMessageService {
                 throw new NoIdException(String.format("Файл доступен в локальном хранилище по пути D:" +
                         "\\Projects\\SpringBootKafkaSender\\uisbks\\files\\%s", dtoInfoModelClient.getInfo()));
             } else {
-                return String.format("redirect:https://d2lzjz6kkt1za6.cloudfront.net/%s", dtoInfoModelClient.getInfo());
+                return String.join("",
+                        "redirect:",
+                        publicS3Reference,
+                        "/",
+                        dtoInfoModelClient.getInfo());
             }
         }
         return "redirect:/create/files";

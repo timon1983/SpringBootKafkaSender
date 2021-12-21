@@ -74,7 +74,6 @@ openApiGenerate {
 
 compileJava {
     dependsOn  tasks.openApiGenerate
-    source "${buildDir}/generated/openapi/src/main/java"
 }
 
 def db = [url:'jdbc:postgresql://localhost:5432/kafkasend', user:'postgres', password:'root', driver:'org.postgresql.Driver']

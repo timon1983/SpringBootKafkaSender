@@ -4,6 +4,7 @@ import com.example.uisbks.dtomodel.DTODownloadHistory;
 import com.example.uisbks.dtomodel.DTOMessage;
 import com.example.uisbks.exception.NoIdException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
@@ -18,6 +19,9 @@ import java.time.LocalDateTime;
 @Service
 @RequiredArgsConstructor
 public class ClientDTOMessageService {
+
+    @Value("${url-sbks}")
+    private String url;
 
     /**
      * Формирование объекта DTOMessage
@@ -72,7 +76,7 @@ public class ClientDTOMessageService {
      * Формирование URL для запроса
      */
     public String getUrl(String urlEndPoint) {
-        return String.format("http://localhost:8085/api/sdk/%s", urlEndPoint);
+        return String.format(url, urlEndPoint);
     }
 }
 
