@@ -2,6 +2,7 @@ package com.example.uisbks.controller;
 
 import com.example.uisbks.dtomodel.DTODownloadHistory;
 import com.example.uisbks.dtomodel.DTOMessage;
+import com.example.uisbks.dtomodel.DTORequestMessage;
 import com.example.uisbks.dtomodel.JspPage;
 import com.example.uisbks.exception.NoIdException;
 import com.example.uisbks.service.ClientDTOMessageService;
@@ -9,17 +10,20 @@ import com.example.uisbks.service.ClientMessageService;
 import lombok.RequiredArgsConstructor;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.net.URISyntaxException;
+
+import static org.springframework.web.bind.annotation.RequestMethod.POST;
 
 
 /**
@@ -46,9 +50,10 @@ public class ClientMessageController {
      * Загрузка файла с UI
      */
     @PostMapping
-    public String createMessage(MultipartHttpServletRequest request) throws URISyntaxException, ServletException, IOException {
+    public String createMessage(@ModelAttribute DTORequestMessage dtoRequestMessage)
+            throws URISyntaxException, ServletException, IOException {
         log.info("Получение сообщения от клиента");
-        DTOMessage dtoMessage = clientDTOMessageService.getDTOMessage(request);
+        DTOMessage dtoMessage = clientDTOMessageService.getDTOMessage(dtoRequestMessage);
         return clientMessageService.doOperationToSaveFiles(dtoMessage);
     }
 

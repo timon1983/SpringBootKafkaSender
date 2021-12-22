@@ -2,14 +2,13 @@ package com.example.uisbks.service;
 
 import com.example.uisbks.dtomodel.DTODownloadHistory;
 import com.example.uisbks.dtomodel.DTOMessage;
+import com.example.uisbks.dtomodel.DTORequestMessage;
 import com.example.uisbks.exception.NoIdException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.multipart.MultipartHttpServletRequest;
 
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.net.URLEncoder;
@@ -26,21 +25,21 @@ public class ClientDTOMessageService {
     /**
      * Формирование объекта DTOMessage
      */
-    public DTOMessage getDTOMessage(MultipartHttpServletRequest request)
-            throws ServletException, IOException {
-        MultipartFile multipartFile = request.getFile("file");
+    public DTOMessage getDTOMessage(DTORequestMessage dtoRequestMessage)
+            throws IOException {
+        MultipartFile multipartFile = dtoRequestMessage.getFile();
         if (multipartFile != null && !multipartFile.isEmpty() && multipartFile.getOriginalFilename() != null) {
             var fileName = multipartFile.getOriginalFilename();
             return DTOMessage.builder()
-                    .title(request.getParameter("title"))
-                    .size(request.getPart("file").getSize())
+                    .title(dtoRequestMessage.getTitle())
+                    .size(multipartFile.getSize())
                     .dateOfCreate(LocalDateTime.now().withNano(0))
-                    .author(request.getParameter("author"))
+                    .author(dtoRequestMessage.getAuthor())
                     .originFileName(fileName)
                     .fileNameForS3(String.join(".",
                             String.valueOf(System.currentTimeMillis()),
                             fileName.substring(fileName.lastIndexOf(".") + 1)))
-                    .contentType(request.getPart("file").getContentType())
+                    .contentType(multipartFile.getContentType())
                     .content(multipartFile.getBytes())
                     .build();
         } else {

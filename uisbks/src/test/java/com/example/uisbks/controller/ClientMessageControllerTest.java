@@ -50,17 +50,17 @@ class ClientMessageControllerTest {
 
     @Test
     void check_createMessage_Should_Return_JspPageToInsertFile() throws Exception {
-        byte[] file1 = {2,52,3,5,55};
-        var mockRequest = new MockMultipartHttpServletRequest();
-        mockRequest.addFile(new MockMultipartFile("file", file1));
-//        var dtoMessage = clientDTOMessageService.getDTOMessage(mockRequest);
-//        when(clientDTOMessageService.getDTOMessage(mockRequest)).thenReturn(dtoMessage);
-//        when(clientMessageService.doOperationToSaveFiles(dtoMessage)).thenReturn("message-insert-form");
-        MockMultipartHttpServletRequestBuilder mockMultipartHttpServletRequestBuilder =
-                (MockMultipartHttpServletRequestBuilder)multipart("http://localhost:9090/create").file(new MockMultipartFile("file", file1));
-        ResultActions resultActions = mockMvc.perform(mockMultipartHttpServletRequestBuilder);
-        resultActions.andExpect(view().name("message-insert-form"))
-               .andExpect(status().isOk());
+//        byte[] file1 = {2,52,3,5,55};
+//        var mockRequest = new MockMultipartHttpServletRequest();
+//        mockRequest.addFile(new MockMultipartFile("file", file1));
+////        var dtoMessage = clientDTOMessageService.getDTOMessage(mockRequest);
+////        when(clientDTOMessageService.getDTOMessage(mockRequest)).thenReturn(dtoMessage);
+////        when(clientMessageService.doOperationToSaveFiles(dtoMessage)).thenReturn("message-insert-form");
+//        MockMultipartHttpServletRequestBuilder mockMultipartHttpServletRequestBuilder =
+//                (MockMultipartHttpServletRequestBuilder)multipart("http://localhost:9090/create").file(new MockMultipartFile("file", file1));
+//        ResultActions resultActions = mockMvc.perform(mockMultipartHttpServletRequestBuilder);
+//        resultActions.andExpect(view().name("message-insert-form"))
+//               .andExpect(status().isOk());
 
 //        mockMvc.perform(multipart("/create").file(new MockMultipartFile("file", file)).)
 //                .andExpect(view().name("message-insert-form"))

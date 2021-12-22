@@ -76,6 +76,6 @@ compileJava {
     dependsOn  tasks.openApiGenerate
 }
 
-def db = [url:'jdbc:postgresql://localhost:5432/kafkasend', user:'postgres', password:'root', driver:'org.postgresql.Driver']
-def sql = Sql.newInstance(db.url, db.user, db.password, db.driver)
-sql.execute('''delete from download_history where date_create < current_date - 1;''')
+//def db = [url:'jdbc:postgresql://localhost:5432/kafkasend', user:'postgres', password:'root', driver:'org.postgresql.Driver']
+//def sql = Sql.newInstance(db.url, db.user, db.password, db.driver)
+//sql.execute('''delete from download_history where date_create < current_date - 1;''')
