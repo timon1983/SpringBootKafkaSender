@@ -78,5 +78,4 @@ class ClientMessageControllerTest {
                 .andExpect(status().is3xxRedirection())
                 .andExpect(view().name("redirect:/create/files"));
     }
-
 }

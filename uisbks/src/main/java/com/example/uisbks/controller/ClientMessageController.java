@@ -80,7 +80,6 @@ public class ClientMessageController {
         return String.join("",
                 "redirect:",
                 url);
-
     }
 
     /**
@@ -99,7 +98,8 @@ public class ClientMessageController {
      * Отправка сообщения в SBKC
      */
     @PostMapping("/send")
-    public String sendFile(@RequestBody String name) {
+    public String sendFile(@RequestBody String request) {
+        String name = request.substring(request.indexOf("=") + 1);
         clientMessageService.doOperationToSendFiles(name);
         return "redirect:/create/files";
     }

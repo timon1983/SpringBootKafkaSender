@@ -9,5 +9,5 @@ import lombok.*;
 @ToString
 @Builder
 public class DtoTest {
-    Long id;
+    String name;
 }

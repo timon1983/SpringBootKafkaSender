@@ -76,7 +76,7 @@
         </form>
 
         <form method="get" action="/downloaded/">
-            <input type="number" name="id" placeholder="id"/>
+            <input type="number" value="0" name="id" placeholder="id"/>
             <button type="submit">Получить историю загрузки файла</button>
         </form>
 
@@ -85,7 +85,7 @@
         </form>
 
         <form method="post" action="/create/send">
-            <input type="text" name="name" placeholder="name"/>
+            <input type="text"  name="name" />
             <button type="submit">Отправить файл в SBKC</button>
         </form>
 
