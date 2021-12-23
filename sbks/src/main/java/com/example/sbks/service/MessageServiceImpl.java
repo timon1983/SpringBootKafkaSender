@@ -38,7 +38,8 @@ public class MessageServiceImpl implements MessageService {
         try (FileOutputStream outputStream = new FileOutputStream(file)) {
             outputStream.write(messageDto.getContent());
         } catch (IOException e) {
-            e.printStackTrace();
+            throw new NoSuchDataFileException(String.format("Ошибка при считывании файла %s",
+                    messageDto.getOriginFileName()));
         }
         serviceS3.upload(file);
         Message message = mapper.dtoToMessage(messageDto);

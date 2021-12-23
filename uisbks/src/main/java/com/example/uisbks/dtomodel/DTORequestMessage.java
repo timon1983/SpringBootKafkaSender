@@ -10,6 +10,7 @@ import org.springframework.web.multipart.MultipartFile;
 @ToString
 @Builder
 public class DTORequestMessage {
+    private Long id;
     private String title;
     private String author;
     private MultipartFile file;

@@ -8,21 +8,12 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpServletRequest;
-import org.springframework.mock.web.MockMultipartFile;
-import org.springframework.mock.web.MockMultipartHttpServletRequest;
-import org.springframework.mock.web.MockServletContext;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.ResultActions;
-import org.springframework.test.web.servlet.request.MockMultipartHttpServletRequestBuilder;
-import org.springframework.test.web.servlet.request.RequestPostProcessor;
-import org.springframework.util.LinkedMultiValueMap;
 
-import javax.servlet.ServletException;
-import java.io.IOException;
-import java.net.URISyntaxException;
+import javax.servlet.http.HttpServletRequest;
 
-import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 
@@ -43,6 +34,7 @@ class ClientMessageControllerTest {
 
     @Test
     void check_getCreatePage_Should_Return_JspPageToInsertFile() throws Exception {
+
         mockMvc.perform(get("/create").contentType(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(view().name("message-insert-form"))
                 .andExpect(status().isOk());
@@ -50,34 +42,29 @@ class ClientMessageControllerTest {
 
     @Test
     void check_createMessage_Should_Return_JspPageToInsertFile() throws Exception {
-//        byte[] file1 = {2,52,3,5,55};
-//        var mockRequest = new MockMultipartHttpServletRequest();
-//        mockRequest.addFile(new MockMultipartFile("file", file1));
-////        var dtoMessage = clientDTOMessageService.getDTOMessage(mockRequest);
-////        when(clientDTOMessageService.getDTOMessage(mockRequest)).thenReturn(dtoMessage);
-////        when(clientMessageService.doOperationToSaveFiles(dtoMessage)).thenReturn("message-insert-form");
-//        MockMultipartHttpServletRequestBuilder mockMultipartHttpServletRequestBuilder =
-//                (MockMultipartHttpServletRequestBuilder)multipart("http://localhost:9090/create").file(new MockMultipartFile("file", file1));
-//        ResultActions resultActions = mockMvc.perform(mockMultipartHttpServletRequestBuilder);
-//        resultActions.andExpect(view().name("message-insert-form"))
-//               .andExpect(status().isOk());
-
-//        mockMvc.perform(multipart("/create").file(new MockMultipartFile("file", file)).)
-//                .andExpect(view().name("message-insert-form"))
-//                .andExpect(status().isOk());
+        mockMvc.perform(post("/create")
+                        .contentType(MediaType.MULTIPART_FORM_DATA_VALUE))
+                .andExpect(status().isOk())
+                .andExpect(view().name("message-insert-form"));
     }
 
     @Test
-    void check_getAllFiles_Should_Return_JspPageFileList() {
-
+    void check_getAllFiles_Should_Return_JspPageFileList() throws Exception {
+        mockMvc.perform(get("/create/files").contentType(MediaType.APPLICATION_JSON_VALUE))
+                .andExpect(status().isOk())
+                .andExpect(view().name("files"));
     }
 
     @Test
-    void deleteFileById() {
+    void check_deleteFileById_Should_Return_RedirectToFiles() throws Exception {
+        mockMvc.perform(get("/create/file-delete/12").contentType(MediaType.APPLICATION_JSON_VALUE))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(view().name("redirect:/create/files"));
     }
 
     @Test
     void openFileById() {
+
     }
 
     @Test

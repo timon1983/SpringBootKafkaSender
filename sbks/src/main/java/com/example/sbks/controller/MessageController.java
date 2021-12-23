@@ -36,10 +36,10 @@ public class MessageController {
      * Получение сообщения от клиента
      */
     @PostMapping("/create")
-    public ResponseEntity<MessageDto> createMessage(@RequestBody MessageDto messageDto) {
+    public ResponseEntity<InfoDto> createMessage(@RequestBody MessageDto messageDto) {
         log.info("Получение сообщения от клиента и запись в БД");
-        MessageDto savedMessage = messageService.save(messageDto);
-        return new ResponseEntity<>(savedMessage, HttpStatus.OK);
+        messageService.save(messageDto);
+        return new ResponseEntity<>(new InfoDto(), HttpStatus.OK);
     }
 
     /**

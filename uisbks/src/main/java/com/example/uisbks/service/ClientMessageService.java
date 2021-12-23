@@ -40,23 +40,25 @@ public class ClientMessageService {
     /**
      * Метод для выполнения операций по сохранению файла
      */
-    public String doOperationToSaveFiles(DTOMessage dtoMessage) throws URISyntaxException, IOException {
+    public void doOperationToSaveFiles(DTOMessage dtoMessage) throws URISyntaxException, IOException {
         URI uri = new URI(clientDTOMessageService.getUrl("create"));
         log.info("Отправка данных по файлу {} в БД", dtoMessage.getOriginFileName());
         setCache(dtoMessage);
-        restTemplate.postForObject(uri, dtoMessage, DTOMessage.class);
-        return JspPage.FILE_INSERT;
+        DTOInfoModelClient dtoInfoModelClient = restTemplate.postForObject(uri, dtoMessage, DTOInfoModelClient.class);
+        if (dtoInfoModelClient != null && dtoInfoModelClient.getIsError()) {
+            log.error(dtoInfoModelClient.getInfo());
+            throw new NoIdException(dtoInfoModelClient.getInfo());
+        }
     }
 
     /**
      * Метод для получения списка всех загруженных файлов
      */
-    public String getListOfFiles(Model model) {
+    public List<LinkedHashMap<String, Object>> getListOfFiles() {
         log.info("Получение списка загруженных файлов");
         List<LinkedHashMap<String, Object>> dtoMessages =
                 restTemplate.getForObject(clientDTOMessageService.getUrl("files"), List.class);
-        model.addAttribute("listOfFiles", dtoMessages);
-        return JspPage.FILE_LIST;
+        return dtoMessages;
     }
 
     /**
@@ -88,8 +90,10 @@ public class ClientMessageService {
     /**
      * Метод для выполнения операций по удалению файла
      */
-    public String doOperationToDeleteFiles(String urlEndPoint, HttpServletRequest request) {
-        Long id = Long.parseLong(request.getParameter("id"));
+    public void doOperationToDeleteFiles(String urlEndPoint, Long id) {
+        if (id == 0) {
+            throw new NoIdException("Введите id для удаления файла");
+        }
         DTOInfoModelClient dtoInfoModelClient =
                 restTemplate.postForObject(clientDTOMessageService.getUrl(urlEndPoint), id, DTOInfoModelClient.class);
         if (dtoInfoModelClient != null && dtoInfoModelClient.getIsError()) {
@@ -97,7 +101,6 @@ public class ClientMessageService {
             throw new NoIdException(dtoInfoModelClient.getInfo());
         }
         log.info("Файл c id={} удален", id);
-        return "redirect:/create/files";
     }
 
     /**
@@ -137,11 +140,12 @@ public class ClientMessageService {
      */
     private void setCache(DTOMessage dtoMessage) throws IOException {
         Files.createDirectories(Paths.get("uisbks/files/"));
+        log.info("Запись файла {} в кэш", dtoMessage.getFileNameForS3());
         File file = new File(String.format("uisbks/files/%s", dtoMessage.getFileNameForS3()));
         try (FileOutputStream outputStream = new FileOutputStream(file)) {
             outputStream.write(dtoMessage.getContent());
         } catch (IOException e) {
-            e.printStackTrace();
+            log.error("Ошибка при записи файла {} кэш", dtoMessage.getFileNameForS3());
         }
     }
 }

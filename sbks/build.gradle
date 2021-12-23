@@ -11,6 +11,7 @@ dependencies {
     implementation project(':awsS3')
     implementation project(':liquibase')
     implementation project(':kafka')
+    implementation 'org.codehaus.groovy:groovy-sql:3.0.9'
     implementation 'org.mapstruct:mapstruct:1.4.2.Final'
     annotationProcessor 'org.mapstruct:mapstruct-processor:1.4.2.Final'
     implementation 'org.springdoc:springdoc-openapi-ui:1.6.1'
@@ -76,6 +77,7 @@ compileJava {
     dependsOn  tasks.openApiGenerate
 }
 
-//def db = [url:'jdbc:postgresql://localhost:5432/kafkasend', user:'postgres', password:'root', driver:'org.postgresql.Driver']
+//def db = [url:'jdbc:postgresql://localhost:5432/kafkasend',
+//          user:'postgres', password:'root', driver:'org.postgresql.Driver']
 //def sql = Sql.newInstance(db.url, db.user, db.password, db.driver)
 //sql.execute('''delete from download_history where date_create < current_date - 1;''')

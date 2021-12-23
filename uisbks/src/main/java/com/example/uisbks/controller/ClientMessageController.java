@@ -10,20 +10,15 @@ import com.example.uisbks.service.ClientMessageService;
 import lombok.RequiredArgsConstructor;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.net.URISyntaxException;
-
-import static org.springframework.web.bind.annotation.RequestMethod.POST;
+import java.util.LinkedHashMap;
+import java.util.List;
 
 
 /**
@@ -51,10 +46,11 @@ public class ClientMessageController {
      */
     @PostMapping
     public String createMessage(@ModelAttribute DTORequestMessage dtoRequestMessage)
-            throws URISyntaxException, ServletException, IOException {
+            throws URISyntaxException, IOException {
         log.info("Получение сообщения от клиента");
         DTOMessage dtoMessage = clientDTOMessageService.getDTOMessage(dtoRequestMessage);
-        return clientMessageService.doOperationToSaveFiles(dtoMessage);
+        clientMessageService.doOperationToSaveFiles(dtoMessage);
+        return JspPage.FILE_INSERT;
     }
 
     /**
@@ -62,26 +58,26 @@ public class ClientMessageController {
      */
     @GetMapping("/files")
     public String getAllFiles(Model model) {
-        return clientMessageService.getListOfFiles(model);
+        List<LinkedHashMap<String, Object>> dtoMessages = clientMessageService.getListOfFiles();
+        model.addAttribute("listOfFiles", dtoMessages);
+        return JspPage.FILE_LIST;
     }
 
     /**
      * Удаление файла по id
      */
-    @PostMapping("/file-delete")
-    public String deleteFileById(HttpServletRequest request) {
-        if (request.getParameter("id").isBlank()) {
-            throw new NoIdException("Введите id для удаления файла");
-        }
-        return clientMessageService.doOperationToDeleteFiles("delete", request);
+    @GetMapping ("/file-delete/{id}")
+    public String deleteFileById(@PathVariable Long id) {
+        clientMessageService.doOperationToDeleteFiles("delete", id);
+        return "redirect:/create/files";
     }
-
     /**
      * Получение файла по id
      */
     @PostMapping("/open-file-id")
     public String openFileById(HttpServletRequest request) {
-        if (request.getParameter("id").isBlank()) {
+        Long id = Long.valueOf(request.getParameter("name"));
+        if (id == null) {
             throw new NoIdException("Введите id для открытия файла");
         }
         DTODownloadHistory downloadHistory = clientDTOMessageService.getDTODownloadHistoryById(request);
