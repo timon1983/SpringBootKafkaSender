@@ -97,6 +97,9 @@ public class ClientMessageService {
      * Метод для выполнения операций по отправлению файла
      */
     public void doOperationToSendFiles(String name) {
+        if (name.isBlank()) {
+            throw new NoIdException("Введите имя для отправки файла");
+        }
         name = URLEncoder.encode(name, StandardCharsets.UTF_8);
         DTOInfoModelClient dtoInfoModelClient =
                 restTemplate.postForObject(clientDTOMessageService.getUrl("send-file"), name, DTOInfoModelClient.class);

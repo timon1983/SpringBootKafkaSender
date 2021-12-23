@@ -4,6 +4,7 @@ import com.example.uisbks.dtomodel.DTODownloadHistory;
 import com.example.uisbks.dtomodel.DTOMessage;
 import com.example.uisbks.dtomodel.DTORequestMessage;
 import com.example.uisbks.exception.NoIdException;
+import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -16,10 +17,11 @@ import java.time.LocalDateTime;
 
 @Service
 @RequiredArgsConstructor
+@AllArgsConstructor
 public class ClientDTOMessageService {
 
     @Value("${url-sbks}")
-    private final String url;
+    private String url;
 
     /**
      * Формирование объекта DTOMessage

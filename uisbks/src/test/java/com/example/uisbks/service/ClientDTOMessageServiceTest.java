@@ -16,6 +16,7 @@ class ClientDTOMessageServiceTest {
 
     ClientDTOMessageService clientDTOMessageService = new ClientDTOMessageService("http://localhost:8086/api/sdk/%s");
 
+
     @Test
     void check_getDTOMessage_Should_Return_isCorrect_DTOMessage() throws IOException {
         MultipartFile multipartFile = new MockMultipartFile("file", new byte[]{1, 2, 3, 4, 5});
@@ -59,6 +60,7 @@ class ClientDTOMessageServiceTest {
 
     @Test
     void check_getUrl_Should_Return_Url() {
+
         String endPoint = "abc.txt";
         String url = clientDTOMessageService.getUrl(endPoint);
 
