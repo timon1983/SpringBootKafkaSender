@@ -50,11 +50,14 @@ public class ClientDTOMessageService {
     /**
      * Формирование объекта DTODownloadHistory по имени
      */
-    public DTODownloadHistory getDTODownloadHistoryByName(HttpServletRequest request) {
+    public DTODownloadHistory getDTODownloadHistoryByName(String name, String ip) {
+        if (name.isBlank()) {
+            throw new NoIdException("Введите имя для открытия файла");
+        }
         return DTODownloadHistory.builder()
                 .id(null)
-                .fileName(URLEncoder.encode(request.getParameter("name"), StandardCharsets.UTF_8))
-                .ipUser(request.getRemoteAddr())
+                .fileName(URLEncoder.encode(name, StandardCharsets.UTF_8))
+                .ipUser(ip)
                 .dateOfDownload(LocalDateTime.now().withNano(0))
                 .build();
     }
@@ -62,11 +65,14 @@ public class ClientDTOMessageService {
     /**
      * Формирование объекта DTODownloadHistory по ID
      */
-    public DTODownloadHistory getDTODownloadHistoryById(HttpServletRequest request) {
+    public DTODownloadHistory getDTODownloadHistoryById(Long id, String ip) {
+        if (id == 0) {
+            throw new NoIdException("Введите id для открытия файла");
+        }
         return DTODownloadHistory.builder()
-                .id(Long.parseLong(request.getParameter("id")))
+                .id(id)
                 .fileName(null)
-                .ipUser(request.getRemoteAddr())
+                .ipUser(ip)
                 .dateOfDownload(LocalDateTime.now().withNano(0))
                 .build();
     }

@@ -3,8 +3,11 @@
 <html>
 
 <head>
-    <%--    <meta charset="UTF-8">--%>
-    <title>Modification XML</title>
+    <link rel="stylesheet"
+          href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+          integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
+          crossorigin="anonymous">
+    <title>Корзина</title>
     <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 </head>
 
@@ -26,7 +29,7 @@
 </style>
 
 <td>
-    <text>Список файлов</text>
+    <text>Корзина</text>
 </td>
 <tr>
     <td>
@@ -46,29 +49,31 @@
 
             <c:forEach var="name" items="${listOfFiles}">
                 <tr>
-                    <td>${name.id}</td>
-                    <td>${name.title}</td>
-                    <td>${name.size} byte</td>
-                    <td>${name.dateOfCreate}</td>
-                    <td>${name.timeOfCreate}</td>
-                    <td>${name.author}</td>
-                    <td>${name.originFileName}</td>
-                    <td>${name.contentType}</td>
-                    <td>${name.dateOfDelete}</td>
-                    <td>${name.timeOfDelete}</td>
+                    <td><c:out value="${name.id}"/></td>
+                    <td><c:out value="${name.title}"/></td>
+                    <td><c:out value="${name.size} byte"/></td>
+                    <td><c:out value="${name.dateOfCreate}"/></td>
+                    <td><c:out value="${name.timeOfCreate}"/></td>
+                    <td><c:out value="${name.author}"/></td>
+                    <td><c:out value="${name.originFileName}"/></td>
+                    <td><c:out value="${name.contentType}"/></td>
+                    <td><c:out value="${name.dateOfDelete}"/></td>
+                    <td><c:out value="${name.timeOfDelete}"/></td>
+                    <td><a href="deleted/full/<c:out value='${name.id}'/>">Полное удаление</a></td>
+                    <td><a href="deleted/restore/<c:out value='${name.id}'/>">Восстановить файл</a></td>
                 </tr>
             </c:forEach>
         </table>
 
-        <form method="post" action="/deleted/full">
-            <input type="number" value="id" name="id" placeholder="id"/>
-            <button type="submit">Удалить на совсем файл по id</button>
-        </form>
+<%--     &lt;%&ndash;   <form method="post" action="/deleted/full">--%>
+<%--            <input type="number" value="id" name="id" placeholder="id"/>--%>
+<%--            <button type="submit">Удалить на совсем файл по id</button>--%>
+<%--        </form>&ndash;%&gt;--%>
 
-        <form method="get" action="/deleted/restore">
-            <input type="number" value="id" name="id" placeholder="id"/>
-            <button type="submit">Восстановить файл по id</button>
-        </form>
+<%--        <form method="get" action="/deleted/restore">--%>
+<%--            <input type="number" value="id" name="id" placeholder="id"/>--%>
+<%--            <button type="submit">Восстановить файл по id</button>--%>
+<%--        </form>--%>
 
         <form method="get" action="/create/files">
             <button type="submit">Получить список всех загруженных файлов</button>

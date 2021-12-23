@@ -4,7 +4,6 @@ import com.example.uisbks.dtomodel.DTODownloadHistory;
 import com.example.uisbks.dtomodel.DTOMessage;
 import com.example.uisbks.dtomodel.DTORequestMessage;
 import com.example.uisbks.dtomodel.JspPage;
-import com.example.uisbks.exception.NoIdException;
 import com.example.uisbks.service.ClientDTOMessageService;
 import com.example.uisbks.service.ClientMessageService;
 import lombok.RequiredArgsConstructor;
@@ -14,7 +13,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.LinkedHashMap;
@@ -66,41 +64,43 @@ public class ClientMessageController {
     /**
      * Удаление файла по id
      */
-    @GetMapping ("/file-delete/{id}")
+    @GetMapping("/file-delete/{id}")
     public String deleteFileById(@PathVariable Long id) {
         clientMessageService.doOperationToDeleteFiles("delete", id);
         return "redirect:/create/files";
     }
+
     /**
      * Получение файла по id
      */
-    @PostMapping("/open-file-id")
-    public String openFileById(HttpServletRequest request) {
-        Long id = Long.valueOf(request.getParameter("name"));
-        if (id == null) {
-            throw new NoIdException("Введите id для открытия файла");
-        }
-        DTODownloadHistory downloadHistory = clientDTOMessageService.getDTODownloadHistoryById(request);
-        return clientMessageService.doOperationWithFilesForOpenByIdOrByName("open-id", downloadHistory);
+    @GetMapping("/open-file-id/{ip}")
+    public String openFileById(@RequestParam Long id, @PathVariable String ip) {
+        DTODownloadHistory downloadHistory = clientDTOMessageService.getDTODownloadHistoryById(id, ip);
+        String url = clientMessageService.doOperationWithFilesForOpenByIdOrByName("open-id", downloadHistory);
+        return String.join("",
+                "redirect:",
+                url);
+
     }
 
     /**
      * Получение файла по имени
      */
-    @PostMapping("/open-file-name")
-    public String openFileByName(HttpServletRequest request) {
-        if (request.getParameter("name").isBlank()) {
-            throw new NoIdException("Введите имя для открытия файла");
-        }
-        DTODownloadHistory downloadHistory = clientDTOMessageService.getDTODownloadHistoryByName(request);
-        return clientMessageService.doOperationWithFilesForOpenByIdOrByName("open-name", downloadHistory);
+    @GetMapping("/open-file-name/{ip}")
+    public String openFileByName(@RequestParam String name, @PathVariable String ip) {
+        DTODownloadHistory downloadHistory = clientDTOMessageService.getDTODownloadHistoryByName(name, ip);
+        String url = clientMessageService.doOperationWithFilesForOpenByIdOrByName("open-name", downloadHistory);
+        return String.join("",
+                "redirect:",
+                url);
     }
 
     /**
      * Отправка сообщения в SBKC
      */
     @PostMapping("/send")
-    public String sendFile(HttpServletRequest request) {
-        return clientMessageService.doOperationToSendFiles("send-file", request, log);
+    public String sendFile(@RequestBody String name) {
+        clientMessageService.doOperationToSendFiles("send-file", name);
+        return "redirect:/create/files";
     }
 }

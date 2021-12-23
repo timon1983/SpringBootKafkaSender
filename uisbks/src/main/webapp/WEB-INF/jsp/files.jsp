@@ -1,13 +1,12 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html lang="en">
 
-
 <head>
     <link rel="stylesheet"
           href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
           integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
           crossorigin="anonymous">
-    <title>Modification XML</title>
+    <title>Список файлов</title>
     <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 </head>
 
@@ -60,24 +59,23 @@
                     <td><c:out value="${name.originFileName}"/></td>
                     <td><c:out value="${name.fileNameForS3}"/></td>
                     <td><c:out value="${name.contentType}"/></td>
-                    <td><a href="file-delete/<c:out value='${name.id}' />">Удалить</a></td>
-                    <td><a href="file-delete/<c:out value='${name.id}' />">Открыть</a></td>
+                    <td><a href="file-delete/<c:out value='${name.id}'/>">Удалить</a></td>
                 </tr>
             </c:forEach>
         </table>
 
 
-        <form method="post" action="/create/open-file-id">
+        <form method="get" action="/create/open-file-id/${pageContext.request.remoteAddr}">
             <input type="number" value="0" name="id" placeholder="id"/>
             <button type="submit">Открыть файл по id</button>
         </form>
 
-        <form method="post" action="/create/open-file-name">
+        <form method="get" action="/create/open-file-name/${pageContext.request.remoteAddr}">
             <input type="text" name="name" placeholder="name"/>
             <button type="submit">Открыть файл по имени</button>
         </form>
 
-        <form method="post" action="/downloaded">
+        <form method="get" action="/downloaded/">
             <input type="number" name="id" placeholder="id"/>
             <button type="submit">Получить историю загрузки файла</button>
         </form>
@@ -87,25 +85,9 @@
         </form>
 
         <form method="post" action="/create/send">
-            <input type="text" value="name" name="name" placeholder="name"/>
+            <input type="text" name="name" placeholder="name"/>
             <button type="submit">Отправить файл в SBKC</button>
         </form>
-
-<%--        <form method="post" action="/create/file-delete/">--%>
-<%--&lt;%&ndash;            <input type="number" name="id" placeholder="id" value="0"/>&ndash;%&gt;--%>
-<%--&lt;%&ndash;            <button type="submit">Удалить файл</button>&ndash;%&gt;--%>
-<%--    <label for="lname">ID</label>--%>
-<%--    <input type="number" id="lname" name="lname"><br><br>--%>
-<%--    <input type="submit" value="Удалить файл">--%>
-<%--        </form>--%>
-
-<%--        <form method="get" action="/create/file-delete/">--%>
-<%--            <input type="text" name="id"/><br/>--%>
-
-<%--            <input type="submit" value="Submit"/>--%>
-
-<%--        </form>--%>
-
 
         <form method="get" action="/deleted">
             <button type="submit">Получить список удаленных файлов</button>

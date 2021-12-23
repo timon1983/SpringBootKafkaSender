@@ -7,10 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
-import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.test.web.servlet.MockMvc;
-
-import javax.servlet.http.HttpServletRequest;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -21,14 +18,12 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @WebMvcTest(ClientMessageController.class)
 @MockBean(ClientDTOMessageService.class)
 @MockBean(ClientMessageService.class)
-//@ContextConfiguration()
 class ClientMessageControllerTest {
 
     @MockBean
     ClientDTOMessageService clientDTOMessageService;
     @MockBean
     ClientMessageService clientMessageService;
-
     @Autowired
     MockMvc mockMvc;
 
@@ -63,16 +58,25 @@ class ClientMessageControllerTest {
     }
 
     @Test
-    void openFileById() {
+    void check_openFileById_Should_Return_RedirectToOpenFile() throws Exception {
 
+        mockMvc.perform(get("/create/open-file-id/0.0.0.1?id=8").contentType(MediaType.APPLICATION_JSON_VALUE))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(view().name("redirect:null"));
     }
 
     @Test
-    void openFileByName() {
+    void check_openFileByName_Should_Return_RedirectToOpenFile() throws Exception {
+        mockMvc.perform(get("/create/open-file-name/0.0.0.1?name=abc").contentType(MediaType.APPLICATION_JSON_VALUE))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(view().name("redirect:null"));
     }
 
     @Test
-    void sendFile() {
+    void check_sendFile_Should_Return_JspPageFileList_After_Send_File() throws Exception {
+        mockMvc.perform(post("/create/send").content("name").contentType(MediaType.APPLICATION_JSON_VALUE))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(view().name("redirect:/create/files"));
     }
 
 }

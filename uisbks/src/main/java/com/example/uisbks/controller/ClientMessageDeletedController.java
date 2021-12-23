@@ -9,11 +9,14 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
+import java.util.LinkedHashMap;
+import java.util.List;
 
 
 /**
@@ -33,8 +36,10 @@ public class ClientMessageDeletedController {
      */
     @GetMapping
     public String getAllFiles(Model model) {
-        clientMessageDeletedService.doOperationWithListOfDeletedFile(model, "files-deleted");
-        log.info("Получение списка удаленных файлов");
+        log.info("Получение запроса на список удаленных файлов");
+        List<LinkedHashMap<String, Object>> dtoMessages =
+                clientMessageDeletedService.doOperationWithListOfDeletedFile("files-deleted");
+        model.addAttribute("listOfFiles", dtoMessages);
         return JspPage.FILE_LIST_DELETED;
     }
 
@@ -43,7 +48,10 @@ public class ClientMessageDeletedController {
      */
     @GetMapping("/clean")
     public String deleteAll(Model model) {
-        clientMessageDeletedService.doOperationWithListOfDeletedFile(model, "files-clean");
+        log.info("Получение запроса на очистку списка удаленных файлов");
+        List<LinkedHashMap<String, Object>> dtoMessages =
+                clientMessageDeletedService.doOperationWithListOfDeletedFile("files-clean");
+        model.addAttribute("listOfFiles", dtoMessages);
         log.info("Список удаленных файлов очищен");
         return JspPage.FILE_LIST_DELETED;
     }
@@ -51,24 +59,18 @@ public class ClientMessageDeletedController {
     /**
      * Удаление файла на совсем по его id
      */
-    @PostMapping("/full")
-    public String fullDelete(HttpServletRequest request) throws IOException {
-        if (request.getParameter("id").isBlank()) {
-            throw new NoIdException("Введите id для полного удаления файла");
-        }
-        return clientMessageDeletedService.doOperationWithDeletedFile("full-delete", "полностью удален",
-                request);
+    @GetMapping("/full/{id}")
+    public String fullDelete(@PathVariable Long id) throws IOException {
+        clientMessageDeletedService.doOperationWithDeletedFile("full-delete", "полностью удален", id);
+        return "redirect:/deleted";
     }
 
     /**
      * Восстановление файла
      */
-    @GetMapping("/restore")
-    public String restoreFile(HttpServletRequest request) throws IOException {
-        if (request.getParameter("id").isBlank()) {
-            throw new NoIdException("Введите id для восстановления файла");
-        }
-        return clientMessageDeletedService.doOperationWithDeletedFile("restore-file", "восстановлен",
-                request);
+    @GetMapping("/restore/{id}")
+    public String restoreFile(@PathVariable Long id) throws IOException {
+        clientMessageDeletedService.doOperationWithDeletedFile("restore-file", "восстановлен", id);
+        return "redirect:/deleted";
     }
 }

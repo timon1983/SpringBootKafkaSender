@@ -3,17 +3,14 @@ package com.example.uisbks.service;
 import com.example.uisbks.dtomodel.DTODownloadHistory;
 import com.example.uisbks.dtomodel.DTOInfoModelClient;
 import com.example.uisbks.dtomodel.DTOMessage;
-import com.example.uisbks.dtomodel.JspPage;
 import com.example.uisbks.exception.NoIdException;
 import lombok.RequiredArgsConstructor;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import org.springframework.ui.Model;
 import org.springframework.web.client.RestTemplate;
 
-import javax.servlet.http.HttpServletRequest;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -55,10 +52,8 @@ public class ClientMessageService {
      * Метод для получения списка всех загруженных файлов
      */
     public List<LinkedHashMap<String, Object>> getListOfFiles() {
-        log.info("Получение списка загруженных файлов");
-        List<LinkedHashMap<String, Object>> dtoMessages =
-                restTemplate.getForObject(clientDTOMessageService.getUrl("files"), List.class);
-        return dtoMessages;
+        log.info("Получение списка загруженных файлов");               
+        return restTemplate.getForObject(clientDTOMessageService.getUrl("files"), List.class);
     }
 
     /**
@@ -78,13 +73,12 @@ public class ClientMessageService {
                         "\\Projects\\SpringBootKafkaSender\\uisbks\\files\\%s", dtoInfoModelClient.getInfo()));
             } else {
                 return String.join("",
-                        "redirect:",
                         publicS3Reference,
                         "/",
                         dtoInfoModelClient.getInfo());
             }
         }
-        return "redirect:/create/files";
+        return "/create/files";
     }
 
     /**
@@ -106,14 +100,12 @@ public class ClientMessageService {
     /**
      * Метод для выполнения операций по отправлению файла
      */
-    public String doOperationToSendFiles(String urlEndPoint, HttpServletRequest request, Logger log) {
-        String name = request.getParameter("name");
+    public void doOperationToSendFiles(String urlEndPoint, String name) {
         name = URLEncoder.encode(name, StandardCharsets.UTF_8);
         DTOInfoModelClient dtoInfoModelClient =
                 restTemplate.postForObject(clientDTOMessageService.getUrl(urlEndPoint), name, DTOInfoModelClient.class);
         if (dtoInfoModelClient != null && !dtoInfoModelClient.getIsError()) {
             log.info("Файл {} отправлен в kafka", name);
-            return "redirect:/create/files";
         }
         if (dtoInfoModelClient != null && dtoInfoModelClient.getIsError()) {
             log.error(dtoInfoModelClient.getInfo());
