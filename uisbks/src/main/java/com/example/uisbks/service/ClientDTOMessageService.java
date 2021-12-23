@@ -9,7 +9,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
@@ -20,7 +19,7 @@ import java.time.LocalDateTime;
 public class ClientDTOMessageService {
 
     @Value("${url-sbks}")
-    private String url;
+    private final String url;
 
     /**
      * Формирование объекта DTOMessage

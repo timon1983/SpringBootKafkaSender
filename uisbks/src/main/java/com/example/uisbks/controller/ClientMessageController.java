@@ -66,7 +66,7 @@ public class ClientMessageController {
      */
     @GetMapping("/file-delete/{id}")
     public String deleteFileById(@PathVariable Long id) {
-        clientMessageService.doOperationToDeleteFiles("delete", id);
+        clientMessageService. doOperationToDeleteFiles(id);
         return "redirect:/create/files";
     }
 
@@ -100,7 +100,7 @@ public class ClientMessageController {
      */
     @PostMapping("/send")
     public String sendFile(@RequestBody String name) {
-        clientMessageService.doOperationToSendFiles("send-file", name);
+        clientMessageService.doOperationToSendFiles(name);
         return "redirect:/create/files";
     }
 }

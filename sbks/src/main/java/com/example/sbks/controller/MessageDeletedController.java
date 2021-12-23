@@ -66,5 +66,4 @@ public class MessageDeletedController {
         messageDeletedService.restoreMessage(id);
         return new ResponseEntity<>(new InfoDto(),HttpStatus.OK);
     }
-
 }

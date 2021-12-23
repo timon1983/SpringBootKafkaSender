@@ -11,16 +11,11 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
-import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.List;
 
@@ -31,6 +26,7 @@ public class ClientMessageService {
     private final static Logger log = LogManager.getLogger(ClientMessageService.class);
     private final RestTemplate restTemplate;
     private final ClientDTOMessageService clientDTOMessageService;
+    private final ClientCacheService clientCacheService;
     @Value("${public-S3-reference}")
     private String publicS3Reference;
 
@@ -40,7 +36,7 @@ public class ClientMessageService {
     public void doOperationToSaveFiles(DTOMessage dtoMessage) throws URISyntaxException, IOException {
         URI uri = new URI(clientDTOMessageService.getUrl("create"));
         log.info("Отправка данных по файлу {} в БД", dtoMessage.getOriginFileName());
-        setCache(dtoMessage);
+        clientCacheService.setCache(dtoMessage, "uisbks/files/");
         DTOInfoModelClient dtoInfoModelClient = restTemplate.postForObject(uri, dtoMessage, DTOInfoModelClient.class);
         if (dtoInfoModelClient != null && dtoInfoModelClient.getIsError()) {
             log.error(dtoInfoModelClient.getInfo());
@@ -52,7 +48,7 @@ public class ClientMessageService {
      * Метод для получения списка всех загруженных файлов
      */
     public List<LinkedHashMap<String, Object>> getListOfFiles() {
-        log.info("Получение списка загруженных файлов");               
+        log.info("Получение списка загруженных файлов");
         return restTemplate.getForObject(clientDTOMessageService.getUrl("files"), List.class);
     }
 
@@ -67,7 +63,7 @@ public class ClientMessageService {
             throw new NoIdException(dtoInfoModelClient.getInfo());
         } else if (dtoInfoModelClient != null && !dtoInfoModelClient.getIsError()) {
             log.info("Файл получен: [id: {}, name: {}]", dtoDownloadHistory.getId(), dtoDownloadHistory.getFileName());
-            if (isCached(dtoInfoModelClient.getInfo())) {
+            if (clientCacheService.isCached(dtoInfoModelClient.getInfo(), "uisbks/files/")) {
                 log.info("Файл {} получен из кеша", dtoInfoModelClient.getInfo());
                 throw new NoIdException(String.format("Файл доступен в локальном хранилище по пути D:" +
                         "\\Projects\\SpringBootKafkaSender\\uisbks\\files\\%s", dtoInfoModelClient.getInfo()));
@@ -84,12 +80,12 @@ public class ClientMessageService {
     /**
      * Метод для выполнения операций по удалению файла
      */
-    public void doOperationToDeleteFiles(String urlEndPoint, Long id) {
+    public void doOperationToDeleteFiles(Long id) {
         if (id == 0) {
             throw new NoIdException("Введите id для удаления файла");
         }
         DTOInfoModelClient dtoInfoModelClient =
-                restTemplate.postForObject(clientDTOMessageService.getUrl(urlEndPoint), id, DTOInfoModelClient.class);
+                restTemplate.postForObject(clientDTOMessageService.getUrl("delete"), id, DTOInfoModelClient.class);
         if (dtoInfoModelClient != null && dtoInfoModelClient.getIsError()) {
             log.error(dtoInfoModelClient.getInfo());
             throw new NoIdException(dtoInfoModelClient.getInfo());
@@ -100,10 +96,10 @@ public class ClientMessageService {
     /**
      * Метод для выполнения операций по отправлению файла
      */
-    public void doOperationToSendFiles(String urlEndPoint, String name) {
+    public void doOperationToSendFiles(String name) {
         name = URLEncoder.encode(name, StandardCharsets.UTF_8);
         DTOInfoModelClient dtoInfoModelClient =
-                restTemplate.postForObject(clientDTOMessageService.getUrl(urlEndPoint), name, DTOInfoModelClient.class);
+                restTemplate.postForObject(clientDTOMessageService.getUrl("send-file"), name, DTOInfoModelClient.class);
         if (dtoInfoModelClient != null && !dtoInfoModelClient.getIsError()) {
             log.info("Файл {} отправлен в kafka", name);
         }
@@ -112,32 +108,6 @@ public class ClientMessageService {
             throw new NoIdException(dtoInfoModelClient.getInfo());
         } else {
             throw new NoIdException("Ошибка при отправке");
-        }
-    }
-
-    /**
-     * Проверка наличия файла кеше
-     */
-    private boolean isCached(String fileName) {
-        File[] files = new File("uisbks/files/").listFiles();
-        if (files != null) {
-            return Arrays.stream(files)
-                    .anyMatch(file -> file.getName().equals(fileName));
-        }
-        return false;
-    }
-
-    /**
-     * Запись файла в кеш
-     */
-    private void setCache(DTOMessage dtoMessage) throws IOException {
-        Files.createDirectories(Paths.get("uisbks/files/"));
-        log.info("Запись файла {} в кэш", dtoMessage.getFileNameForS3());
-        File file = new File(String.format("uisbks/files/%s", dtoMessage.getFileNameForS3()));
-        try (FileOutputStream outputStream = new FileOutputStream(file)) {
-            outputStream.write(dtoMessage.getContent());
-        } catch (IOException e) {
-            log.error("Ошибка при записи файла {} кэш", dtoMessage.getFileNameForS3());
         }
     }
 }
