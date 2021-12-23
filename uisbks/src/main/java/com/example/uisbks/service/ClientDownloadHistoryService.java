@@ -1,15 +1,13 @@
 package com.example.uisbks.service;
 
 import com.example.uisbks.dtomodel.DTODownloadHistory;
-import com.example.uisbks.dtomodel.JspPage;
+import com.example.uisbks.exception.NoIdException;
 import lombok.RequiredArgsConstructor;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Service;
-import org.springframework.ui.Model;
 import org.springframework.web.client.RestTemplate;
 
-import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 @Service
@@ -20,12 +18,12 @@ public class ClientDownloadHistoryService {
     private final RestTemplate restTemplate;
     private final ClientDTOMessageService clientDTOMessageService;
 
-    public String getAllDownloadHistory(HttpServletRequest request, Model model) {
-        log.info("Получение истории скачивания файла " + request.getParameter("id"));
-        Long id = Long.valueOf(request.getParameter("id"));
-        List<DTODownloadHistory> dtoDownloadClientInfos =
-                restTemplate.postForObject(clientDTOMessageService.getUrl("download-history"), id, List.class);
-        model.addAttribute("downloadList", dtoDownloadClientInfos);
-        return JspPage.DOWNLOAD_HISTORY;
+    public List<DTODownloadHistory> getAllDownloadHistory(Long id) {
+        if (id == 0) {
+            log.error("Не введено id файла для получения истории загрузки");
+            throw new NoIdException("Введите id для получения истории загрузки файла");
+        }
+        log.info("Получение истории скачивания файла по id={}", id);
+        return restTemplate.postForObject(clientDTOMessageService.getUrl("download-history"), id, List.class);
     }
 }

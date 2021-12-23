@@ -2,13 +2,13 @@ package com.example.uisbks.service;
 
 import com.example.uisbks.dtomodel.DTODownloadHistory;
 import com.example.uisbks.dtomodel.DTOMessage;
+import com.example.uisbks.dtomodel.DTORequestMessage;
 import com.example.uisbks.exception.NoIdException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.multipart.MultipartHttpServletRequest;
 
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.net.URLEncoder;
@@ -19,24 +19,27 @@ import java.time.LocalDateTime;
 @RequiredArgsConstructor
 public class ClientDTOMessageService {
 
+    @Value("${url-sbks}")
+    private String url;
+
     /**
      * Формирование объекта DTOMessage
      */
-    public DTOMessage getDTOMessage(MultipartHttpServletRequest request)
-            throws ServletException, IOException {
-        MultipartFile multipartFile = request.getFile("file");
+    public DTOMessage getDTOMessage(DTORequestMessage dtoRequestMessage)
+            throws IOException {
+        MultipartFile multipartFile = dtoRequestMessage.getFile();
         if (multipartFile != null && !multipartFile.isEmpty() && multipartFile.getOriginalFilename() != null) {
             var fileName = multipartFile.getOriginalFilename();
             return DTOMessage.builder()
-                    .title(request.getParameter("title"))
-                    .size(request.getPart("file").getSize())
+                    .title(dtoRequestMessage.getTitle())
+                    .size(multipartFile.getSize())
                     .dateOfCreate(LocalDateTime.now().withNano(0))
-                    .author(request.getParameter("author"))
+                    .author(dtoRequestMessage.getAuthor())
                     .originFileName(fileName)
                     .fileNameForS3(String.join(".",
                             String.valueOf(System.currentTimeMillis()),
                             fileName.substring(fileName.lastIndexOf(".") + 1)))
-                    .contentType(request.getPart("file").getContentType())
+                    .contentType(multipartFile.getContentType())
                     .content(multipartFile.getBytes())
                     .build();
         } else {
@@ -47,11 +50,14 @@ public class ClientDTOMessageService {
     /**
      * Формирование объекта DTODownloadHistory по имени
      */
-    public DTODownloadHistory getDTODownloadHistoryByName(HttpServletRequest request) {
+    public DTODownloadHistory getDTODownloadHistoryByName(String name, String ip) {
+        if (name.isBlank()) {
+            throw new NoIdException("Введите имя для открытия файла");
+        }
         return DTODownloadHistory.builder()
                 .id(null)
-                .fileName(URLEncoder.encode(request.getParameter("name"), StandardCharsets.UTF_8))
-                .ipUser(request.getRemoteAddr())
+                .fileName(URLEncoder.encode(name, StandardCharsets.UTF_8))
+                .ipUser(ip)
                 .dateOfDownload(LocalDateTime.now().withNano(0))
                 .build();
     }
@@ -59,11 +65,14 @@ public class ClientDTOMessageService {
     /**
      * Формирование объекта DTODownloadHistory по ID
      */
-    public DTODownloadHistory getDTODownloadHistoryById(HttpServletRequest request) {
+    public DTODownloadHistory getDTODownloadHistoryById(Long id, String ip) {
+        if (id == 0) {
+            throw new NoIdException("Введите id для открытия файла");
+        }
         return DTODownloadHistory.builder()
-                .id(Long.parseLong(request.getParameter("id")))
+                .id(id)
                 .fileName(null)
-                .ipUser(request.getRemoteAddr())
+                .ipUser(ip)
                 .dateOfDownload(LocalDateTime.now().withNano(0))
                 .build();
     }
@@ -72,7 +81,7 @@ public class ClientDTOMessageService {
      * Формирование URL для запроса
      */
     public String getUrl(String urlEndPoint) {
-        return String.format("http://localhost:8085/api/sdk/%s", urlEndPoint);
+        return String.format(url, urlEndPoint);
     }
 }
 

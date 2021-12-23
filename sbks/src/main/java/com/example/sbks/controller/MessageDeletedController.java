@@ -63,7 +63,7 @@ public class MessageDeletedController {
     @PostMapping("/restore-file")
     public ResponseEntity<InfoDto> restoreMessageById(@RequestBody Long id) {
         log.info("Контроллер.Запрос на восстановление файла по id={}", id);
-        messageDeletedService.fullDelete(id);
+        messageDeletedService.restoreMessage(id);
         return new ResponseEntity<>(new InfoDto(),HttpStatus.OK);
     }
 

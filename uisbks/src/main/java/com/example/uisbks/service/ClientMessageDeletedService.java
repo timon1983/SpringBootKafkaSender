@@ -28,8 +28,10 @@ public class ClientMessageDeletedService {
     /**
      * Метод для выполнения операций с файлами в корзине(полное удаление, восстановление)
      */
-    public String doOperationWithDeletedFile(String urlEndPoint, String action, HttpServletRequest request) throws IOException {
-        Long id = Long.parseLong(request.getParameter("id"));
+    public void doOperationWithDeletedFile(String urlEndPoint, String action, Long id) throws IOException {
+        if (id == 0) {
+            throw new NoIdException("Введите id для полного удаления файла");
+        }
         DTOInfoModelClient dtoInfoModelClient = restTemplate.postForObject(clientDTOMessageService.getUrl(urlEndPoint),
                 id, DTOInfoModelClient.class);
         if (dtoInfoModelClient != null && dtoInfoModelClient.getIsError()) {
@@ -40,17 +42,15 @@ public class ClientMessageDeletedService {
             Files.deleteIfExists(Paths.get(String.format("uisbks/files/%s", dtoInfoModelClient.getInfo())));
         }
         log.info("Файл c id={} {}", id, action);
-        return "redirect:/deleted";
     }
 
     /**
      * Метод для выполнения оперций над списком файлов в корзине(получение списка, очистка корзины)
      */
-    public void doOperationWithListOfDeletedFile(Model model, String urlEndPoint) {
+    public List<LinkedHashMap<String, Object>> doOperationWithListOfDeletedFile(String urlEndPoint) {
         List<LinkedHashMap<String, Object>> dtoMessages =
                 restTemplate.getForObject(clientDTOMessageService.getUrl(urlEndPoint), List.class);
         if (dtoMessages != null && urlEndPoint.equals("files-clean")) {
-            model.addAttribute("listOfFiles", new ArrayList<>());
             dtoMessages.forEach((dtoMessage) -> {
                 try {
                     Files.deleteIfExists(Paths.get(String.format("uisbks/files/%s", dtoMessage.get("fileNameForS3"))));
@@ -58,8 +58,9 @@ public class ClientMessageDeletedService {
                     throw new NoIdException("ошибка при очистки кеша");
                 }
             });
+            return new ArrayList<>();
         } else {
-            model.addAttribute("listOfFiles", dtoMessages);
+            return dtoMessages;
         }
     }
 }
