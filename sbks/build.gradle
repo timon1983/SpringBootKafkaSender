@@ -1,4 +1,4 @@
-import groovy.sql.Sql
+//import groovy.sql.Sql
 
 
 plugins {
@@ -8,10 +8,12 @@ plugins {
 
 
 dependencies {
-    implementation project(':awsS3')
     implementation project(':liquibase')
     implementation project(':kafka')
-//    implementation 'org.codehaus.groovy:groovy-sql:3.0.9'
+    implementation 'com.amazonaws:aws-java-sdk:1.12.122'
+    testImplementation 'software.amazon.awssdk:s3:2.17.93'
+    implementation 'org.openapitools:jackson-databind-nullable:0.2.2'
+    implementation 'io.swagger:swagger-annotations:1.6.4'
     implementation 'org.mapstruct:mapstruct:1.4.2.Final'
     annotationProcessor 'org.mapstruct:mapstruct-processor:1.4.2.Final'
     implementation 'org.springdoc:springdoc-openapi-ui:1.6.1'
@@ -20,6 +22,7 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-web:2.6.1'
     implementation 'javax.xml.bind:jaxb-api:2.3.1'
     runtimeOnly 'org.postgresql:postgresql:42.3.1'
+    implementation 'org.openapitools:openapi-generator-core:5.3.1'
     testImplementation 'org.springframework.boot:spring-boot-starter-test:2.6.1'
 }
 
@@ -70,7 +73,14 @@ openApiGenerate {
     modelPackage = "org.openapi.example.model"
     configOptions = [
             dateLibrary: "java11",
-            interfaceOnly: true
+            interfaceOnly: 'true',
+            skipDefaultInterface: 'true',
+            useApiIgnore:'fales',
+            swaggerAnnotations: 'true',
+    ]
+    globalProperties =[
+            apis: '',
+            models: '',
     ]
 }
 
@@ -83,6 +93,14 @@ compileJava {
 def sql = Sql.newInstance(db.url, db.user, db.password, db.driver)
 sql.execute('''delete from download_history where date_create < current_date - 1;''')*/
 
-/*sourceSets {
-    java
-}*/
+sourceSets {
+    main {
+        java {
+            srcDir 'build/generated/src/main/java/org/openapi/example'
+        }
+    }
+}
+
+test {
+    useJUnitPlatform()
+}

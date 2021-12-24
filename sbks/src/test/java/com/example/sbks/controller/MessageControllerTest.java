@@ -2,9 +2,9 @@ package com.example.sbks.controller;
 
 import com.example.sbks.dto.InfoDto;
 import com.example.sbks.dto.MessageDto;
-import com.example.sbks.service.DownloadHistoryService;
-import com.example.sbks.service.MessageSenderService;
-import com.example.sbks.service.MessageService;
+import com.example.sbks.service.DownloadHistoryServiceImpl;
+import com.example.sbks.service.MessageSenderKafkaService;
+import com.example.sbks.service.MessageServiceImpl;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,43 +13,41 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.util.Collections;
+
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-//@WebMvcTest(MessageController.class)
-//@MockBean(MessageService.class)
-//@MockBean(MessageSenderService.class)
-
+@WebMvcTest(MessageController.class)
+@MockBean(MessageServiceImpl.class)
+@MockBean(MessageSenderKafkaService.class)
+@MockBean(DownloadHistoryServiceImpl.class)
 class MessageControllerTest {
 
-//    @MockBean
-//    DownloadHistoryService downloadHistoryService;
-//    @MockBean
-//    MessageService messageService;
-//    @MockBean
-//    MessageSenderService messageSenderService;
-//    @Autowired
-//    MockMvc mockMvc;
-//    @Autowired
-//    private ObjectMapper objectMapper;
+    @Autowired
+    MockMvc mockMvc;
+    @Autowired
+    private ObjectMapper objectMapper;
 
     @Test
     void check_createMessage_Should_Return_ResponseEntity() throws Exception {
-//        InfoDto infoDto = new InfoDto();
-//        MessageDto messageDto = new MessageDto();
-//        mockMvc.perform(post("/api/sdk/create").content(objectMapper.writeValueAsString(messageDto))
-//                        .contentType(MediaType.APPLICATION_JSON_VALUE))
-//                .andExpect(status().isOk())
-//                .andExpect(jsonPath("$.isError").value(false));
+        mockMvc.perform(post("/api/sdk/create").content(objectMapper.writeValueAsString(new MessageDto()))
+                        .contentType(MediaType.APPLICATION_JSON_VALUE))
+                .andExpect(status().isOk())
+        .andExpect(jsonPath("$.isError").value(false));
     }
 
     @Test
-    void getAllMessages() {
+    void getAllMessages() throws Exception {
+        mockMvc.perform(get("/api/sdk/files").contentType(MediaType.APPLICATION_JSON_VALUE))
+                .andExpect(status().isOk())
+                .andExpect(content().json(objectMapper.writeValueAsString(Collections.emptyList())));
     }
 
     @Test
     void deleteById() {
+
     }
 
     @Test

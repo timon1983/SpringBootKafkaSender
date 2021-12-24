@@ -1,6 +1,6 @@
-package com.example.awsS3.service;
+package com.example.sbks.service;
 
-import com.example.awsS3.repository.RepositoryS3;
+import com.example.sbks.repository.RepositoryS3;
 import lombok.RequiredArgsConstructor;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;

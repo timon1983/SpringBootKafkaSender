@@ -1,4 +1,4 @@
-package com.example.awsS3.repository;
+package com.example.sbks.repository;
 
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.S3ObjectInputStream;

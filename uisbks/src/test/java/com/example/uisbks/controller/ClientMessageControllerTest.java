@@ -20,10 +20,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @MockBean(ClientMessageService.class)
 class ClientMessageControllerTest {
 
-    @MockBean
-    ClientDTOMessageService clientDTOMessageService;
-    @MockBean
-    ClientMessageService clientMessageService;
     @Autowired
     MockMvc mockMvc;
 

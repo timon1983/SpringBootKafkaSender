@@ -1,6 +1,5 @@
 package com.example.sbks.service;
 
-import com.example.awsS3.service.ServiceS3;
 import com.example.sbks.dto.MessageDto;
 import com.example.sbks.exception.NoSuchDataFileException;
 import com.example.sbks.mapper.MapperForModel;
