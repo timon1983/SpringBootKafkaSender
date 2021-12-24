@@ -9,9 +9,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
+import java.util.Collections;
 
 import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.verify;
@@ -31,8 +29,7 @@ class ClientMessageServiceTest {
 
     @Test
     void getListOfFiles() {
-        List<LinkedHashMap<String, Object>> list = new ArrayList<>();
-        lenient().when(clientMessageService.getListOfFiles()).thenReturn(list);
+        lenient().when(clientMessageService.getListOfFiles()).thenReturn(Collections.emptyList());
     }
 
     @Test
