@@ -1,10 +1,13 @@
 package com.example.sbks.controller;
 
+import com.example.sbks.dto.DownloadHistoryDto;
 import com.example.sbks.dto.InfoDto;
 import com.example.sbks.dto.MessageDto;
+import com.example.sbks.service.DownloadHistoryService;
 import com.example.sbks.service.DownloadHistoryServiceImpl;
 import com.example.sbks.service.MessageSenderKafkaService;
 import com.example.sbks.service.MessageServiceImpl;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,7 +25,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @WebMvcTest(MessageController.class)
 @MockBean(MessageServiceImpl.class)
 @MockBean(MessageSenderKafkaService.class)
-@MockBean(DownloadHistoryServiceImpl.class)
+@MockBean(DownloadHistoryService.class)
 class MessageControllerTest {
 
     @Autowired
@@ -31,7 +34,7 @@ class MessageControllerTest {
     private ObjectMapper objectMapper;
 
     @Test
-    void check_createMessage_Should_Return_ResponseEntity() throws Exception {
+    void check_createMessage_Should_Return_ResponseEntityOfInfoDto() throws Exception {
         mockMvc.perform(post("/api/sdk/create").content(objectMapper.writeValueAsString(new MessageDto()))
                         .contentType(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(status().isOk())
@@ -39,19 +42,28 @@ class MessageControllerTest {
     }
 
     @Test
-    void getAllMessages() throws Exception {
+    void check_getAllMessages_Should_Return_ResponseEntityOfList() throws Exception {
         mockMvc.perform(get("/api/sdk/files").contentType(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(status().isOk())
                 .andExpect(content().json(objectMapper.writeValueAsString(Collections.emptyList())));
     }
 
     @Test
-    void deleteById() {
-
+    void check_deleteById_Should_Return_ResponseEntityOfInfoDto() throws Exception {
+        mockMvc.perform(post("/api/sdk/delete").content(objectMapper.writeValueAsString(5L))
+                        .contentType(MediaType.APPLICATION_JSON_VALUE))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.isError").value(false));
     }
 
     @Test
-    void findById() {
+    void check_findById_Should_Return_ResponseEntityOfInfoDto() throws Exception {
+        DownloadHistoryDto downloadHistoryDto = new DownloadHistoryDto();
+        downloadHistoryDto.setId(5L);
+        mockMvc.perform(post("/api/sdk/open-id")
+                        .content(objectMapper.writeValueAsString(downloadHistoryDto))
+                        .contentType(MediaType.APPLICATION_JSON_VALUE))
+                .andExpect(status().isOk());
     }
 
     @Test
