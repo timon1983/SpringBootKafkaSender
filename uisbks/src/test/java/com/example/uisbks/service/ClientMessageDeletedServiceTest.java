@@ -6,9 +6,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
+import java.util.Collections;
 
 import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.verify;
@@ -28,8 +26,7 @@ class ClientMessageDeletedServiceTest {
 
     @Test
     void doOperationWithListOfDeletedFile() {
-        List<LinkedHashMap<String, Object>> list = new ArrayList<>();
         lenient().when(clientMessageDeletedService.doOperationWithListOfDeletedFile("files-deleted"))
-                .thenReturn(list);
+                .thenReturn(Collections.emptyList());
     }
 }

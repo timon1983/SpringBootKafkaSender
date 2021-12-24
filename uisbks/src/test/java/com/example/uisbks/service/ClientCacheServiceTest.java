@@ -19,12 +19,15 @@ class ClientCacheServiceTest {
     @Test
     void check_isCached_Should_Return_Boolean() throws IOException {
         String fileName = "abc.txt";
-        Files.deleteIfExists(Path.of(String.format("files/%s", fileName)));
-        Files.createFile(Paths.get(String.format("files/%s", fileName)));
 
-        assertTrue(clientCacheService.isCached(fileName, "files"));
+        Files.createDirectories(Paths.get("test-files"));
+        Files.createFile(Paths.get(String.format("test-files/%s", fileName)));
 
-        Files.deleteIfExists(Path.of(String.format("files/%s", fileName)));
+        assertTrue(clientCacheService.isCached(fileName, "test-files"));
+
+        Files.deleteIfExists(Path.of(String.format("test-files/%s", fileName)));
+        Files.deleteIfExists(Path.of("test-files"));
+
     }
 
     @Test
@@ -32,14 +35,14 @@ class ClientCacheServiceTest {
         DTOMessage dtoMessage = new DTOMessage();
         dtoMessage.setFileNameForS3("abc.txt");
         dtoMessage.setContent(new byte[]{1, 2, 3, 4});
-        Files.deleteIfExists(Path.of(String.format("files/%s", dtoMessage.getFileNameForS3())));
-        clientCacheService.setCache(dtoMessage, "files/");
-        File file = new File(String.format("files/%s", dtoMessage.getFileNameForS3()));
+        clientCacheService.setCache(dtoMessage, "test-files/");
+        File file = new File(String.format("test-files/%s", dtoMessage.getFileNameForS3()));
 
         assertTrue(file.exists());
         assertEquals(file.getName(), "abc.txt");
 
-        Files.deleteIfExists(Path.of(String.format("files/%s", dtoMessage.getFileNameForS3())));
+        Files.deleteIfExists(Path.of(String.format("test-files/%s", dtoMessage.getFileNameForS3())));
+        Files.deleteIfExists(Path.of("test-files"));
 
     }
 }

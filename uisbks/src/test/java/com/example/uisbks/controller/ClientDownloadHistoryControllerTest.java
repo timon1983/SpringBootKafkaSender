@@ -16,8 +16,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @MockBean(ClientDownloadHistoryService.class)
 class ClientDownloadHistoryControllerTest {
 
-    @MockBean
-    ClientDownloadHistoryService clientDownloadHistoryService;
     @Autowired
     MockMvc mockMvc;
 
