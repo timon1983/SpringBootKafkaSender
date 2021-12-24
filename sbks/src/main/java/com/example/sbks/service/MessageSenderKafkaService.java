@@ -1,8 +1,8 @@
 package com.example.sbks.service;
 
-import com.example.awsS3.service.ServiceS3;
 import com.example.sbks.exception.NoSuchDataFileException;
 import com.example.sbks.model.Message;
+import com.example.sbks.repository.MessageRepository;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Value;
@@ -24,14 +24,15 @@ public class MessageSenderKafkaService implements MessageSenderService {
 
     private final static Logger log = LogManager.getLogger(MessageSenderKafkaService.class);
     private final RestTemplate restTemplate;
-    private final MessageService messageService;
+    //private final MessageService messageService;
+    private final MessageRepository messageRepository;
     private final String url;
     private final ServiceS3 serviceS3;
 
-    public MessageSenderKafkaService(RestTemplate restTemplate, MessageService messageService,
+    public MessageSenderKafkaService(RestTemplate restTemplate, MessageRepository messageRepository,
                                      @Value("${kafka-url}") String url, ServiceS3 serviceS3) {
         this.restTemplate = restTemplate;
-        this.messageService = messageService;
+        this.messageRepository = messageRepository;
         this.url = url;
         this.serviceS3 = serviceS3;
     }
@@ -43,7 +44,8 @@ public class MessageSenderKafkaService implements MessageSenderService {
     @Transactional
     public void sendMessage(String name) throws URISyntaxException, NoSuchDataFileException {
         URI uri = new URI(url);
-        messageService.getByName(name)
+        //messageService.getByName(name)
+        messageRepository.findByOriginFileName(name)
                 .map(message -> {
                     message.setContent(getByteContent(message.getFileNameForS3()));
                     restTemplate.postForObject(uri, message, Message.class);

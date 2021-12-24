@@ -1,4 +1,4 @@
-package com.example.awsS3.service;
+package com.example.sbks.service;
 
 import java.io.File;
 import java.io.IOException;

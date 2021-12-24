@@ -1,4 +1,4 @@
-package com.example.awsS3.configuration;
+package com.example.sbks.configuration;
 
 import com.amazonaws.auth.AWSCredentials;
 import com.amazonaws.auth.AWSStaticCredentialsProvider;

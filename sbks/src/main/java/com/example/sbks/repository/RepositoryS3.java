@@ -1,4 +1,4 @@
-package com.example.awsS3.repository;
+package com.example.sbks.repository;
 
 import java.io.File;
 import java.io.IOException;
