@@ -3,12 +3,14 @@ package com.example.sbks.controller;
 import com.example.sbks.dto.DownloadHistoryDto;
 import com.example.sbks.dto.InfoDto;
 import com.example.sbks.dto.MessageDto;
+import com.example.sbks.mapper.MapperForModel;
 import com.example.sbks.service.DownloadHistoryService;
 import com.example.sbks.service.MessageSenderService;
 import com.example.sbks.service.MessageService;
 import lombok.RequiredArgsConstructor;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.mapstruct.factory.Mappers;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -31,6 +33,7 @@ public class MessageController {
     private final MessageService messageService;
     private final MessageSenderService messageSenderService;
     private final DownloadHistoryService downloadHistoryService;
+    private final MapperForModel mapper = Mappers.getMapper(MapperForModel.class);
 
     /**
      * Получение сообщения от клиента
@@ -64,8 +67,9 @@ public class MessageController {
      * Скачивание файла по id
      */
     @PostMapping("/open-id")
-    public ResponseEntity<InfoDto> findById(@RequestBody DownloadHistoryDto downloadHistoryDto) {
-        InfoDto infoDto = downloadHistoryService.saveById(downloadHistoryDto);
+    public ResponseEntity<InfoDto> findById(@RequestBody(required = false) DownloadHistoryDto downloadHistoryDto) {
+        DownloadHistoryDto downloadHistoryDtoResponse = downloadHistoryService.saveById(downloadHistoryDto);
+        InfoDto infoDto = mapper.downloadHistoryDtoToInfoDto(downloadHistoryDtoResponse);
         return new ResponseEntity<>(infoDto, HttpStatus.OK);
     }
 
@@ -78,7 +82,8 @@ public class MessageController {
             throws UnsupportedEncodingException {
         String fileName = downloadHistoryDto.getFileName();
         downloadHistoryDto.setFileName(URLDecoder.decode(fileName, StandardCharsets.UTF_8.name()));
-        InfoDto infoDto = downloadHistoryService.saveByName(downloadHistoryDto);
+        DownloadHistoryDto downloadHistoryDtoResponse = downloadHistoryService.saveByName(downloadHistoryDto);
+        InfoDto infoDto = mapper.downloadHistoryDtoToInfoDto(downloadHistoryDtoResponse);
         return new ResponseEntity<>(infoDto, HttpStatus.OK);
     }
 
@@ -86,10 +91,10 @@ public class MessageController {
      * Оправка файла в MessageSenderSender
      */
     @PostMapping("/send-file")
-    public ResponseEntity<DownloadHistoryDto> receiveMessageForSendToMessageSender(@RequestBody String name)
+    public ResponseEntity<InfoDto> receiveMessageForSendToMessageSender(@RequestBody String name)
             throws UnsupportedEncodingException, URISyntaxException {
         name = URLDecoder.decode(name, StandardCharsets.UTF_8.name());
         messageSenderService.sendMessage(name);
-        return new ResponseEntity<>(new DownloadHistoryDto(), HttpStatus.OK);
+        return new ResponseEntity<>(new InfoDto(), HttpStatus.OK);
     }
 }

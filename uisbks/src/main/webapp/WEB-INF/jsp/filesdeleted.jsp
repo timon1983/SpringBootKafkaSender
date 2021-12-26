@@ -44,7 +44,6 @@
                 <th>Origin file name</th>
                 <th>Content type</th>
                 <th>Date of delete</th>
-                <th>Time of delete</th>
             </tr>
 
             <c:forEach var="name" items="${listOfFiles}">
@@ -58,7 +57,6 @@
                     <td><c:out value="${name.originFileName}"/></td>
                     <td><c:out value="${name.contentType}"/></td>
                     <td><c:out value="${name.dateOfDelete}"/></td>
-                    <td><c:out value="${name.timeOfDelete}"/></td>
                     <td><a href="deleted/full/<c:out value='${name.id}'/>">Полное удаление</a></td>
                     <td><a href="deleted/restore/<c:out value='${name.id}'/>">Восстановить файл</a></td>
                 </tr>

@@ -76,6 +76,7 @@ public class ClientMessageController {
     @GetMapping("/open-file-id/{ip}")
     public String openFileById(@RequestParam Long id, @PathVariable String ip) {
         DTODownloadHistory downloadHistory = clientDTOMessageService.getDTODownloadHistoryById(id, ip);
+
         String url = clientMessageService.doOperationWithFilesForOpenByIdOrByName("open-id", downloadHistory);
         return String.join("",
                 "redirect:",

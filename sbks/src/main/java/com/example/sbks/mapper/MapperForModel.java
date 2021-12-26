@@ -1,6 +1,7 @@
 package com.example.sbks.mapper;
 
 import com.example.sbks.dto.DownloadHistoryDto;
+import com.example.sbks.dto.InfoDto;
 import com.example.sbks.dto.MessageDto;
 import com.example.sbks.model.DownloadHistory;
 import com.example.sbks.model.Message;
@@ -19,4 +20,7 @@ public interface MapperForModel {
     DownloadHistory dtoToDownloadHistory(DownloadHistoryDto downloadHistoryDto);
 
     DownloadHistoryDto downloadHistoryToDto(DownloadHistory downloadHistory);
+
+    @Mapping(target="info", source="downloadHistoryDto.fileName")
+    InfoDto downloadHistoryDtoToInfoDto(DownloadHistoryDto downloadHistoryDto);
 }

@@ -14,12 +14,12 @@ public interface DownloadHistoryService {
     /**
      * Запись события о скачивании файла
      */
-    InfoDto saveByName(DownloadHistoryDto downloadHistoryDto);
+    DownloadHistoryDto saveByName(DownloadHistoryDto downloadHistoryDto);
 
     /**
      * Получение всей истории скачивания файла по его id
      */
     List<DownloadHistoryDto> getAllById(Long id);
 
-    InfoDto saveById(DownloadHistoryDto downloadHistoryDto);
+    DownloadHistoryDto saveById(DownloadHistoryDto downloadHistoryDto);
 }

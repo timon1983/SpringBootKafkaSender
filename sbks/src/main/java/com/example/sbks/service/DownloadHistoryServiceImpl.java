@@ -1,7 +1,6 @@
 package com.example.sbks.service;
 
 import com.example.sbks.dto.DownloadHistoryDto;
-import com.example.sbks.dto.InfoDto;
 import com.example.sbks.exception.NoSuchDataFileException;
 import com.example.sbks.mapper.MapperForModel;
 import com.example.sbks.model.DownloadHistory;
@@ -27,41 +26,39 @@ public class DownloadHistoryServiceImpl implements DownloadHistoryService {
 
     @Transactional
     @Override
-    public InfoDto saveByName(DownloadHistoryDto downloadHistoryDto) {
+    public DownloadHistoryDto saveByName(DownloadHistoryDto downloadHistoryDto) {
         DownloadHistory downloadHistory = mapper.dtoToDownloadHistory(downloadHistoryDto);
-        InfoDto infoDto = new InfoDto();
         messageService.getByName(downloadHistory.getFileName())
                 .map(message -> {
                     downloadHistory.setMessage(message);
-                    infoDto.setInfo(message.getFileNameForS3());
+                    downloadHistoryDto.setFileName(message.getFileNameForS3());
                     log.info("Запись события скачивания файла");
                     downloadHistoryRepository.save(downloadHistory);
                     return message;
                 }).orElseThrow(() -> new NoSuchDataFileException(
-                        String.format("Данные о файле с именем %s в БД отсутствуют",
-                                downloadHistory.getFileName()))
-                );
-        return infoDto;
+                String.format("Данные о файле с именем %s в БД отсутствуют",
+                        downloadHistory.getFileName()))
+        );
+        return downloadHistoryDto;
     }
 
     @Transactional
     @Override
-    public InfoDto saveById(DownloadHistoryDto downloadHistoryDto) {
+    public DownloadHistoryDto saveById(DownloadHistoryDto downloadHistoryDto) {
         DownloadHistory downloadHistory = mapper.dtoToDownloadHistory(downloadHistoryDto);
-        InfoDto infoDto = new InfoDto();
         messageService.getById(downloadHistoryDto.getId())
                 .map(message -> {
                     downloadHistory.setMessage(message);
                     downloadHistory.setFileName(message.getOriginFileName());
-                    infoDto.setInfo(message.getFileNameForS3());
+                    downloadHistoryDto.setFileName(message.getFileNameForS3());
                     log.info("Запись события скачивания файла");
                     downloadHistoryRepository.save(downloadHistory);
                     return message;
                 }).orElseThrow(() -> new NoSuchDataFileException(
-                        String.format("Данные о файле с id=%d в БД отсутствуют",
-                                downloadHistory.getId()))
-                );
-        return infoDto;
+                String.format("Данные о файле с id=%d в БД отсутствуют",
+                        downloadHistory.getId()))
+        );
+        return downloadHistoryDto;
     }
 
     @Override

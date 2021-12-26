@@ -4,10 +4,8 @@ import com.example.sbks.dto.DownloadHistoryDto;
 import com.example.sbks.dto.InfoDto;
 import com.example.sbks.dto.MessageDto;
 import com.example.sbks.service.DownloadHistoryService;
-import com.example.sbks.service.DownloadHistoryServiceImpl;
 import com.example.sbks.service.MessageSenderKafkaService;
 import com.example.sbks.service.MessageServiceImpl;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,15 +33,19 @@ class MessageControllerTest {
 
     @Test
     void check_createMessage_Should_Return_ResponseEntityOfInfoDto() throws Exception {
-        mockMvc.perform(post("/api/sdk/create").content(objectMapper.writeValueAsString(new MessageDto()))
-                        .contentType(MediaType.APPLICATION_JSON_VALUE))
+        mockMvc.perform(post("/api/sdk/create")
+                .content(objectMapper.writeValueAsString(new MessageDto()))
+                .contentType(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(status().isOk())
-        .andExpect(jsonPath("$.isError").value(false));
+                .andExpect(content().json(objectMapper.writeValueAsString(new InfoDto())))
+                .andExpect(jsonPath("$.isError").value(false))
+                .andReturn();
     }
 
     @Test
     void check_getAllMessages_Should_Return_ResponseEntityOfList() throws Exception {
-        mockMvc.perform(get("/api/sdk/files").contentType(MediaType.APPLICATION_JSON_VALUE))
+        mockMvc.perform(get("/api/sdk/files")
+                .contentType(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(status().isOk())
                 .andExpect(content().json(objectMapper.writeValueAsString(Collections.emptyList())));
     }
@@ -51,26 +53,40 @@ class MessageControllerTest {
     @Test
     void check_deleteById_Should_Return_ResponseEntityOfInfoDto() throws Exception {
         mockMvc.perform(post("/api/sdk/delete").content(objectMapper.writeValueAsString(5L))
-                        .contentType(MediaType.APPLICATION_JSON_VALUE))
+                .contentType(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.isError").value(false));
     }
 
     @Test
     void check_findById_Should_Return_ResponseEntityOfInfoDto() throws Exception {
-        DownloadHistoryDto downloadHistoryDto = new DownloadHistoryDto();
-        downloadHistoryDto.setId(5L);
         mockMvc.perform(post("/api/sdk/open-id")
-                        .content(objectMapper.writeValueAsString(downloadHistoryDto))
-                        .contentType(MediaType.APPLICATION_JSON_VALUE))
-                .andExpect(status().isOk());
+                .content(objectMapper.writeValueAsString(new DownloadHistoryDto()))
+                .contentType(MediaType.APPLICATION_JSON_VALUE))
+                .andExpect(status().isOk())
+                .andReturn();
     }
 
     @Test
-    void findByName() {
+    void check_findByName_Should_Return_ResponseEntityOfInfoDto() throws Exception {
+        DownloadHistoryDto downloadHistoryDto = new DownloadHistoryDto();
+        downloadHistoryDto.setFileName("abc.txt");
+        mockMvc.perform(post("/api/sdk/open-name")
+                .content(objectMapper.writeValueAsString(downloadHistoryDto))
+                .contentType(MediaType.APPLICATION_JSON_VALUE))
+                .andExpect(status().isOk())
+                .andReturn();
     }
 
     @Test
-    void receiveMessageForSendToMessageSender() {
+    void check_receiveMessageForSendToMessageSender_Should_Return_DownloadHistoryDto() throws Exception {
+        String fileName = "abc.txt";
+        mockMvc.perform(post("/api/sdk/send-file")
+                .content(objectMapper.writeValueAsString(fileName))
+                .contentType(MediaType.APPLICATION_JSON_VALUE))
+                .andExpect(status().isOk())
+                .andExpect(content().json(objectMapper.writeValueAsString(new InfoDto())))
+                .andExpect(jsonPath("$.isError").value(false))
+                .andReturn();
     }
 }

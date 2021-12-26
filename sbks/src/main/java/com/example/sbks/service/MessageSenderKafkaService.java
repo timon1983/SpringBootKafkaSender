@@ -24,7 +24,6 @@ public class MessageSenderKafkaService implements MessageSenderService {
 
     private final static Logger log = LogManager.getLogger(MessageSenderKafkaService.class);
     private final RestTemplate restTemplate;
-    //private final MessageService messageService;
     private final MessageRepository messageRepository;
     private final String url;
     private final ServiceS3 serviceS3;
@@ -44,7 +43,6 @@ public class MessageSenderKafkaService implements MessageSenderService {
     @Transactional
     public void sendMessage(String name) throws URISyntaxException, NoSuchDataFileException {
         URI uri = new URI(url);
-        //messageService.getByName(name)
         messageRepository.findByOriginFileName(name)
                 .map(message -> {
                     message.setContent(getByteContent(message.getFileNameForS3()));
