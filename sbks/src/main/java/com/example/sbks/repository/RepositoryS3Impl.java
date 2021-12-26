@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import org.apache.commons.io.FileUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 
 import java.io.File;
@@ -16,7 +17,8 @@ import java.io.IOException;
 public class RepositoryS3Impl implements RepositoryS3 {
 
     private final static Logger log = LogManager.getLogger(RepositoryS3Impl.class);
-    private final String bucket = "springbootkafkasender";
+    @Value("${aws.s3.bucket}")
+    private final String bucket;
     private final AmazonS3 amazonS3;
 
     @Override
@@ -39,6 +41,4 @@ public class RepositoryS3Impl implements RepositoryS3 {
         FileUtils.copyInputStreamToFile(inputStream, file);
         return file;
     }
-
-
 }

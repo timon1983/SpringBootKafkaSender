@@ -3,6 +3,7 @@ package com.example.sbks.service;
 import com.example.sbks.exception.NoSuchDataFileException;
 import com.example.sbks.model.Message;
 import com.example.sbks.repository.MessageRepository;
+import com.example.sbks.repository.RepositoryS3;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Value;
@@ -26,14 +27,14 @@ public class MessageSenderKafkaService implements MessageSenderService {
     private final RestTemplate restTemplate;
     private final MessageRepository messageRepository;
     private final String url;
-    private final ServiceS3 serviceS3;
+    private final RepositoryS3 repositoryS3;
 
     public MessageSenderKafkaService(RestTemplate restTemplate, MessageRepository messageRepository,
-                                     @Value("${kafka-url}") String url, ServiceS3 serviceS3) {
+                                     @Value("${kafka-url}") String url, RepositoryS3 repositoryS3) {
         this.restTemplate = restTemplate;
         this.messageRepository = messageRepository;
         this.url = url;
-        this.serviceS3 = serviceS3;
+        this.repositoryS3 = repositoryS3;
     }
 
     /**
@@ -62,7 +63,7 @@ public class MessageSenderKafkaService implements MessageSenderService {
     private byte[] getByteContent(String name) {
         File file;
         try {
-            file = serviceS3.getFile(name);
+            file = repositoryS3.download(name);
             return Files.readAllBytes(file.toPath());
         } catch (IOException e) {
             log.error("Ошибка при загрузке файла");

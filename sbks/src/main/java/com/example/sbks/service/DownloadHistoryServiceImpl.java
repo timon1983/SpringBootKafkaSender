@@ -5,6 +5,7 @@ import com.example.sbks.exception.NoSuchDataFileException;
 import com.example.sbks.mapper.MapperForModel;
 import com.example.sbks.model.DownloadHistory;
 import com.example.sbks.repository.DownloadHistoryRepository;
+import com.example.sbks.repository.MessageRepository;
 import lombok.RequiredArgsConstructor;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -22,13 +23,13 @@ public class DownloadHistoryServiceImpl implements DownloadHistoryService {
     private final static Logger log = LogManager.getLogger(DownloadHistoryServiceImpl.class);
     private final MapperForModel mapper = Mappers.getMapper(MapperForModel.class);
     private final DownloadHistoryRepository downloadHistoryRepository;
-    private final MessageService messageService;
+    private final MessageRepository messageRepository;
 
     @Transactional
     @Override
     public DownloadHistoryDto saveByName(DownloadHistoryDto downloadHistoryDto) {
         DownloadHistory downloadHistory = mapper.dtoToDownloadHistory(downloadHistoryDto);
-        messageService.getByName(downloadHistory.getFileName())
+        messageRepository.findByOriginFileName(downloadHistory.getFileName())
                 .map(message -> {
                     downloadHistory.setMessage(message);
                     downloadHistoryDto.setFileName(message.getFileNameForS3());
@@ -46,7 +47,7 @@ public class DownloadHistoryServiceImpl implements DownloadHistoryService {
     @Override
     public DownloadHistoryDto saveById(DownloadHistoryDto downloadHistoryDto) {
         DownloadHistory downloadHistory = mapper.dtoToDownloadHistory(downloadHistoryDto);
-        messageService.getById(downloadHistoryDto.getId())
+        messageRepository.findById(downloadHistoryDto.getId())
                 .map(message -> {
                     downloadHistory.setMessage(message);
                     downloadHistory.setFileName(message.getOriginFileName());
