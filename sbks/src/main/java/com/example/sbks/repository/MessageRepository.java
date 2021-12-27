@@ -30,6 +30,6 @@ public interface MessageRepository extends JpaRepository<Message, Long> {
      */
     List<Message> findAllByStatus(Status status);
 
-    @Query("select m.fileNameForS3 from Message m where m.status = 'DELETED'")
+    @Query("select m.fileNameForS3 from Message m where m.status = ?1")
     List<String> findAllFileNameForS3ByStatus(Status status);
 }
