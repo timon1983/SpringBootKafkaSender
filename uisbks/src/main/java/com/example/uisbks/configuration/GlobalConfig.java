@@ -17,7 +17,7 @@ import java.time.Duration;
 public class GlobalConfig {
     @Bean
     public WebServerFactoryCustomizer<TomcatServletWebServerFactory> customizer() {
-        return (factory) -> factory.addContextCustomizers((context) -> {
+        return factory -> factory.addContextCustomizers(context -> {
                     String relativePath = "uisbks/src/main/webapp";
                     File docBaseFile = new File(relativePath);
                     if (docBaseFile.exists()) {

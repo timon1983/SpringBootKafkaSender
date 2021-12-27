@@ -1,5 +1,5 @@
 create table if not exists messages(
-                                       id serial,
+                                       id serial not null,
                                        primary key (id),
                                        title varchar(45) not null,
                                        size int not null default 0,
