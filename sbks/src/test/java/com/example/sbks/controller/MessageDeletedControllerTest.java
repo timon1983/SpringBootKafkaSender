@@ -1,7 +1,8 @@
 package com.example.sbks.controller;
 
+import com.example.sbks.dto.InfoDto;
 import com.example.sbks.service.MessageDeletedService;
-import com.example.sbks.service.MessageServiceImpl;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,10 +13,9 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.Collections;
 
-import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(MessageDeletedController.class)
 @MockBean(MessageDeletedService.class)
@@ -35,14 +35,28 @@ class MessageDeletedControllerTest {
     }
 
     @Test
-    void check_deleteAllMessages() {
+    void check_deleteAllMessages() throws Exception {
+        mockMvc.perform(get("/api/sdk/files-clean")
+                        .contentType(MediaType.APPLICATION_JSON_VALUE))
+                .andExpect(status().isOk())
+                .andExpect(content().json(objectMapper.writeValueAsString(Collections.emptyList())));
     }
 
     @Test
-    void deletingTheFileAtAll() {
+    void deletingTheFileAtAll() throws Exception {
+        mockMvc.perform(post("/api/sdk/full-delete").content(objectMapper.writeValueAsString(5L))
+                .contentType(MediaType.APPLICATION_JSON_VALUE))
+                .andExpect(status().isOk())
+                .andExpect(content().json(objectMapper.writeValueAsString(new InfoDto())))
+                .andExpect(jsonPath("$.isError").value(false));
     }
 
     @Test
-    void restoreMessageById() {
+    void restoreMessageById() throws Exception {
+        mockMvc.perform(post("/api/sdk/restore-file").content(objectMapper.writeValueAsString(5L))
+                        .contentType(MediaType.APPLICATION_JSON_VALUE))
+                .andExpect(status().isOk())
+                .andExpect(content().json(objectMapper.writeValueAsString(new InfoDto())))
+                .andExpect(jsonPath("$.isError").value(false));
     }
 }

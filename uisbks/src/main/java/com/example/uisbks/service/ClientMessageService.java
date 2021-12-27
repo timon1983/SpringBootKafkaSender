@@ -93,7 +93,6 @@ public class ClientMessageService {
         return "/create/files";
     }
 
-
     /**
      * Метод для выполнения операций по удалению файла
      */
