@@ -86,7 +86,7 @@ public class ClientMessageController {
      * Получение файла по имени
      */
     @GetMapping("/open-file-name/{ip}")
-    public String openFileByName(@RequestParam String name, @PathVariable String ip) {
+    public String openFileByName(@RequestParam String name, @PathVariable String ip) throws IOException {
         DTODownloadHistory downloadHistory = clientDTOMessageService.getDTODownloadHistoryByName(name, ip);
         String url = clientMessageService.doOperationWithFilesForOpenByName(downloadHistory);
         return String.join("",

@@ -73,12 +73,14 @@ public class ClientMessageService {
     /**
      * Метод проверки DTOInfoModelClient на null
      */
-    private String getStringAfterCheckDtoInfoModelClient(DTODownloadHistory dtoDownloadHistory, DTOInfoModelClient dtoInfoModelClient) {
+    private String getStringAfterCheckDtoInfoModelClient(DTODownloadHistory dtoDownloadHistory,
+                                                         DTOInfoModelClient dtoInfoModelClient) {
         if (dtoInfoModelClient != null && dtoInfoModelClient.getIsError()) {
             log.error(dtoInfoModelClient.getInfo());
             throw new NoIdException(dtoInfoModelClient.getInfo());
         } else if (dtoInfoModelClient != null && !dtoInfoModelClient.getIsError()) {
-            log.info("Файл получен: [id: {}, name: {}]", dtoDownloadHistory.getId(), dtoDownloadHistory.getFileName());
+            log.info("Файл получен: [id: {}, name: {}]", dtoDownloadHistory.getId(),
+                    dtoDownloadHistory.getFileName());
             if (clientCacheService.isCached(dtoInfoModelClient.getInfo(), "uisbks/files/")) {
                 log.info("Файл {} получен из кеша", dtoInfoModelClient.getInfo());
                 throw new NoIdException(String.format("Файл доступен в локальном хранилище по пути D:" +

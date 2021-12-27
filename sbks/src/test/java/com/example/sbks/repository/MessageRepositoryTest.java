@@ -2,9 +2,9 @@ package com.example.sbks.repository;
 
 import com.example.sbks.model.Message;
 import com.example.sbks.model.Status;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.test.context.ActiveProfiles;
@@ -17,25 +17,18 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @DataJpaTest
-@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @ActiveProfiles("test")
 class MessageRepositoryTest {
 
     @Autowired
-    private TestEntityManager entityManager;
-    @Autowired
     MessageRepository messageRepository;
+    Message message1;
+    Message message2;
 
 
-//    @BeforeEach
-//    void getMessage() {
-//
-//    }
-
-    @Test
-    void findByOriginFileName_ShouldReturnOptionalOfMessage() {
-        Message message = Message.builder()
-                .id(1L)
+    @BeforeEach
+    void getMessage() {
+        message1 = Message.builder()
                 .originFileName("abc.txt")
                 .fileNameForS3("1234.txt")
                 .author("timon")
@@ -45,30 +38,39 @@ class MessageRepositoryTest {
                 .contentType("txt")
                 .status(Status.UPLOAD)
                 .build();
-        messageRepository.save(message);
+        message2 = Message.builder()
+                .originFileName("abcd.txt")
+                .fileNameForS3("12345.txt")
+                .author("timon83")
+                .title("file2")
+                .dateOfCreate(LocalDateTime.now())
+                .size(48L)
+                .contentType("txt")
+                .status(Status.UPLOAD)
+                .build();
+    }
 
-        messageRepository.findByOriginFileName(message.getOriginFileName())
-                .map(foundMessage -> {
-                    assertEquals(foundMessage.getOriginFileName(), message.getOriginFileName());
-                    assertEquals(foundMessage.getFileNameForS3(), message.getFileNameForS3());
-                    assertEquals(foundMessage.getAuthor(), message.getAuthor());
-                    assertEquals(foundMessage.getTitle(), message.getTitle());
-                    assertEquals(foundMessage.getDateOfCreate(), message.getDateOfCreate());
-                    assertEquals(foundMessage.getSize(), message.getSize());
-                    assertEquals(foundMessage.getContentType(), message.getContentType());
-                    assertEquals(foundMessage.getStatus(), message.getStatus());
-                    return foundMessage;
-                }).orElseThrow(() -> {
-                    throw new NullPointerException();
-                });
+    @Test
+    void findByOriginFileName_ShouldReturnOptionalOfMessage() {
+        messageRepository.save(message1);
+
+        var foundMessage = messageRepository.findByOriginFileName(message1.getOriginFileName())
+                .orElseThrow(NullPointerException::new);
+
+        assertEquals(foundMessage.getOriginFileName(), message1.getOriginFileName());
+        assertEquals(foundMessage.getFileNameForS3(), message1.getFileNameForS3());
+        assertEquals(foundMessage.getAuthor(), message1.getAuthor());
+        assertEquals(foundMessage.getTitle(), message1.getTitle());
+        assertEquals(foundMessage.getDateOfCreate(), message1.getDateOfCreate());
+        assertEquals(foundMessage.getSize(), message1.getSize());
+        assertEquals(foundMessage.getContentType(), message1.getContentType());
+        assertEquals(foundMessage.getStatus(), message1.getStatus());
     }
 
     @Test
     void deleteAllByStatus_ShouldDeleteAllMessageByStatus() {
-//        entityManager.persist(message);
-//        entityManager.persist(message);
-//        entityManager.persist(message);
-//        entityManager.flush();
+        messageRepository.save(message1);
+        messageRepository.save(message2);
         messageRepository.deleteAllByStatus(Status.UPLOAD);
         List<Message> uploadMessages = messageRepository.findAllByStatus(Status.UPLOAD);
         assertNotNull(uploadMessages);
@@ -77,27 +79,20 @@ class MessageRepositoryTest {
 
     @Test
     void findAllByStatus_ShouldReturnListMessagesByStatus() {
-//        entityManager.persist(message);
-//        entityManager.persist(message);
-//        entityManager.persist(message);
-//        entityManager.persist(message);
-//        entityManager.flush();
+        messageRepository.save(message1);
+        messageRepository.save(message2);
         List<Message> uploadMessages = messageRepository.findAllByStatus(Status.UPLOAD);
         assertNotNull(uploadMessages);
-        assertEquals(uploadMessages.size(), 3);
-        assertEquals(uploadMessages.get(2).getStatus(), Status.UPLOAD);
+        assertEquals(uploadMessages.size(), 2);
+        assertEquals(uploadMessages.get(1).getStatus(), Status.UPLOAD);
     }
 
     @Test
     void findAllFileNameForS3ByStatus_ShouldReturnListOfNames() {
-//        entityManager.persist(message);
-//        entityManager.persist(message);
-//        entityManager.persist(message);
-//        entityManager.persist(message);
-//        entityManager.flush();
+        messageRepository.save(message1);
+        messageRepository.save(message2);
         List<String> fileNames = messageRepository.findAllFileNameForS3ByStatus(Status.UPLOAD);
         assertNotNull(fileNames);
-        assertEquals(fileNames.size(), 3);
-        //assertEquals(fileNames.get(2), message.getFileNameForS3());
+        assertEquals(fileNames.size(), 2);
     }
 }
