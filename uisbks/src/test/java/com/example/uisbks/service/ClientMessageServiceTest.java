@@ -47,14 +47,14 @@ class ClientMessageServiceTest {
     }
 
     @Test
-    void doOperationToDeleteFiles() {
+    void check_doOperationToDeleteFiles() {
         clientMessageService.doOperationToDeleteFiles(5L);
         verify(clientMessageService).doOperationToDeleteFiles(5L);
 
     }
 
     @Test
-    void doOperationToSendFiles() {
+    void check_doOperationToSendFiles() {
         clientMessageService.doOperationToSendFiles("abc.txt");
         verify(clientMessageService).doOperationToSendFiles("abc.txt");
     }

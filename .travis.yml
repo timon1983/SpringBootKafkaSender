@@ -8,12 +8,17 @@ services:
 
 before_install:
   - psql -c 'CREATE DATABASE kafkasend;'
+  - chmod +x gradlew
+before_cache:
+  - rm -f  $HOME/.gradle/caches/modules-2/modules-2.lock
+  - rm -fr $HOME/.gradle/caches/*/plugin-resolution/
 
-install:
-  - mvn install -DskipTests=true -Dmaven.javadoc.skip=true -B -V
+
+#install:
+#  - mvn install -DskipTests=true -Dmaven.javadoc.skip=true -B -V
 
 script:
-  - mvn test -B
+  - ./gradlew build
 
 notifications:
   email: timon1983@yandex.ru

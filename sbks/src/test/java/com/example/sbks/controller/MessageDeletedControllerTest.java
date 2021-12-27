@@ -2,7 +2,6 @@ package com.example.sbks.controller;
 
 import com.example.sbks.dto.InfoDto;
 import com.example.sbks.service.MessageDeletedService;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,7 +44,7 @@ class MessageDeletedControllerTest {
     @Test
     void deletingTheFileAtAll() throws Exception {
         mockMvc.perform(post("/api/sdk/full-delete").content(objectMapper.writeValueAsString(5L))
-                .contentType(MediaType.APPLICATION_JSON_VALUE))
+                        .contentType(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(status().isOk())
                 .andExpect(content().json(objectMapper.writeValueAsString(new InfoDto())))
                 .andExpect(jsonPath("$.isError").value(false));
