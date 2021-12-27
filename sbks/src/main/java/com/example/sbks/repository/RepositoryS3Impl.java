@@ -13,13 +13,16 @@ import java.io.File;
 import java.io.IOException;
 
 @Repository
-@RequiredArgsConstructor
 public class RepositoryS3Impl implements RepositoryS3 {
 
     private final static Logger log = LogManager.getLogger(RepositoryS3Impl.class);
-    @Value("${aws.s3.bucket}")
     private final String bucket;
     private final AmazonS3 amazonS3;
+
+    public RepositoryS3Impl(@Value("${aws.s3.bucket}")String bucket, AmazonS3 amazonS3) {
+        this.bucket = bucket;
+        this.amazonS3 = amazonS3;
+    }
 
     @Override
     public void save(File file, String fileName) {

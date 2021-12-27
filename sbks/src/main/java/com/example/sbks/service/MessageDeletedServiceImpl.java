@@ -36,11 +36,12 @@ public class MessageDeletedServiceImpl implements MessageDeletedService {
 
     @Override
     @Transactional
-    public void deleteAll() {
-        List<MessageDto> messages = getAll();
-        messages.forEach(message -> serviceS3.delete(message.getFileNameForS3()));
+    public List<String> deleteAll() {
+        List<String> fileNames = messageRepository.findAllFileNameForS3ByStatus(Status.DELETED);
+        fileNames.forEach(serviceS3::delete);
         messageRepository.deleteAllByStatus(Status.DELETED);
         log.info("Service.Записи в таблице удалены");
+        return fileNames;
     }
 
     @Override
@@ -77,5 +78,4 @@ public class MessageDeletedServiceImpl implements MessageDeletedService {
                                     id));
                         });
     }
-
 }

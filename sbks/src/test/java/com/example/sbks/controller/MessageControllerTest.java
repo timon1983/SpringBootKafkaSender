@@ -38,8 +38,7 @@ class MessageControllerTest {
                 .contentType(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(status().isOk())
                 .andExpect(content().json(objectMapper.writeValueAsString(new InfoDto())))
-                .andExpect(jsonPath("$.isError").value(false))
-                .andReturn();
+                .andExpect(jsonPath("$.isError").value(false));
     }
 
     @Test
@@ -63,8 +62,7 @@ class MessageControllerTest {
         mockMvc.perform(post("/api/sdk/open-id")
                 .content(objectMapper.writeValueAsString(new DownloadHistoryDto()))
                 .contentType(MediaType.APPLICATION_JSON_VALUE))
-                .andExpect(status().isOk())
-                .andReturn();
+                .andExpect(status().isOk());
     }
 
     @Test
@@ -74,8 +72,7 @@ class MessageControllerTest {
         mockMvc.perform(post("/api/sdk/open-name")
                 .content(objectMapper.writeValueAsString(downloadHistoryDto))
                 .contentType(MediaType.APPLICATION_JSON_VALUE))
-                .andExpect(status().isOk())
-                .andReturn();
+                .andExpect(status().isOk());
     }
 
     @Test
@@ -86,7 +83,6 @@ class MessageControllerTest {
                 .contentType(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(status().isOk())
                 .andExpect(content().json(objectMapper.writeValueAsString(new InfoDto())))
-                .andExpect(jsonPath("$.isError").value(false))
-                .andReturn();
+                .andExpect(jsonPath("$.isError").value(false));
     }
 }

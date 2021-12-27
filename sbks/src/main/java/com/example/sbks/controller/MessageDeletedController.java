@@ -23,7 +23,6 @@ public class MessageDeletedController {
 
     private final static Logger log = LogManager.getLogger(MessageDeletedController.class);
     private final MessageDeletedService messageDeletedService;
-    private final MessageService messageService;
 
     /**
      * Получение списка удаленных файлов
@@ -39,11 +38,10 @@ public class MessageDeletedController {
      * Очистка списка удаленных файлов
      */
     @GetMapping("/files-clean")
-    public ResponseEntity<List<MessageDto>> deleteAllMessages() {
-        List<MessageDto> messages = messageDeletedService.getAll();
-        messageDeletedService.deleteAll();
+    public ResponseEntity<List<String>> deleteAllMessages() {
+        List<String> fileNames = messageDeletedService.deleteAll();
         log.info("Контроллер.Запрос на очистку списка удаленных файлов");
-        return new ResponseEntity<>(messages, HttpStatus.OK);
+        return new ResponseEntity<>(fileNames, HttpStatus.OK);
     }
 
     /**

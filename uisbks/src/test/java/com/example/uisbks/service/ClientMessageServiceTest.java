@@ -21,24 +21,29 @@ class ClientMessageServiceTest {
     ClientMessageService clientMessageService;
 
     @Test
-    void doOperationToSaveFiles() throws URISyntaxException, IOException {
+    void check_doOperationToSaveFiles() throws URISyntaxException, IOException {
         DTOMessage dtoMessage = new DTOMessage();
         clientMessageService.doOperationToSaveFiles(dtoMessage);
         verify(clientMessageService).doOperationToSaveFiles(dtoMessage);
     }
 
     @Test
-    void getListOfFiles() {
+    void check_getListOfFiles_Should_Return_ListOfFiles() {
         lenient().when(clientMessageService.getListOfFiles()).thenReturn(Collections.emptyList());
     }
 
     @Test
-    void doOperationWithFilesForOpenByIdOrByName() {
-        String urlEndPoint = "open-id";
+    void check_doOperationWithFilesForOpenById_Should_Return_RedirectPage() {
         DTODownloadHistory dtoDownloadHistory = new DTODownloadHistory();
-        lenient().when(clientMessageService.doOperationWithFilesForOpenByIdOrByName(urlEndPoint, dtoDownloadHistory))
+        lenient().when(clientMessageService.doOperationWithFilesForOpenById(dtoDownloadHistory))
                 .thenReturn("/create/files");
+    }
 
+    @Test
+    void check_doOperationWithFilesForOpenByName_Should_Return_RedirectPage(){
+        DTODownloadHistory dtoDownloadHistory = new DTODownloadHistory();
+        lenient().when(clientMessageService.doOperationWithFilesForOpenByName(dtoDownloadHistory))
+                .thenReturn("/create/files");
     }
 
     @Test

@@ -53,11 +53,27 @@ public class ClientMessageService {
     }
 
     /**
-     * Метод для выполнения операций скачивания файла по id или по имени
+     * Метод для выполнения операций скачивания файла по id
      */
-    public String doOperationWithFilesForOpenByIdOrByName(String urlEndPoint, DTODownloadHistory dtoDownloadHistory) {
-        DTOInfoModelClient dtoInfoModelClient = restTemplate.postForObject(clientDTOMessageService.getUrl(urlEndPoint),
+    public String doOperationWithFilesForOpenById(DTODownloadHistory dtoDownloadHistory) {
+        DTOInfoModelClient dtoInfoModelClient = restTemplate.postForObject(clientDTOMessageService.getUrl("open-id"),
                 dtoDownloadHistory, DTOInfoModelClient.class);
+        return getStringAfterCheckDtoInfoModelClient(dtoDownloadHistory, dtoInfoModelClient);
+    }
+
+    /**
+     * Метод для выполнения операций скачивания файла по имени
+     */
+    public String doOperationWithFilesForOpenByName(DTODownloadHistory dtoDownloadHistory) {
+        DTOInfoModelClient dtoInfoModelClient = restTemplate.postForObject(clientDTOMessageService.getUrl("open-name"),
+                dtoDownloadHistory, DTOInfoModelClient.class);
+        return getStringAfterCheckDtoInfoModelClient(dtoDownloadHistory, dtoInfoModelClient);
+    }
+
+    /**
+     * Метод проверки DTOInfoModelClient на null
+     */
+    private String getStringAfterCheckDtoInfoModelClient(DTODownloadHistory dtoDownloadHistory, DTOInfoModelClient dtoInfoModelClient) {
         if (dtoInfoModelClient != null && dtoInfoModelClient.getIsError()) {
             log.error(dtoInfoModelClient.getInfo());
             throw new NoIdException(dtoInfoModelClient.getInfo());
@@ -77,13 +93,11 @@ public class ClientMessageService {
         return "/create/files";
     }
 
+
     /**
      * Метод для выполнения операций по удалению файла
      */
     public void doOperationToDeleteFiles(Long id) {
-        if (id == 0) {
-            throw new NoIdException("Введите id для удаления файла");
-        }
         DTOInfoModelClient dtoInfoModelClient =
                 restTemplate.postForObject(clientDTOMessageService.getUrl("delete"), id, DTOInfoModelClient.class);
         if (dtoInfoModelClient != null && dtoInfoModelClient.getIsError()) {
