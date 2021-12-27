@@ -18,15 +18,26 @@ class ClientMessageDeletedServiceTest {
     ClientMessageDeletedService clientMessageDeletedService;
 
     @Test
-    void doOperationWithDeletedFile() throws IOException {
-        clientMessageDeletedService.doOperationWithDeletedFile("full-delete", "полностью удален", 5L);
-        verify(clientMessageDeletedService)
-                .doOperationWithDeletedFile("full-delete", "полностью удален", 5L);
+    void check_fullDeleteOfFile() throws IOException {
+        clientMessageDeletedService.fullDeleteOfFile(5L);
+        verify(clientMessageDeletedService).fullDeleteOfFile(5L);
     }
 
     @Test
-    void doOperationWithListOfDeletedFile() {
-        lenient().when(clientMessageDeletedService.doOperationWithListOfDeletedFile("files-deleted"))
+    void check_restoreFile() throws IOException {
+        clientMessageDeletedService.restoreFile(5L);
+        verify(clientMessageDeletedService).restoreFile(5L);
+    }
+
+    @Test
+    void check_getListOfDeletedFile_Should_Return_ListOfFiles() {
+        lenient().when(clientMessageDeletedService.getListOfDeletedFile())
+                .thenReturn(Collections.emptyList());
+    }
+
+    @Test
+    void check_cleanListOfDeletedFile_Should_Return_ListOfFileNames(){
+        lenient().when(clientMessageDeletedService.cleanListOfDeletedFile())
                 .thenReturn(Collections.emptyList());
     }
 }

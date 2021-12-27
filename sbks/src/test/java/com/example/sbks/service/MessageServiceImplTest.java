@@ -1,28 +1,47 @@
 package com.example.sbks.service;
 
+import com.example.sbks.dto.MessageDto;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 
-import static org.junit.jupiter.api.Assertions.*;
+import java.util.Collections;
+import java.util.Optional;
 
+import static org.mockito.Mockito.lenient;
+import static org.mockito.Mockito.verify;
+
+@ExtendWith(MockitoExtension.class)
 class MessageServiceImplTest {
 
+    @Mock
+    MessageServiceImpl messageService;
+
     @Test
-    void save() {
+    void check_save_Should_Return_MessageDto() {
+        MessageDto messageDto = new MessageDto();
+        lenient().when(messageService.save(messageDto)).thenReturn(messageDto);
     }
 
     @Test
-    void getAll() {
+    void check_getAll_Should_Return_ListOfMessageDto() {
+        lenient().when(messageService.getAll()).thenReturn(Collections.emptyList());
     }
 
     @Test
-    void deleteById() {
+    void check_deleteById() {
+        messageService.deleteById(5L);
+        verify(messageService).deleteById(5L);
     }
 
     @Test
-    void getById() {
+    void check_getById_Should_Return_Optional() {
+        lenient().when(messageService.getById(5L)).thenReturn(Optional.empty());
     }
 
     @Test
-    void getByName() {
+    void check_getByName_Should_Return_Optional() {
+        lenient().when(messageService.getByName("abc.txt")).thenReturn(Optional.empty());
     }
 }

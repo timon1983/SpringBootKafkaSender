@@ -34,18 +34,17 @@ class MessageControllerTest {
     @Test
     void check_createMessage_Should_Return_ResponseEntityOfInfoDto() throws Exception {
         mockMvc.perform(post("/api/sdk/create")
-                .content(objectMapper.writeValueAsString(new MessageDto()))
-                .contentType(MediaType.APPLICATION_JSON_VALUE))
+                        .content(objectMapper.writeValueAsString(new MessageDto()))
+                        .contentType(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(status().isOk())
                 .andExpect(content().json(objectMapper.writeValueAsString(new InfoDto())))
-                .andExpect(jsonPath("$.isError").value(false))
-                .andReturn();
+                .andExpect(jsonPath("$.isError").value(false));
     }
 
     @Test
     void check_getAllMessages_Should_Return_ResponseEntityOfList() throws Exception {
         mockMvc.perform(get("/api/sdk/files")
-                .contentType(MediaType.APPLICATION_JSON_VALUE))
+                        .contentType(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(status().isOk())
                 .andExpect(content().json(objectMapper.writeValueAsString(Collections.emptyList())));
     }
@@ -53,7 +52,7 @@ class MessageControllerTest {
     @Test
     void check_deleteById_Should_Return_ResponseEntityOfInfoDto() throws Exception {
         mockMvc.perform(post("/api/sdk/delete").content(objectMapper.writeValueAsString(5L))
-                .contentType(MediaType.APPLICATION_JSON_VALUE))
+                        .contentType(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.isError").value(false));
     }
@@ -61,10 +60,9 @@ class MessageControllerTest {
     @Test
     void check_findById_Should_Return_ResponseEntityOfInfoDto() throws Exception {
         mockMvc.perform(post("/api/sdk/open-id")
-                .content(objectMapper.writeValueAsString(new DownloadHistoryDto()))
-                .contentType(MediaType.APPLICATION_JSON_VALUE))
-                .andExpect(status().isOk())
-                .andReturn();
+                        .content(objectMapper.writeValueAsString(new DownloadHistoryDto()))
+                        .contentType(MediaType.APPLICATION_JSON_VALUE))
+                .andExpect(status().isOk());
     }
 
     @Test
@@ -72,21 +70,19 @@ class MessageControllerTest {
         DownloadHistoryDto downloadHistoryDto = new DownloadHistoryDto();
         downloadHistoryDto.setFileName("abc.txt");
         mockMvc.perform(post("/api/sdk/open-name")
-                .content(objectMapper.writeValueAsString(downloadHistoryDto))
-                .contentType(MediaType.APPLICATION_JSON_VALUE))
-                .andExpect(status().isOk())
-                .andReturn();
+                        .content(objectMapper.writeValueAsString(downloadHistoryDto))
+                        .contentType(MediaType.APPLICATION_JSON_VALUE))
+                .andExpect(status().isOk());
     }
 
     @Test
     void check_receiveMessageForSendToMessageSender_Should_Return_DownloadHistoryDto() throws Exception {
         String fileName = "abc.txt";
         mockMvc.perform(post("/api/sdk/send-file")
-                .content(objectMapper.writeValueAsString(fileName))
-                .contentType(MediaType.APPLICATION_JSON_VALUE))
+                        .content(objectMapper.writeValueAsString(fileName))
+                        .contentType(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(status().isOk())
                 .andExpect(content().json(objectMapper.writeValueAsString(new InfoDto())))
-                .andExpect(jsonPath("$.isError").value(false))
-                .andReturn();
+                .andExpect(jsonPath("$.isError").value(false));
     }
 }

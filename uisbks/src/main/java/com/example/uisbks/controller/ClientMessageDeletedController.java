@@ -38,7 +38,7 @@ public class ClientMessageDeletedController {
     public String getAllFiles(Model model) {
         log.info("Получение запроса на список удаленных файлов");
         List<LinkedHashMap<String, Object>> dtoMessages =
-                clientMessageDeletedService.doOperationWithListOfDeletedFile("files-deleted");
+                clientMessageDeletedService.getListOfDeletedFile();
         model.addAttribute("listOfFiles", dtoMessages);
         return JspPage.FILE_LIST_DELETED;
     }
@@ -49,9 +49,8 @@ public class ClientMessageDeletedController {
     @GetMapping("/clean")
     public String deleteAll(Model model) {
         log.info("Получение запроса на очистку списка удаленных файлов");
-        List<LinkedHashMap<String, Object>> dtoMessages =
-                clientMessageDeletedService.doOperationWithListOfDeletedFile("files-clean");
-        model.addAttribute("listOfFiles", dtoMessages);
+        List<String> fileNames = clientMessageDeletedService.cleanListOfDeletedFile();
+        model.addAttribute("listOfFiles", fileNames);
         log.info("Список удаленных файлов очищен");
         return JspPage.FILE_LIST_DELETED;
     }
@@ -61,7 +60,7 @@ public class ClientMessageDeletedController {
      */
     @GetMapping("/full/{id}")
     public String fullDelete(@PathVariable Long id) throws IOException {
-        clientMessageDeletedService.doOperationWithDeletedFile("full-delete", "полностью удален", id);
+        clientMessageDeletedService.fullDeleteOfFile(id);
         return "redirect:/deleted";
     }
 
@@ -70,7 +69,7 @@ public class ClientMessageDeletedController {
      */
     @GetMapping("/restore/{id}")
     public String restoreFile(@PathVariable Long id) throws IOException {
-        clientMessageDeletedService.doOperationWithDeletedFile("restore-file", "восстановлен", id);
+        clientMessageDeletedService.restoreFile(id);
         return "redirect:/deleted";
     }
 }

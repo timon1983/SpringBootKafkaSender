@@ -18,7 +18,7 @@ public interface MessageDeletedService {
     /**
      * Удаление всех записей в таблице messages_deleted
      */
-    void deleteAll();
+    List<String> deleteAll();
 
     /**
      * Удаление всех записи на совсем в таблице по id

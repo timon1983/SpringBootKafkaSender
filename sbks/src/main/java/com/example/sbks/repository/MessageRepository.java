@@ -3,6 +3,7 @@ package com.example.sbks.repository;
 import com.example.sbks.model.Message;
 import com.example.sbks.model.Status;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -28,4 +29,7 @@ public interface MessageRepository extends JpaRepository<Message, Long> {
      * Получение списка сущностей где отсутствует дата и время удаления файла
      */
     List<Message> findAllByStatus(Status status);
+
+    @Query("select m.fileNameForS3 from Message m where m.status = 'DELETED'")
+    List<String> findAllFileNameForS3ByStatus(Status status);
 }

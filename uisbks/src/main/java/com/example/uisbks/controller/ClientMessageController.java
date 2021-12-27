@@ -76,8 +76,7 @@ public class ClientMessageController {
     @GetMapping("/open-file-id/{ip}")
     public String openFileById(@RequestParam Long id, @PathVariable String ip) {
         DTODownloadHistory downloadHistory = clientDTOMessageService.getDTODownloadHistoryById(id, ip);
-
-        String url = clientMessageService.doOperationWithFilesForOpenByIdOrByName("open-id", downloadHistory);
+        String url = clientMessageService.doOperationWithFilesForOpenById(downloadHistory);
         return String.join("",
                 "redirect:",
                 url);
@@ -89,7 +88,7 @@ public class ClientMessageController {
     @GetMapping("/open-file-name/{ip}")
     public String openFileByName(@RequestParam String name, @PathVariable String ip) {
         DTODownloadHistory downloadHistory = clientDTOMessageService.getDTODownloadHistoryByName(name, ip);
-        String url = clientMessageService.doOperationWithFilesForOpenByIdOrByName("open-name", downloadHistory);
+        String url = clientMessageService.doOperationWithFilesForOpenByName(downloadHistory);
         return String.join("",
                 "redirect:",
                 url);

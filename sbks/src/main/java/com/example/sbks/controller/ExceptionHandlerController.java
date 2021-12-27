@@ -1,6 +1,5 @@
 package com.example.sbks.controller;
 
-import com.example.sbks.dto.DownloadHistoryDto;
 import com.example.sbks.dto.InfoDto;
 import com.example.sbks.exception.NoSuchDataFileException;
 import org.springframework.http.HttpStatus;

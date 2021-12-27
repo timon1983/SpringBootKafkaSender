@@ -67,7 +67,7 @@ public class MessageController {
      * Скачивание файла по id
      */
     @PostMapping("/open-id")
-    public ResponseEntity<InfoDto> findById(@RequestBody(required = false) DownloadHistoryDto downloadHistoryDto) {
+    public ResponseEntity<InfoDto> findById(@RequestBody DownloadHistoryDto downloadHistoryDto) {
         DownloadHistoryDto downloadHistoryDtoResponse = downloadHistoryService.saveById(downloadHistoryDto);
         InfoDto infoDto = mapper.downloadHistoryDtoToInfoDto(downloadHistoryDtoResponse);
         return new ResponseEntity<>(infoDto, HttpStatus.OK);
