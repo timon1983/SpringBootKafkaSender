@@ -1,5 +1,6 @@
 package com.example.sbks.service;
 
+import com.amazonaws.services.cloudfront.model.Paths;
 import com.example.sbks.dto.MessageDto;
 import com.example.sbks.exception.NoSuchDataFileException;
 import com.example.sbks.mapper.MapperForModel;
@@ -16,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.nio.file.Path;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -33,7 +35,7 @@ public class MessageServiceImpl implements MessageService {
     @Override
     @Transactional
     public MessageDto save(MessageDto messageDto) {
-        File file = new File(messageDto.getFileNameForS3());
+        File file = Path.of(messageDto.getFileNameForS3()).toFile();
         try (FileOutputStream outputStream = new FileOutputStream(file)) {
             outputStream.write(messageDto.getContent());
         } catch (IOException e) {
