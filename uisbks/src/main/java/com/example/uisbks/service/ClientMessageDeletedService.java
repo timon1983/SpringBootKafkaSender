@@ -73,15 +73,16 @@ public class ClientMessageDeletedService {
      * Метод проверки DTOInfoModelClient на null
      */
     private void checkDtoInfoModelClient(DTOInfoModelClient dtoInfoModelClient) {
-        if (dtoInfoModelClient != null && dtoInfoModelClient.getIsError()) {
-            log.error(dtoInfoModelClient.getInfo());
-            throw new NoIdException(dtoInfoModelClient.getInfo());
-        }
-        if (dtoInfoModelClient != null && !dtoInfoModelClient.getIsError()) {
-            try {
-                Files.deleteIfExists(Paths.get(String.format("uisbks/files/%s", dtoInfoModelClient.getInfo())));
-            } catch (IOException e) {
-                throw new NoIdException("ошибка при удалении из кеша");
+        if (dtoInfoModelClient != null) {
+            if (dtoInfoModelClient.getIsError()) {
+                log.error(dtoInfoModelClient.getInfo());
+                throw new NoIdException(dtoInfoModelClient.getInfo());
+            } else {
+                try {
+                    Files.deleteIfExists(Paths.get(String.format("uisbks/files/%s", dtoInfoModelClient.getInfo())));
+                } catch (IOException e) {
+                    throw new NoIdException("ошибка при удалении из кеша");
+                }
             }
         }
     }

@@ -58,7 +58,7 @@ public class ClientMessageService {
     public String doOperationWithFilesForOpenById(DTODownloadHistory dtoDownloadHistory) {
         DTOInfoModelClient dtoInfoModelClient = restTemplate.postForObject(clientDTOMessageService.getUrl("open-id"),
                 dtoDownloadHistory, DTOInfoModelClient.class);
-        return getStringAfterCheckDtoInfoModelClient(dtoDownloadHistory, dtoInfoModelClient);
+        return getUrlForFileAfterCheckDtoInfoModelClient(dtoDownloadHistory, dtoInfoModelClient);
     }
 
     /**
@@ -67,25 +67,25 @@ public class ClientMessageService {
     public String doOperationWithFilesForOpenByName(DTODownloadHistory dtoDownloadHistory) {
         DTOInfoModelClient dtoInfoModelClient = restTemplate.postForObject(clientDTOMessageService.getUrl("open-name"),
                 dtoDownloadHistory, DTOInfoModelClient.class);
-        return getStringAfterCheckDtoInfoModelClient(dtoDownloadHistory, dtoInfoModelClient);
+        return getUrlForFileAfterCheckDtoInfoModelClient(dtoDownloadHistory, dtoInfoModelClient);
     }
 
     /**
-     * Метод проверки DTOInfoModelClient на null
+     * Метод проверки DTOInfoModelClient на наличие ошибки и проверка наличие файла в кеше
      */
-    private String getStringAfterCheckDtoInfoModelClient(DTODownloadHistory dtoDownloadHistory,
-                                                         DTOInfoModelClient dtoInfoModelClient) {
-        if (dtoInfoModelClient != null && dtoInfoModelClient.getIsError()) {
-            log.error(dtoInfoModelClient.getInfo());
-            throw new NoIdException(dtoInfoModelClient.getInfo());
-        } else if (dtoInfoModelClient != null && !dtoInfoModelClient.getIsError()) {
-            log.info("Файл получен: [id: {}, name: {}]", dtoDownloadHistory.getId(),
-                    dtoDownloadHistory.getFileName());
-            if (clientCacheService.isCached(dtoInfoModelClient.getInfo(), "uisbks/files/")) {
+    private String getUrlForFileAfterCheckDtoInfoModelClient(DTODownloadHistory dtoDownloadHistory,
+                                                             DTOInfoModelClient dtoInfoModelClient) {
+        if (dtoInfoModelClient != null) {
+            if (dtoInfoModelClient.getIsError()) {
+                log.error(dtoInfoModelClient.getInfo());
+                throw new NoIdException(dtoInfoModelClient.getInfo());
+            } else if (clientCacheService.isCached(dtoInfoModelClient.getInfo(), "uisbks/files/")) {
                 log.info("Файл {} получен из кеша", dtoInfoModelClient.getInfo());
                 throw new NoIdException(String.format("Файл доступен в локальном хранилище по пути D:" +
                         "\\Projects\\SpringBootKafkaSender\\uisbks\\files\\%s", dtoInfoModelClient.getInfo()));
             } else {
+                log.info("Файл получен: [id: {}, name: {}]", dtoDownloadHistory.getId(),
+                        dtoDownloadHistory.getFileName());
                 return String.join("",
                         publicS3Reference,
                         "/",
@@ -116,16 +116,12 @@ public class ClientMessageService {
             throw new NoIdException("Введите имя для отправки файла");
         }
         name = URLEncoder.encode(name, StandardCharsets.UTF_8);
+        log.info("Отправка файла {} в kafka", name);
         DTOInfoModelClient dtoInfoModelClient =
                 restTemplate.postForObject(clientDTOMessageService.getUrl("send-file"), name, DTOInfoModelClient.class);
-        if (dtoInfoModelClient != null && !dtoInfoModelClient.getIsError()) {
-            log.info("Файл {} отправлен в kafka", name);
-        }
         if (dtoInfoModelClient != null && dtoInfoModelClient.getIsError()) {
-            log.error(dtoInfoModelClient.getInfo());
+            log.error("Ошибка при отправке: [{}]", dtoInfoModelClient.getInfo());
             throw new NoIdException(dtoInfoModelClient.getInfo());
-        } else {
-            throw new NoIdException("Ошибка при отправке");
         }
     }
 }
