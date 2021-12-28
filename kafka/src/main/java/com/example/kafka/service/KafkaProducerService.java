@@ -12,7 +12,7 @@ public class KafkaProducerService {
 
     private final KafkaTemplate<String, Object> kafkaTemplate;
     @Value("${spring.kafka.template.default-topic}")
-    private final String topic;
+    private String topic;
 
 
     public void sendMessage(DTOKafkaMessage dtoKafkaMessage){

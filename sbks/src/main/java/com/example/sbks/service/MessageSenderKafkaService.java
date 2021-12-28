@@ -4,6 +4,7 @@ import com.example.sbks.exception.NoSuchDataFileException;
 import com.example.sbks.model.Message;
 import com.example.sbks.repository.MessageRepository;
 import com.example.sbks.repository.RepositoryS3;
+import lombok.RequiredArgsConstructor;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Value;
@@ -21,21 +22,15 @@ import java.nio.file.Files;
  * Cервис для отправки сообщения в модуль kafka
  */
 @Service
+@RequiredArgsConstructor
 public class MessageSenderKafkaService implements MessageSenderService {
 
     private final static Logger log = LogManager.getLogger(MessageSenderKafkaService.class);
     private final RestTemplate restTemplate;
     private final MessageRepository messageRepository;
-    private final String url;
+    @Value("${kafka-url}")
+    private String url;
     private final RepositoryS3 repositoryS3;
-
-    public MessageSenderKafkaService(RestTemplate restTemplate, MessageRepository messageRepository,
-                                     @Value("${kafka-url}") String url, RepositoryS3 repositoryS3) {
-        this.restTemplate = restTemplate;
-        this.messageRepository = messageRepository;
-        this.url = url;
-        this.repositoryS3 = repositoryS3;
-    }
 
     /**
      * Получение сущности Message из БД и отправка в модуль kafka

@@ -1,48 +1,52 @@
 package com.example.uisbks.service;
 
 import com.example.uisbks.dtomodel.DTOMessage;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.api.io.TempDir;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import java.io.File;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+@ExtendWith(SpringExtension.class)
+@ContextConfiguration(classes = ClientCacheService.class)
 class ClientCacheServiceTest {
 
-    ClientCacheService clientCacheService = new ClientCacheService();
+    @Autowired
+    ClientCacheService clientCacheService;
+    String fileName = "abc.txt";
 
     @Test
-    void check_isCached_Should_Return_Boolean() throws IOException {
-        String fileName = "abc.txt";
+    @Order(1)
+    void check_isCached_Should_Return_Boolean(@TempDir Path tempDir) throws IOException {
+        Path file = tempDir.resolve(fileName);
+        Files.createFile(file);
 
-        Files.createDirectories(Paths.get("test-files"));
-        Files.createFile(Paths.get(String.format("test-files/%s", fileName)));
-
-        assertTrue(clientCacheService.isCached(fileName, "test-files"));
-
-        Files.deleteIfExists(Path.of(String.format("test-files/%s", fileName)));
-        Files.deleteIfExists(Path.of("test-files"));
-
+        assertTrue(clientCacheService.isCached(fileName, tempDir.toString()));
     }
 
     @Test
-    void check_setCache_Should_Set_File_To_Cache() throws IOException {
+    @Order(2)
+    @DisplayName("Метод должен поместить файл в кеш")
+    void check_setCache_Should_Set_File_To_Cache(@TempDir Path tempDir) throws IOException {
+        Path file = tempDir.resolve(fileName);
         DTOMessage dtoMessage = new DTOMessage();
-        dtoMessage.setFileNameForS3("abc.txt");
-        dtoMessage.setContent(new byte[]{1, 2, 3, 4});
-        clientCacheService.setCache(dtoMessage, "test-files/");
-        File file = new File(String.format("test-files/%s", dtoMessage.getFileNameForS3()));
+        dtoMessage.setFileNameForS3(fileName);
+        dtoMessage.setContent("test-line".getBytes(StandardCharsets.UTF_8));
+        clientCacheService.setCache(dtoMessage, tempDir.toString());
 
-        assertTrue(file.exists());
-        assertEquals(file.getName(), "abc.txt");
-
-        Files.deleteIfExists(Path.of(String.format("test-files/%s", dtoMessage.getFileNameForS3())));
-        Files.deleteIfExists(Path.of("test-files"));
-
+        assertTrue(Files.exists(file));
+        assertEquals(file.getFileName().toString(), fileName);
+        assertEquals(Files.lines(file).findFirst().orElseThrow(NullPointerException::new), "test-line");
     }
 }
