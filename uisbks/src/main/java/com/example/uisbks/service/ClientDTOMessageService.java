@@ -13,7 +13,9 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
+import java.text.MessageFormat;
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
@@ -53,7 +55,7 @@ public class ClientDTOMessageService {
      */
     public DTODownloadHistory getDTODownloadHistoryByName(String name, String ip) {
         if (name.isBlank()) {
-            throw new NoIdException("Введите имя для открытия файла");
+            throw new NoIdException(MessageFormat.format("Параметр {} не должен быть пустым", name));
         }
         return DTODownloadHistory.builder()
                 .id(null)
