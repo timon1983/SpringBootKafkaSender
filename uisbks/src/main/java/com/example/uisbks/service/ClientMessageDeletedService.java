@@ -11,7 +11,6 @@ import org.springframework.web.client.RestTemplate;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -27,7 +26,7 @@ public class ClientMessageDeletedService {
     /**
      * Метод для выполнения операций с файлами в корзине(полное удаление, восстановление)
      */
-    public void fullDeleteOfFile(Long id) throws IOException {
+    public void fullDeleteOfFile(Long id) {
         DTOInfoModelClient dtoInfoModelClient =
                 restTemplate.postForObject(clientDTOMessageService.getUrl("full-delete"),
                         id, DTOInfoModelClient.class);
@@ -36,7 +35,7 @@ public class ClientMessageDeletedService {
     }
 
 
-    public void restoreFile(Long id) throws IOException {
+    public void restoreFile(Long id) {
         DTOInfoModelClient dtoInfoModelClient =
                 restTemplate.postForObject(clientDTOMessageService.getUrl("restore-file"),
                         id, DTOInfoModelClient.class);
@@ -73,13 +72,17 @@ public class ClientMessageDeletedService {
     /**
      * Метод проверки DTOInfoModelClient на null
      */
-    private void checkDtoInfoModelClient(DTOInfoModelClient dtoInfoModelClient) throws IOException {
+    private void checkDtoInfoModelClient(DTOInfoModelClient dtoInfoModelClient) {
         if (dtoInfoModelClient != null && dtoInfoModelClient.getIsError()) {
             log.error(dtoInfoModelClient.getInfo());
             throw new NoIdException(dtoInfoModelClient.getInfo());
         }
         if (dtoInfoModelClient != null && !dtoInfoModelClient.getIsError()) {
-            Files.deleteIfExists(Paths.get(String.format("uisbks/files/%s", dtoInfoModelClient.getInfo())));
+            try {
+                Files.deleteIfExists(Paths.get(String.format("uisbks/files/%s", dtoInfoModelClient.getInfo())));
+            } catch (IOException e) {
+                throw new NoIdException("ошибка при удалении из кеша");
+            }
         }
     }
 }
