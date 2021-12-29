@@ -31,7 +31,6 @@ class ClientCacheServiceTest {
     void check_isCached_Should_Return_Boolean(@TempDir Path tempDir) throws IOException {
         Path file = tempDir.resolve(fileName);
         Files.createFile(file);
-
         assertTrue(clientCacheService.isCached(fileName, tempDir.toString()));
     }
 
