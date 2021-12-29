@@ -1,5 +1,7 @@
 package com.example.uisbks.configuration;
 
+import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.boot.web.embedded.tomcat.TomcatServletWebServerFactory;
 import org.springframework.boot.web.server.WebServerFactoryCustomizer;
@@ -14,7 +16,12 @@ import java.time.Duration;
  * Конфигурация для настройки рабочего каталога при работе с jsp
  */
 @Configuration
+@RequiredArgsConstructor
+@Setter
 public class GlobalConfig {
+
+    private String token;
+
     @Bean
     public WebServerFactoryCustomizer<TomcatServletWebServerFactory> customizer() {
         return factory -> factory.addContextCustomizers(context -> {
@@ -33,5 +40,10 @@ public class GlobalConfig {
                 .setConnectTimeout(Duration.ofMillis(60000))
                 .setReadTimeout(Duration.ofMillis(60000))
                 .build();
+    }
+
+    @Bean("token")
+    public String getToken(){
+        return token;
     }
 }

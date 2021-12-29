@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
@@ -23,6 +24,7 @@ import java.nio.file.Files;
  */
 @Service
 @RequiredArgsConstructor
+@PropertySource("classpath:values.properties")
 public class MessageSenderKafkaService implements MessageSenderService {
 
     private final static Logger log = LogManager.getLogger(MessageSenderKafkaService.class);
