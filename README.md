@@ -3,7 +3,7 @@
 
 # SpringBootKafkaSender
 
-Multimodul project for do operation with files
+Multimodule project for do operation with files
 
 liquibase - модуль системs управления версиями базы данных;
 
