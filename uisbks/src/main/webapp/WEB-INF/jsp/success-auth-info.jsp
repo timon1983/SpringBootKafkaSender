@@ -10,8 +10,8 @@
 </head>
 
 <body>
-<c:forEach var="error" items="${error}">
-    <c:out value="${error}"/>
+<c:forEach var="message" items="${message}">
+    <c:out value="${message}"/>
 </c:forEach>
 
 <br/>
@@ -20,8 +20,5 @@
 <br/>
 <br/>
 <form method="get" action="/create"><button type="submit">Добавить файл</button></form>
-<br/>
-<br/>
-<form method="get" action="/login"><button type="submit">Войти</button></form>
 </body>
 </html>

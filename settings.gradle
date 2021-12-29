@@ -1,4 +1,4 @@
-rootProject.name = 'com.example.SpringBootKafkaSender'
+rootProject.name = 'SpringBootKafkaSender'
 include(':uisbks')
 include(':liquibase')
 include(':sbks')

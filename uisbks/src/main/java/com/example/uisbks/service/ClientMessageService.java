@@ -4,9 +4,9 @@ import com.example.uisbks.dtomodel.DTODownloadHistory;
 import com.example.uisbks.dtomodel.DTOInfoModelClient;
 import com.example.uisbks.dtomodel.DTOMessage;
 import com.example.uisbks.exception.NoIdException;
-import lombok.RequiredArgsConstructor;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
@@ -20,7 +20,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 
 @Service
-@RequiredArgsConstructor
 public class ClientMessageService {
 
     private final static Logger log = LogManager.getLogger(ClientMessageService.class);
@@ -28,7 +27,18 @@ public class ClientMessageService {
     private final ClientDTOMessageService clientDTOMessageService;
     private final ClientCacheService clientCacheService;
     @Value("${public-S3-reference}")
-    private String publicS3Reference;
+    private final String publicS3Reference;
+    @Qualifier("token")
+    private final String token;
+
+    public ClientMessageService(RestTemplate restTemplate, ClientDTOMessageService clientDTOMessageService,
+                                ClientCacheService clientCacheService, String publicS3Reference, String token) {
+        this.restTemplate = restTemplate;
+        this.clientDTOMessageService = clientDTOMessageService;
+        this.clientCacheService = clientCacheService;
+        this.publicS3Reference = publicS3Reference;
+        this.token = token;
+    }
 
     /**
      * Метод для выполнения операций по сохранению файла
