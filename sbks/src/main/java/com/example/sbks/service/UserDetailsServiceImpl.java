@@ -13,11 +13,11 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class UserDetailsServiceImpl implements UserDetailsService {
 
-    private UserAuthRepository userAuthRepository;
+    private final UserAuthRepository userAuthRepository;
 
     @Override
-    public UserDetails loadUserByUsername(String name) throws UsernameNotFoundException {
-        UserAuth userAuth = userAuthRepository.findByName(name).orElseThrow(() ->
+    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+        UserAuth userAuth = userAuthRepository.findByEmail(email).orElseThrow(() ->
                 new UsernameNotFoundException("UserAuth does not exists"));
         return UserSecurity.fromUserAuth(userAuth);
     }

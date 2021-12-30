@@ -30,26 +30,27 @@ import java.util.Map;
 public class AuthenticationController {
 
     private final AuthenticationManager authenticationManager;
-    private UserAuthRepository userAuthDAO;
-    private JwtTokenProvider jwtTokenProvider;
+    private final UserAuthRepository userAuthRepository;
+    private final JwtTokenProvider jwtTokenProvider;
 
     @PostMapping("/login")
     public ResponseEntity<InfoDto> authenticate(@RequestBody AuthenticationDTO authenticationDTO) {
         try {
-            authenticationManager.authenticate((new UsernamePasswordAuthenticationToken(authenticationDTO.getName(),
+            authenticationManager.authenticate((new UsernamePasswordAuthenticationToken(authenticationDTO.getEmail(),
                     authenticationDTO.getPassword())));
-            UserAuth userAuth = userAuthDAO.findByName(authenticationDTO.getName())
+            UserAuth userAuth = userAuthRepository.findByEmail(authenticationDTO.getEmail())
                     .orElseThrow(() -> new UsernameNotFoundException("Такого UserAuth не существует"));
-            String token = jwtTokenProvider.createToken(authenticationDTO.getName(), authenticationDTO.getPassword());
-            Map<Object, Object> response = new HashMap<>();
-            response.put("name", authenticationDTO.getName());
-            response.put("token", token);
+            String token = jwtTokenProvider.createToken(userAuth.getEmail(), userAuth.getRole().name());
+//            Map<Object, Object> response = new HashMap<>();
+//            response.put("name", userAuth.getName());
+//            response.put("token", token);
             InfoDto infoDto = InfoDto.builder().info(token).build();
             return new ResponseEntity<>(infoDto, HttpStatus.OK);
         } catch (AuthenticationException e) {
             throw new NoSuchDataFileException("Некоректная комбинация email/password");
-//            return new ResponseEntity<>("Некоректная комбинация email/password", HttpStatus.FORBIDDEN);
+            //return new ResponseEntity<>("Некоректная комбинация email/password", HttpStatus.FORBIDDEN);
         }
+       // return new ResponseEntity<>("Некоректная комбинация email/password", HttpStatus.FORBIDDEN);
     }
 
     @PostMapping("/logout")

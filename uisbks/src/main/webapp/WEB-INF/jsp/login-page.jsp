@@ -9,7 +9,7 @@
 <table>
     <td>
         <form action="#" th:action="@{/login}" th:object="${authDto}" method="post">
-            name:<input type="text" th:field="*{name}" name="name" placeholder="name"/>
+            email:<input type="text" th:field="*{email}" name="email" placeholder="email"/>
             <br/>
             <br/>
             password:<input type="text" th:field="*{password}" name="password" placeholder="password"/>

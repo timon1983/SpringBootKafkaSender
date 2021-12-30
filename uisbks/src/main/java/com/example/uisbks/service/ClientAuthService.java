@@ -11,6 +11,9 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+import java.net.URI;
+import java.net.URISyntaxException;
+
 @Service
 @RequiredArgsConstructor
 public class ClientAuthService {
@@ -20,8 +23,14 @@ public class ClientAuthService {
     private final GlobalConfig config;
 
     public void sendAuth(AuthDto authDto) {
+        URI uri = null;
+        try {
+            uri = new URI("http://localhost:8086/api/auth/login");
+        } catch (URISyntaxException e) {
+            e.printStackTrace();
+        }
         DTOInfoModelClient dtoInfoModelClient =
-                restTemplate.postForObject("api/sdk/auth", authDto, DTOInfoModelClient.class);
+                restTemplate.postForObject(uri, authDto, DTOInfoModelClient.class);
         if (dtoInfoModelClient != null) {
             if (!dtoInfoModelClient.getIsError()) {
                 config.setToken(dtoInfoModelClient.getInfo());
