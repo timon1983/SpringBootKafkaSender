@@ -41,8 +41,9 @@ public class JwtTokenFilter extends GenericFilterBean {
             }
         } catch (JwtAuthenticationException e) {
             SecurityContextHolder.clearContext();
-            ((HttpServletResponse) servletResponse).sendError(e.getHttpStatus().value());
-            throw new JwtAuthenticationException("JWT token вышел срок или не прошел валидацию");
+           // ((HttpServletResponse) servletResponse).;
+            //throw new JwtAuthenticationException("JWT token вышел срок или не прошел валидацию");
+
         }
         filterChain.doFilter(servletRequest, servletResponse);
     }

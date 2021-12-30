@@ -15,6 +15,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.ServletRequest;
+import javax.servlet.http.HttpServletRequest;
 import java.io.UnsupportedEncodingException;
 import java.net.URISyntaxException;
 import java.net.URLDecoder;
@@ -49,9 +51,9 @@ public class MessageController {
      * Получение списка всех загруженных файлов
      */
     @GetMapping("/files")
-    public ResponseEntity<List<MessageDto>> getAllMessages() {
-        List<MessageDto> messageDtoList = messageService.getAll();
-        return new ResponseEntity<>(messageDtoList, HttpStatus.OK);
+    public ResponseEntity<InfoDto> getAllMessages(ServletRequest servletRequest) {
+        InfoDto infoDto = InfoDto.builder().object(messageService.getAll()).build();
+        return new ResponseEntity<>(infoDto, HttpStatus.OK);
     }
 
     /**

@@ -5,6 +5,7 @@ import com.example.uisbks.exception.NoIdException;
 import lombok.RequiredArgsConstructor;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.http.HttpEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
@@ -17,13 +18,15 @@ public class ClientDownloadHistoryService {
     private final static Logger log = LogManager.getLogger(ClientDownloadHistoryService.class);
     private final RestTemplate restTemplate;
     private final ClientDTOMessageService clientDTOMessageService;
+    private final AuthorizationHeaderService authorizationHeaderService;
 
-    public List<DTODownloadHistory> getAllDownloadHistory(Long id) {
+    public List getAllDownloadHistory(Long id) {
         if (id == 0) {
             log.error("Не введено id файла для получения истории загрузки");
             throw new NoIdException("Введите id для получения истории загрузки файла");
         }
         log.info("Получение истории скачивания файла по id={}", id);
-        return restTemplate.postForObject(clientDTOMessageService.getUrl("download-history"), id, List.class);
+        HttpEntity<Object> request = authorizationHeaderService.getHttpEntityForPostRequest(id);
+        return restTemplate.postForObject(clientDTOMessageService.getUrl("download-history"), request, List.class);
     }
 }

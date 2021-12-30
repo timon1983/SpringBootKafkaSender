@@ -10,6 +10,7 @@ import lombok.*;
 @Builder
 public class InfoDto {
     private String info;
+    private Object object;
     @Builder.Default
     private Boolean isError = false;
 }

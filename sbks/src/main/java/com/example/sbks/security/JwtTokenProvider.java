@@ -1,21 +1,24 @@
 package com.example.sbks.security;
 
+import com.example.sbks.exception.JwtAuthenticationException;
 import com.example.sbks.exception.NoSuchDataFileException;
+import com.example.sbks.service.MessageService;
 import io.jsonwebtoken.*;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
 import java.util.Base64;
 import java.util.Date;
 
-@Component
+@Service
 public class JwtTokenProvider {
 
     private final UserDetailsService userDetailsService;
@@ -26,9 +29,11 @@ public class JwtTokenProvider {
     private Long validityInMilliseconds;
     @Value("${jwt.header}")
     private String authorizationHeader;
+    private MessageService messageService;
 
-    public JwtTokenProvider(@Qualifier("userDetailService") UserDetailsService userDetailsService) {
+    public JwtTokenProvider(@Qualifier("userDetailService") UserDetailsService userDetailsService, MessageService messageService) {
         this.userDetailsService = userDetailsService;
+        this.messageService = messageService;
     }
 
     @PostConstruct
@@ -61,7 +66,7 @@ public class JwtTokenProvider {
             Jws<Claims> claimsJws = Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token);
             return !claimsJws.getBody().getExpiration().before(new Date());
         } catch (JwtException | IllegalArgumentException e) {
-            throw new NoSuchDataFileException("JWT token вышел срок или не прошел валидацию, HttpStatus.UNAUTHORIZED");
+            throw new JwtAuthenticationException("JWT token вышел срок или не прошел валидацию", HttpStatus.UNAUTHORIZED);
         }
     }
 

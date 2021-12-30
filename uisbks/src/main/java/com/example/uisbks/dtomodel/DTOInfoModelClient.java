@@ -10,5 +10,6 @@ import lombok.*;
 @Builder
 public class DTOInfoModelClient {
     private String info;
+    private Object object;
     private Boolean isError;
 }

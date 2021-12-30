@@ -3,6 +3,7 @@ package com.example.uisbks.service;
 import com.example.uisbks.configuration.GlobalConfig;
 import com.example.uisbks.dtomodel.AuthDto;
 import com.example.uisbks.dtomodel.DTOInfoModelClient;
+import com.example.uisbks.dtomodel.Token;
 import com.example.uisbks.exception.ErrorLoginException;
 import com.example.uisbks.exception.SuccessLoginException;
 import lombok.RequiredArgsConstructor;
@@ -20,7 +21,7 @@ public class ClientAuthService {
 
     private final static Logger log = LogManager.getLogger(ClientAuthService.class);
     private final RestTemplate restTemplate;
-    private final GlobalConfig config;
+    private final Token token;
 
     public void sendAuth(AuthDto authDto) {
         URI uri = null;
@@ -33,7 +34,7 @@ public class ClientAuthService {
                 restTemplate.postForObject(uri, authDto, DTOInfoModelClient.class);
         if (dtoInfoModelClient != null) {
             if (!dtoInfoModelClient.getIsError()) {
-                config.setToken(dtoInfoModelClient.getInfo());
+                token.setToken(dtoInfoModelClient.getInfo());
                 log.info("Аутентификация прошла успешно");
                 throw new SuccessLoginException(dtoInfoModelClient.getInfo());
             } else {
