@@ -1,18 +1,21 @@
 package com.example.uisbks.service;
 
-import com.example.uisbks.dtomodel.DTODownloadHistory;
-import com.example.uisbks.dtomodel.DTOInfoModelClient;
-import com.example.uisbks.dtomodel.DTOMessage;
+import com.example.uisbks.dtomodel.DownloadHistoryDto;
+import com.example.uisbks.dtomodel.InfoModelClientDto;
+import com.example.uisbks.dtomodel.MessageDto;
+import com.example.uisbks.exception.AuthorizationJwtTokenException;
 import com.example.uisbks.exception.NoIdException;
 import lombok.RequiredArgsConstructor;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.util.MultiValueMap;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
 import java.io.IOException;
@@ -20,6 +23,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
+import java.util.LinkedHashMap;
 import java.util.List;
 
 @Service
@@ -38,71 +42,87 @@ public class ClientMessageService {
     /**
      * Метод для выполнения операций по сохранению файла
      */
-    public void doOperationToSaveFiles(DTOMessage dtoMessage) throws URISyntaxException, IOException {
+    public void doOperationToSaveFiles(MessageDto messageDto) throws URISyntaxException, IOException {
         URI uri = new URI(clientDTOMessageService.getUrl("create"));
-        log.info("Отправка данных по файлу {} в БД", dtoMessage.getOriginFileName());
-        clientCacheService.setCache(dtoMessage, "uisbks/files/");
-        HttpEntity<Object> request = authorizationHeaderService.getHttpEntityForPostRequest(dtoMessage);
-        DTOInfoModelClient dtoInfoModelClient = restTemplate.postForObject(uri, request, DTOInfoModelClient.class);
-        if (dtoInfoModelClient != null && dtoInfoModelClient.getIsError()) {
-            log.error(dtoInfoModelClient.getInfo());
-            throw new NoIdException(dtoInfoModelClient.getInfo());
+        log.info("Отправка данных по файлу {} в БД", messageDto.getOriginFileName());
+        clientCacheService.setCache(messageDto, "uisbks/files/");
+        HttpEntity<Object> request = authorizationHeaderService.getHttpEntityForPostRequest(messageDto);
+        try {
+            InfoModelClientDto infoModelClientDto = restTemplate.postForObject(uri, request, InfoModelClientDto.class);
+            if (infoModelClientDto != null && infoModelClientDto.getIsError()) {
+                log.error(infoModelClientDto.getInfo());
+                throw new NoIdException(infoModelClientDto.getInfo());
+            }
+        } catch (HttpClientErrorException e) {
+            throw new AuthorizationJwtTokenException("Ошибка валидации токена: ");
         }
     }
 
     /**
      * Метод для получения списка всех загруженных файлов
      */
-    public List getListOfFiles() {
+    public List<MessageDto> getListOfFiles() {
         HttpEntity<MultiValueMap<String, String>> request = authorizationHeaderService.getHttpEntityForGetRequest();
         log.info("Получение списка загруженных файлов");
-        ResponseEntity<DTOInfoModelClient> response
-                = restTemplate.exchange(clientDTOMessageService.getUrl("files"),
-                HttpMethod.GET, request, DTOInfoModelClient.class);
-        authorizationHeaderService.checkValidateAuthorization(response.getBody());
-        return (List) response.getBody().getObject();
+        try {
+            ResponseEntity<InfoModelClientDto> response
+                    = restTemplate.exchange(clientDTOMessageService.getUrl("files"),
+                    HttpMethod.GET, request, new ParameterizedTypeReference<InfoModelClientDto>() {
+                    });
+            return (List<MessageDto>) response.getBody().getObject();
+        } catch (HttpClientErrorException e) {
+            throw new AuthorizationJwtTokenException("Ошибка валидации токена: ");
+        }
     }
 
     /**
      * Метод для выполнения операций скачивания файла по id
      */
-    public String doOperationWithFilesForOpenById(DTODownloadHistory dtoDownloadHistory) {
-        HttpEntity<Object> request = authorizationHeaderService.getHttpEntityForPostRequest(dtoDownloadHistory);
-        DTOInfoModelClient dtoInfoModelClient = restTemplate
-                .postForObject(clientDTOMessageService.getUrl("open-id"), request, DTOInfoModelClient.class);
-        return getUrlForFileAfterCheckDtoInfoModelClient(dtoDownloadHistory, dtoInfoModelClient);
+    public String doOperationWithFilesForOpenById(DownloadHistoryDto downloadHistoryDto) {
+        HttpEntity<Object> request = authorizationHeaderService.getHttpEntityForPostRequest(downloadHistoryDto);
+        try {
+            InfoModelClientDto infoModelClientDto = restTemplate
+                    .postForObject(clientDTOMessageService.getUrl("open-id"), request, InfoModelClientDto.class);
+            return getUrlForFileAfterCheckDtoInfoModelClient(downloadHistoryDto, infoModelClientDto);
+        } catch (HttpClientErrorException e) {
+            throw new AuthorizationJwtTokenException("Ошибка валидации токена: ");
+        }
     }
 
     /**
      * Метод для выполнения операций скачивания файла по имени
      */
-    public String doOperationWithFilesForOpenByName(DTODownloadHistory dtoDownloadHistory) {
-        HttpEntity<Object> request = authorizationHeaderService.getHttpEntityForPostRequest(dtoDownloadHistory);
-        DTOInfoModelClient dtoInfoModelClient = restTemplate
-                .postForObject(clientDTOMessageService.getUrl("open-name"), request, DTOInfoModelClient.class);
-        return getUrlForFileAfterCheckDtoInfoModelClient(dtoDownloadHistory, dtoInfoModelClient);
+    public String doOperationWithFilesForOpenByName(DownloadHistoryDto downloadHistoryDto) {
+        HttpEntity<Object> request = authorizationHeaderService.getHttpEntityForPostRequest(downloadHistoryDto);
+        try {
+            InfoModelClientDto infoModelClientDto = restTemplate
+                    .postForObject(clientDTOMessageService.getUrl("open-name"), request, InfoModelClientDto.class);
+            return getUrlForFileAfterCheckDtoInfoModelClient(downloadHistoryDto, infoModelClientDto);
+        } catch (HttpClientErrorException e) {
+            throw new AuthorizationJwtTokenException("Ошибка валидации токена: ");
+        }
     }
 
     /**
      * Метод проверки DTOInfoModelClient на наличие ошибки и проверка наличие файла в кеше
      */
-    private String getUrlForFileAfterCheckDtoInfoModelClient(DTODownloadHistory dtoDownloadHistory,
-                                                             DTOInfoModelClient dtoInfoModelClient) {
-        if (dtoInfoModelClient != null) {
-            if (dtoInfoModelClient.getIsError()) {
-                log.error(dtoInfoModelClient.getInfo());
-                throw new NoIdException(dtoInfoModelClient.getInfo());
-            } else if (clientCacheService.isCached(dtoInfoModelClient.getInfo(), "uisbks/files/")) {
-                log.info("Файл {} получен из кеша", dtoInfoModelClient.getInfo());
+    private String getUrlForFileAfterCheckDtoInfoModelClient(DownloadHistoryDto downloadHistoryDto,
+                                                             InfoModelClientDto infoModelClientDto) {
+        if (infoModelClientDto != null) {
+            if (infoModelClientDto.getIsError()) {
+                log.error(infoModelClientDto.getInfo());
+                throw new NoIdException(infoModelClientDto.getInfo());
+            } else if (clientCacheService.isCached(infoModelClientDto.getInfo(), "uisbks/files/")) {
+                log.info("Файл {} получен из кеша", infoModelClientDto.getInfo());
                 throw new NoIdException(String.format("Файл доступен в локальном хранилище по пути D:" +
-                        "\\Projects\\SpringBootKafkaSender\\uisbks\\files\\%s", dtoInfoModelClient.getInfo()));
+                        "\\Projects\\SpringBootKafkaSender\\uisbks\\files\\%s", infoModelClientDto.getInfo()));
             } else {
-                log.info("Файл получен: [id: {}, name: {}]", dtoDownloadHistory.getId(),
-                        dtoDownloadHistory.getFileName());
+                log.info("Файл получен: [id: {}, name: {}]", downloadHistoryDto.getId(),
+                        downloadHistoryDto.getFileName());
                 return String.join("",
                         publicS3Reference,
                         "/",
-                        dtoInfoModelClient.getInfo());
+                        infoModelClientDto.getInfo());
             }
         }
         return "/create/files";
@@ -113,13 +133,17 @@ public class ClientMessageService {
      */
     public void doOperationToDeleteFiles(Long id) {
         HttpEntity<Object> request = authorizationHeaderService.getHttpEntityForPostRequest(id);
-        DTOInfoModelClient dtoInfoModelClient = restTemplate
-                .postForObject(clientDTOMessageService.getUrl("delete"), request, DTOInfoModelClient.class);
-        if (dtoInfoModelClient != null && dtoInfoModelClient.getIsError()) {
-            log.error(dtoInfoModelClient.getInfo());
-            throw new NoIdException(dtoInfoModelClient.getInfo());
+        try {
+            InfoModelClientDto infoModelClientDto = restTemplate
+                    .postForObject(clientDTOMessageService.getUrl("delete"), request, InfoModelClientDto.class);
+            if (infoModelClientDto != null && infoModelClientDto.getIsError()) {
+                log.error(infoModelClientDto.getInfo());
+                throw new NoIdException(infoModelClientDto.getInfo());
+            }
+            log.info("Файл c id={} удален", id);
+        } catch (HttpClientErrorException e) {
+            throw new AuthorizationJwtTokenException("Ошибка валидации токена: ");
         }
-        log.info("Файл c id={} удален", id);
     }
 
     /**
@@ -132,12 +156,15 @@ public class ClientMessageService {
         name = URLEncoder.encode(name, StandardCharsets.UTF_8);
         log.info("Отправка файла {} в kafka", name);
         HttpEntity<Object> request = authorizationHeaderService.getHttpEntityForPostRequest(name);
-        DTOInfoModelClient dtoInfoModelClient = restTemplate
-                .postForObject(clientDTOMessageService.getUrl("send-file"), request, DTOInfoModelClient.class);
-        if (dtoInfoModelClient != null && dtoInfoModelClient.getIsError()) {
-            log.error("Ошибка при отправке: [{}]", dtoInfoModelClient.getInfo());
-            throw new NoIdException(dtoInfoModelClient.getInfo());
+        try {
+            InfoModelClientDto infoModelClientDto = restTemplate
+                    .postForObject(clientDTOMessageService.getUrl("send-file"), request, InfoModelClientDto.class);
+            if (infoModelClientDto != null && infoModelClientDto.getIsError()) {
+                log.error("Ошибка при отправке: [{}]", infoModelClientDto.getInfo());
+                throw new NoIdException(infoModelClientDto.getInfo());
+            }
+        } catch (HttpClientErrorException e) {
+            throw new AuthorizationJwtTokenException("Ошибка валидации токена: ");
         }
     }
-
 }

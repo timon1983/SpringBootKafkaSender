@@ -10,13 +10,8 @@ import org.springframework.context.annotation.Bean;
 @Setter
 @Getter
 public class UiSdksApplication {
-//    private String token;
+
     public static void main(String[] args) {
         SpringApplication.run(UiSdksApplication.class, args);
     }
-
-//    @Bean("token")
-//    public String getToken(){
-//        return token;
-//    }
 }

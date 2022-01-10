@@ -1,7 +1,6 @@
 package com.example.uisbks.controller;
 
 import com.example.uisbks.dtomodel.JspPage;
-import com.example.uisbks.exception.NoIdException;
 import com.example.uisbks.service.ClientMessageDeletedService;
 import lombok.RequiredArgsConstructor;
 import org.apache.logging.log4j.LogManager;
@@ -10,11 +9,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import javax.servlet.http.HttpServletRequest;
-import java.io.IOException;
 import java.util.LinkedHashMap;
 import java.util.List;
 
@@ -59,7 +55,7 @@ public class ClientMessageDeletedController {
      * Удаление файла на совсем по его id
      */
     @GetMapping("/full/{id}")
-    public String fullDelete(@PathVariable Long id) throws IOException {
+    public String fullDelete(@PathVariable Long id) {
         clientMessageDeletedService.fullDeleteOfFile(id);
         return "redirect:/deleted";
     }
@@ -68,7 +64,7 @@ public class ClientMessageDeletedController {
      * Восстановление файла
      */
     @GetMapping("/restore/{id}")
-    public String restoreFile(@PathVariable Long id) throws IOException {
+    public String restoreFile(@PathVariable Long id) {
         clientMessageDeletedService.restoreFile(id);
         return "redirect:/deleted";
     }

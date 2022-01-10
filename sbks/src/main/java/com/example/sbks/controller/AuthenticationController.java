@@ -41,9 +41,7 @@ public class AuthenticationController {
             UserAuth userAuth = userAuthRepository.findByEmail(authenticationDTO.getEmail())
                     .orElseThrow(() -> new UsernameNotFoundException("Такого UserAuth не существует"));
             String token = jwtTokenProvider.createToken(userAuth.getEmail(), userAuth.getRole().name());
-//            Map<Object, Object> response = new HashMap<>();
-//            response.put("name", userAuth.getName());
-//            response.put("token", token);
+
             InfoDto infoDto = InfoDto.builder().info(token).build();
             return new ResponseEntity<>(infoDto, HttpStatus.OK);
         } catch (AuthenticationException e) {

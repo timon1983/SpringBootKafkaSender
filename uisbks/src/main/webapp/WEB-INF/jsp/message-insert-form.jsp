@@ -8,7 +8,7 @@
 <body>
 <table>
     <td>
-        <form action="#" th:action="@{/create}" th:object="${dtoRequestMessage}" method="post"
+        <form action="#" th:action="@{/create}" th:object="${requestMessageDto}" method="post"
               enctype="multipart/form-data">
             title:<input type="text" th:field="*{title}" name="title" placeholder="title"/>
             <br/>

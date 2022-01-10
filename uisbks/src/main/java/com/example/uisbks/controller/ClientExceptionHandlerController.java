@@ -35,8 +35,8 @@ public class ClientExceptionHandlerController {
 
     @ExceptionHandler(AuthorizationJwtTokenException.class)
     public String getErrorAuthorizationJwtToken(AuthorizationJwtTokenException e, Model model){
-        model.addAttribute("error", e.getMessage());
-        return JspPage.LOGIN_PAGE;
+        model.addAttribute("message", e.getMessage());
+        return JspPage.ERROR_AUTH_INFO;
     }
 
 }

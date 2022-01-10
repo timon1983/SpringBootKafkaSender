@@ -1,8 +1,7 @@
 package com.example.uisbks.service;
 
-import com.example.uisbks.configuration.GlobalConfig;
 import com.example.uisbks.dtomodel.AuthDto;
-import com.example.uisbks.dtomodel.DTOInfoModelClient;
+import com.example.uisbks.dtomodel.InfoModelClientDto;
 import com.example.uisbks.dtomodel.Token;
 import com.example.uisbks.exception.ErrorLoginException;
 import com.example.uisbks.exception.SuccessLoginException;
@@ -30,16 +29,16 @@ public class ClientAuthService {
         } catch (URISyntaxException e) {
             e.printStackTrace();
         }
-        DTOInfoModelClient dtoInfoModelClient =
-                restTemplate.postForObject(uri, authDto, DTOInfoModelClient.class);
-        if (dtoInfoModelClient != null) {
-            if (!dtoInfoModelClient.getIsError()) {
-                token.setToken(dtoInfoModelClient.getInfo());
+        InfoModelClientDto infoModelClientDto =
+                restTemplate.postForObject(uri, authDto, InfoModelClientDto.class);
+        if (infoModelClientDto != null) {
+            if (!infoModelClientDto.getIsError()) {
+                token.setToken(infoModelClientDto.getInfo());
                 log.info("Аутентификация прошла успешно");
-                throw new SuccessLoginException(dtoInfoModelClient.getInfo());
+                throw new SuccessLoginException(infoModelClientDto.getInfo());
             } else {
                 log.info("Ошибка аутентификации");
-                throw new ErrorLoginException(dtoInfoModelClient.getInfo());
+                throw new ErrorLoginException(infoModelClientDto.getInfo());
             }
         }
     }

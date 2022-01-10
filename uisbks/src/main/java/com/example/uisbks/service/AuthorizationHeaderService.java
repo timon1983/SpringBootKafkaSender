@@ -1,6 +1,7 @@
 package com.example.uisbks.service;
 
-import com.example.uisbks.dtomodel.DTOInfoModelClient;
+import com.example.uisbks.dtomodel.InfoModelClientDto;
+import com.example.uisbks.dtomodel.MessageDto;
 import com.example.uisbks.dtomodel.Token;
 import com.example.uisbks.exception.AuthorizationJwtTokenException;
 import lombok.RequiredArgsConstructor;
@@ -26,10 +27,5 @@ public class AuthorizationHeaderService {
         MultiValueMap<String, String> headers = new LinkedMultiValueMap<>();
         headers.add("Authorization" , token.getToken());
         return headers;
-    }
-    public void checkValidateAuthorization(DTOInfoModelClient dtoInfoModelClient){
-        if (dtoInfoModelClient.getIsError()) {
-            throw new AuthorizationJwtTokenException(dtoInfoModelClient.getInfo());
-        }
     }
 }

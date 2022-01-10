@@ -1,20 +1,25 @@
 package com.example.uisbks.service;
 
-import com.example.uisbks.dtomodel.DTOInfoModelClient;
+import com.example.uisbks.dtomodel.InfoModelClientDto;
+import com.example.uisbks.dtomodel.MessageDto;
+import com.example.uisbks.exception.AuthorizationJwtTokenException;
 import com.example.uisbks.exception.NoIdException;
 import lombok.RequiredArgsConstructor;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.util.MultiValueMap;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -33,10 +38,14 @@ public class ClientMessageDeletedService {
      */
     public void fullDeleteOfFile(Long id) {
         HttpEntity<Object> request = authorizationHeaderService.getHttpEntityForPostRequest(id);
-        DTOInfoModelClient dtoInfoModelClient = restTemplate.postForObject(clientDTOMessageService
-                        .getUrl("full-delete"), request, DTOInfoModelClient.class);
-        checkDtoInfoModelClient(dtoInfoModelClient);
-        log.info("Файл c id={} полностью удален", id);
+        try {
+            InfoModelClientDto infoModelClientDto = restTemplate.postForObject(clientDTOMessageService
+                    .getUrl("full-delete"), request, InfoModelClientDto.class);
+            checkDtoInfoModelClient(infoModelClientDto);
+            log.info("Файл c id={} полностью удален", id);
+        } catch (HttpClientErrorException e) {
+            throw new AuthorizationJwtTokenException("Ошибка валидации токена: ");
+        }
     }
 
     /**
@@ -44,21 +53,30 @@ public class ClientMessageDeletedService {
      */
     public void restoreFile(Long id) {
         HttpEntity<Object> request = authorizationHeaderService.getHttpEntityForPostRequest(id);
-        DTOInfoModelClient dtoInfoModelClient = restTemplate.postForObject(clientDTOMessageService
-                        .getUrl("restore-file"), request, DTOInfoModelClient.class);
-        checkDtoInfoModelClient(dtoInfoModelClient);
-        log.info("Файл c id={} восстановлен", id);
+        try {
+            InfoModelClientDto infoModelClientDto = restTemplate.postForObject(clientDTOMessageService
+                    .getUrl("restore-file"), request, InfoModelClientDto.class);
+            checkDtoInfoModelClient(infoModelClientDto);
+            log.info("Файл c id={} восстановлен", id);
+        } catch (HttpClientErrorException e) {
+            throw new AuthorizationJwtTokenException("Ошибка валидации токена: ");
+        }
     }
 
 
     /**
      * Метод для получение списка файлов в корзине
      */
-    public List getListOfDeletedFile() {
+    public List<LinkedHashMap<String, Object>> getListOfDeletedFile() {
         HttpEntity<MultiValueMap<String, String>> request = authorizationHeaderService.getHttpEntityForGetRequest();
-        ResponseEntity<List> response = restTemplate.exchange(clientDTOMessageService.getUrl("files-deleted"),
-                HttpMethod.GET, request, List.class);
-        return response.getBody();
+        try {
+            ResponseEntity<List<LinkedHashMap<String, Object>>> response =
+                    restTemplate.exchange(clientDTOMessageService.getUrl("files-deleted"), HttpMethod.GET,
+                            request, new ParameterizedTypeReference <List<LinkedHashMap<String, Object>>>() {});
+            return response.getBody();
+        } catch (HttpClientErrorException e) {
+            throw new AuthorizationJwtTokenException("Ошибка валидации токена: ");
+        }
     }
 
     /**
@@ -66,32 +84,36 @@ public class ClientMessageDeletedService {
      */
     public List<String> cleanListOfDeletedFile() {
         HttpEntity<MultiValueMap<String, String>> request = authorizationHeaderService.getHttpEntityForGetRequest();
-        ResponseEntity<List> response = restTemplate.exchange(clientDTOMessageService.getUrl("files-clean"),
-                HttpMethod.GET, request, List.class);
-        List<String> fileNames = response.getBody();
-        if (fileNames != null) {
-            fileNames.forEach((name) -> {
-                try {
-                    Files.deleteIfExists(Paths.get(String.format("uisbks/files/%s", name)));
-                } catch (IOException e) {
-                    throw new NoIdException("ошибка при очистки кеша");
-                }
-            });
+        try {
+            ResponseEntity<List<String>> response = restTemplate.exchange(clientDTOMessageService.getUrl("files-clean"),
+                    HttpMethod.GET, request, new ParameterizedTypeReference<List<String>>() {});
+            List<String> fileNames = response.getBody();
+            if (fileNames != null) {
+                fileNames.forEach((name) -> {
+                    try {
+                        Files.deleteIfExists(Paths.get(String.format("uisbks/files/%s", name)));
+                    } catch (IOException e) {
+                        throw new NoIdException("ошибка при очистки кеша");
+                    }
+                });
+            }
+            return Collections.emptyList();
+        } catch (HttpClientErrorException e) {
+            throw new AuthorizationJwtTokenException("Ошибка валидации токена: ");
         }
-        return Collections.emptyList();
     }
 
     /**
      * Метод проверки DTOInfoModelClient на null
      */
-    private void checkDtoInfoModelClient(DTOInfoModelClient dtoInfoModelClient) {
-        if (dtoInfoModelClient != null) {
-            if (dtoInfoModelClient.getIsError()) {
-                log.error(dtoInfoModelClient.getInfo());
-                throw new NoIdException(dtoInfoModelClient.getInfo());
+    private void checkDtoInfoModelClient(InfoModelClientDto infoModelClientDto) {
+        if (infoModelClientDto != null) {
+            if (infoModelClientDto.getIsError()) {
+                log.error(infoModelClientDto.getInfo());
+                throw new NoIdException(infoModelClientDto.getInfo());
             } else {
                 try {
-                    Files.deleteIfExists(Paths.get(String.format("uisbks/files/%s", dtoInfoModelClient.getInfo())));
+                    Files.deleteIfExists(Paths.get(String.format("uisbks/files/%s", infoModelClientDto.getInfo())));
                 } catch (IOException e) {
                     throw new NoIdException("ошибка при удалении из кеша");
                 }
