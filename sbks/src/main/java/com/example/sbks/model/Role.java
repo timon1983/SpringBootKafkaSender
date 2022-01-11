@@ -7,7 +7,7 @@ import java.util.stream.Collectors;
 
 public enum Role {
 
-    USER(Set.of(Permission.MESSAGE_READ,Permission.MESSAGE_WRITE, Permission.DELETED_MESSAGE_READ,
+    USER(Set.of(Permission.MESSAGE_READ, Permission.MESSAGE_WRITE, Permission.DELETED_MESSAGE_READ,
             Permission.DOWNLOAD_HISTORY_READ, Permission.MESSAGE_SEND)),
     MODERATOR(Set.of(Permission.MESSAGE_READ, Permission.DELETED_MESSAGE_READ, Permission.DOWNLOAD_HISTORY_READ,
             Permission.DELETED_MESSAGE_WRITE)),

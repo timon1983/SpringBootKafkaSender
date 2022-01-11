@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
 /**
- * Контроллер для обработки искключений NoIdException
+ * Контроллер для обработки искключений
  */
 @ControllerAdvice
 public class ClientExceptionHandlerController {
@@ -38,5 +38,4 @@ public class ClientExceptionHandlerController {
         model.addAttribute("message", e.getMessage());
         return JspPage.ERROR_AUTH_INFO;
     }
-
 }

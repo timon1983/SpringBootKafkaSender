@@ -20,7 +20,7 @@ import java.net.URISyntaxException;
 import java.nio.file.Files;
 
 /**
- * Cервис для отправки сообщения в модуль kafka
+ *  Сервис для отправки сообщения в модуль kafka
  */
 @Service
 @RequiredArgsConstructor

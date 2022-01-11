@@ -88,7 +88,7 @@ public class MessageServiceImpl implements MessageService {
     }
 
     @Override
-    public void throwException(){
+    public void throwException() {
         throw new NoSuchDataFileException("ggg");
     }
 }

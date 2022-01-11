@@ -15,6 +15,9 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+/**
+ * Сервис для работы с историей загрузок файлов
+ */
 @Service
 @RequiredArgsConstructor
 public class ClientDownloadHistoryService {
@@ -24,13 +27,16 @@ public class ClientDownloadHistoryService {
     private final ClientDTOMessageService clientDTOMessageService;
     private final AuthorizationHeaderService authorizationHeaderService;
 
+    /**
+     * Получение истории загрузки файла по id
+     */
     public List<DownloadHistoryDto> getAllDownloadHistory(Long id) {
         if (id == 0) {
             log.error("Не введено id файла для получения истории загрузки");
             throw new NoIdException("Введите id для получения истории загрузки файла");
         }
         log.info("Получение истории скачивания файла по id={}", id);
-        HttpEntity<Object> request = authorizationHeaderService.getHttpEntityForPostRequest(id);
+        HttpEntity<Object> request = authorizationHeaderService.getHttpEntityForRequest(id);
         try {
             DownloadHistoryDto[] historyDtoList =
                     restTemplate.postForObject(clientDTOMessageService.getUrl("download-history"), request,

@@ -10,7 +10,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.http.HttpEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
@@ -18,7 +17,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 
 /**
- * Контроллер для аутентификации пользователя и выхода из аккаунта
+ * Сервис для аутентификации пользователя и выхода из аккаунта
  */
 @Service
 @RequiredArgsConstructor
@@ -48,7 +47,7 @@ public class ClientAuthService {
      */
     public void sendOut() {
         try {
-            HttpEntity<MultiValueMap<String, String>> request = authorizationHeaderService.getHttpEntityForGetRequest();
+            HttpEntity<Object> request = authorizationHeaderService.getHttpEntityForRequest(null);
             URI uri = new URI("http://localhost:8086/api/auth/logout");
             token.setToken(null);
             restTemplate.postForObject(uri, request, InfoModelClientDto.class);
@@ -69,7 +68,7 @@ public class ClientAuthService {
                 log.info("Аутентификация прошла успешно");
                 throw new SuccessLoginException(infoModelClientDto.getInfo());
             } else {
-                log.info("Ошибка аутентификации");
+                log.error("Ошибка аутентификации");
                 throw new ErrorLoginException(infoModelClientDto.getInfo());
             }
         }

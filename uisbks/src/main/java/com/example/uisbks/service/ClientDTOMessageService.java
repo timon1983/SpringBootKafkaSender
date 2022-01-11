@@ -16,6 +16,9 @@ import java.nio.charset.StandardCharsets;
 import java.text.MessageFormat;
 import java.time.LocalDateTime;
 
+/**
+ * Вспомогательный сервис для обработки dto и генерации url
+ */
 @Service
 @RequiredArgsConstructor
 @AllArgsConstructor

@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.Optional;
 
 /**
- * Интерфейс для взаимодействия с БД
+ * Интерфейс для взаимодействия с БД messages
  */
 @Repository
 public interface MessageRepository extends JpaRepository<Message, Long> {
