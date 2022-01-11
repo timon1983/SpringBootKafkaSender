@@ -1,7 +1,6 @@
 package com.example.sbks.security;
 
 import com.example.sbks.exception.JwtAuthenticationException;
-import com.example.sbks.exception.NoSuchDataFileException;
 import com.example.sbks.service.MessageService;
 import io.jsonwebtoken.*;
 import org.springframework.beans.factory.annotation.Qualifier;

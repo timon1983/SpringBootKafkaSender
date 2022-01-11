@@ -23,6 +23,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
+import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 
@@ -61,15 +62,14 @@ public class ClientMessageService {
     /**
      * Метод для получения списка всех загруженных файлов
      */
-    public List<MessageDto> getListOfFiles() {
+    public List<LinkedHashMap<String, Object>> getListOfFiles() {
         HttpEntity<MultiValueMap<String, String>> request = authorizationHeaderService.getHttpEntityForGetRequest();
         log.info("Получение списка загруженных файлов");
         try {
-            ResponseEntity<InfoModelClientDto> response
-                    = restTemplate.exchange(clientDTOMessageService.getUrl("files"),
-                    HttpMethod.GET, request, new ParameterizedTypeReference<InfoModelClientDto>() {
-                    });
-            return (List<MessageDto>) response.getBody().getObject();
+            ResponseEntity<List<LinkedHashMap<String, Object>>> response =
+                    restTemplate.exchange(clientDTOMessageService.getUrl("files"), HttpMethod.GET,
+                            request, new ParameterizedTypeReference <List<LinkedHashMap<String, Object>>>() {});
+            return response.getBody();
         } catch (HttpClientErrorException e) {
             throw new AuthorizationJwtTokenException("Ошибка валидации токена: ");
         }

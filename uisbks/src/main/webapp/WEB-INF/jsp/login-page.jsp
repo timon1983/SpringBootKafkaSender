@@ -13,7 +13,7 @@
 </c:forEach>
 <table>
     <td>
-        <form action="#" th:action="@{/login}" th:object="${authDto}" method="post">
+        <form action="#" th:action="@{/UI/login}" th:object="${authDto}" method="post">
             email:<input type="text" th:field="*{email}" name="email" placeholder="email"/>
             <br/>
             <br/>

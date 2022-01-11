@@ -22,6 +22,6 @@
 <form method="get" action="/create"><button type="submit">Добавить файл</button></form>
 <br/>
 <br/>
-<form method="get" action="/login"><button type="submit">Войти</button></form>
+<form method="get" action="/UI/logout"><button type="submit">Выйти</button></form>
 </body>
 </html>

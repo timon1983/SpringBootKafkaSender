@@ -11,20 +11,26 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
-@RequestMapping("login")
+@RequestMapping("UI")
 @RequiredArgsConstructor
 public class LoginController {
 
     private final ClientAuthService clientAuthService;
 
-    @GetMapping
+    @GetMapping("login")
     public String getLoginPage(){
         return JspPage.LOGIN_PAGE;
     }
 
-    @PostMapping
+    @PostMapping("login")
     public String sendLogin(@ModelAttribute AuthDto authDto){
         clientAuthService.sendAuth(authDto);
+        return JspPage.START_PAGE;
+    }
+
+    @GetMapping("logout")
+    public String sendLogout(){
+        clientAuthService.sendOut();
         return JspPage.START_PAGE;
     }
 }

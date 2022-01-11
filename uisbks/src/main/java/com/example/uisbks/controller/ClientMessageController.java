@@ -56,7 +56,7 @@ public class ClientMessageController {
      */
     @GetMapping("/files")
     public String getAllFiles(Model model) {
-        List<MessageDto> dtoMessages = clientMessageService.getListOfFiles();
+        List<LinkedHashMap<String, Object>> dtoMessages = clientMessageService.getListOfFiles();
         model.addAttribute("listOfFiles", dtoMessages);
         return JspPage.FILE_LIST;
     }

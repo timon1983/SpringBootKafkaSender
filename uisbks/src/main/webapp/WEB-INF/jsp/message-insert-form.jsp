@@ -29,6 +29,9 @@
         <form method="get" action="/deleted">
             <button type="submit">Получить список удаленных файлов</button>
         </form>
+        <br/>
+        <br/>
+        <form method="get" action="/UI/logout"><button type="submit">Выйти</button></form>
     </td>
 </table>
 </body>
