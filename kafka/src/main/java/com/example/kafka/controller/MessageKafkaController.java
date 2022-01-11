@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class MessageKafkaController {
 
+    // todo неиспользуемый
     private final static Logger log = LogManager.getLogger(MessageKafkaController.class);
     private final KafkaProducerService kafkaProducerService;
 

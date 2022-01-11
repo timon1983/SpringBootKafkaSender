@@ -46,6 +46,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     }
 
     @Bean
+    // todo 12 вынести бы в константу, а то какое то магическое число
     protected PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder(12);
     }

@@ -30,6 +30,7 @@ public class JwtTokenFilter extends GenericFilterBean {
     }
 
     /**
+     * // todo на ноль)))
      * Получение токена из запроса , проверка на ноль и валидация,
      * получение аутентификации и передача ее в контекст Security
      */
@@ -41,7 +42,7 @@ public class JwtTokenFilter extends GenericFilterBean {
         try {
             if (token != null && jwtTokenProvider.validateToken(token)) {
                 Authentication authentication = jwtTokenProvider.getAuthentication(token);
-                if (authentication != null) {
+                if (authentication != null) { // todo лишняя проверка, есть выше
                     SecurityContextHolder.getContext().setAuthentication(authentication);
                 }
             }

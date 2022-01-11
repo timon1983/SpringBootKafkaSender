@@ -44,17 +44,19 @@ public class AuthenticationController {
     @PostMapping("/login")
     public ResponseEntity<InfoDto> authenticate(@RequestBody AuthenticationDTO authenticationDTO) {
         try {
-            authenticationManager.authenticate((new UsernamePasswordAuthenticationToken(authenticationDTO.getEmail(),
+            String email = authenticationDTO.getEmail();
+            authenticationManager.authenticate((new UsernamePasswordAuthenticationToken(email,
                     authenticationDTO.getPassword())));
-            UserAuth userAuth = userAuthRepository.findByEmail(authenticationDTO.getEmail())
-                    .orElseThrow(() -> new UsernameNotFoundException("Такого UserAuth не существует"));
+            UserAuth userAuth = userAuthRepository.findByEmail(email)
+                    .orElseThrow(() -> new UsernameNotFoundException("Не найден пользователь с емаил = " + email)); // чтобы исключениее было информативнее
             String token = jwtTokenProvider.createToken(userAuth.getEmail(), userAuth.getRole().name());
             InfoDto infoDto = InfoDto.builder()
                     .info(token)
                     .build();
-            return new ResponseEntity<>(infoDto, HttpStatus.OK);
+            // todo в остальных местах сделать по аналогии
+            return ResponseEntity.ok(infoDto);
         } catch (AuthenticationException e) {
-            throw new NoSuchDataFileException("Некоректная комбинация email/password");
+            throw new NoSuchDataFileException("Некорректная комбинация email/password");
         }
     }
 

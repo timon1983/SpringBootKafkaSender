@@ -50,9 +50,12 @@ public class MessageServiceImpl implements MessageService {
     }
 
     @Override
+    // todo это readonly оперция, здесь transactional не нужен
     @Transactional
     public List<MessageDto> getAll() {
         log.info("Service.Получение списка всех файлов");
+
+        // todo метод возвращает все записи, реализовать через Pageable
         return messageRepository
                 .findAllByStatus(Status.UPLOAD)
                 .stream()

@@ -4,6 +4,8 @@ import lombok.Data;
 
 import javax.persistence.*;
 
+// todo в entity лучше не использовать Data
+//  https://thorben-janssen.com/lombok-hibernate-how-to-avoid-common-pitfalls/#Avoid_Data
 @Data
 @Entity
 @Table(name = "usersauth")
@@ -12,7 +14,7 @@ public class UserAuth {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "email")
+    @Column(name = "email") // todo как по мне, эти аннотации излишне, кроме где они действительно нужны
     private String email;
 
     @Column(name = "name")

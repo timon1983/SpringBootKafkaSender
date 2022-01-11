@@ -23,7 +23,7 @@ public class ServicesS3Impl implements ServiceS3 {
         var fileName = file.getName();
         repositoryS3.save(file, fileName);
         try {
-            Files.deleteIfExists(Path.of(fileName));
+            Files.deleteIfExists(file.toPath());
             log.info("Временный файл удален");
         } catch (IOException e) {
             log.error("Временный файл не удален");

@@ -13,6 +13,7 @@ public class SbksConfig {
     @Bean
     public RestTemplate restTemplate(RestTemplateBuilder builder) {
         return builder
+                // todo вот этот параметр (60000) брать бы из application property, там есть возможность задвать время с учеиом секунд, минут
                 .setConnectTimeout(Duration.ofMillis(60000))
                 .setReadTimeout(Duration.ofMillis(60000))
                 .build();

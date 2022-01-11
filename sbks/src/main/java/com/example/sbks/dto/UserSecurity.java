@@ -65,6 +65,7 @@ public class UserSecurity implements UserDetails {
         return new User(
                 userAuth.getEmail(),
                 userAuth.getPassword(),
+                // todo 4 штуки одинаковых
                 userAuth.getStatusAuth().equals(StatusAuth.ACTIVE),
                 userAuth.getStatusAuth().equals(StatusAuth.ACTIVE),
                 userAuth.getStatusAuth().equals(StatusAuth.ACTIVE),

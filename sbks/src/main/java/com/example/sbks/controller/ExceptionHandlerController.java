@@ -17,10 +17,12 @@ public class ExceptionHandlerController {
 
     @ExceptionHandler(NoSuchDataFileException.class)
     public ResponseEntity<InfoDto> handleNoSuchFileException(NoSuchDataFileException e) {
+        // todo в отдельный метод, повторяется
         InfoDto infoDto = InfoDto.builder()
                 .info(e.getMessage())
                 .isError(true)
                 .build();
+        // todo по аналогии
         return new ResponseEntity<>(infoDto, HttpStatus.OK);
     }
 

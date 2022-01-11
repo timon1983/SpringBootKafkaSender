@@ -31,6 +31,7 @@ public class MessageDeletedController {
     @PreAuthorize("hasAuthority('deleted-message:read')")
     public ResponseEntity<List<MessageDto>> getAllMessages() {
         List<MessageDto> messageDtoList = messageDeletedService.getAll();
+        // todo слово Контроллер здесь и ниже избыточно, LogManager.getLogger вот здесь определяется что логируется контроллер
         log.info("Контроллер.Запрос в сервис на получение списка удаленных файлов");
         return new ResponseEntity<>(messageDtoList, HttpStatus.OK);
     }

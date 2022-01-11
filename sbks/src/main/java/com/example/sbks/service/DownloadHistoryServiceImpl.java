@@ -36,10 +36,13 @@ public class DownloadHistoryServiceImpl implements DownloadHistoryService {
                     log.info("Запись события скачивания файла");
                     downloadHistoryRepository.save(downloadHistory);
                     return message;
-                }).orElseThrow(() -> new NoSuchDataFileException(
-                String.format("Данные о файле с именем %s в БД отсутствуют",
-                        downloadHistory.getFileName()))
-        );
+                })
+                .orElseThrow(
+                        () -> new NoSuchDataFileException(
+                                String.format("Данные о файле с именем %s в БД отсутствуют",
+                                        downloadHistory.getFileName())
+                        )
+                );
         return downloadHistoryDto;
     }
 
@@ -63,7 +66,7 @@ public class DownloadHistoryServiceImpl implements DownloadHistoryService {
     }
 
     @Override
-    @Transactional
+    @Transactional // todo лищний
     public List<DownloadHistoryDto> getAllById(Long id) {
         log.info("Получение всю историю скачиваний файла с id={}", id);
         return downloadHistoryRepository.findAllByMessageId(id)

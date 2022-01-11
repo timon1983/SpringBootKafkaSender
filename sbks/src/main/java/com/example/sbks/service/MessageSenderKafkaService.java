@@ -58,9 +58,8 @@ public class MessageSenderKafkaService implements MessageSenderService {
      * Получение файла из S3 и преобразование его в массив байтов
      */
     private byte[] getByteContent(String name) {
-        File file;
         try {
-            file = repositoryS3.download(name);
+            File file = repositoryS3.download(name);
             return Files.readAllBytes(file.toPath());
         } catch (IOException e) {
             log.error("Ошибка при загрузке файла");

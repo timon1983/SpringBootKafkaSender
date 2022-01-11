@@ -44,6 +44,7 @@ public class MessageController {
     public ResponseEntity<InfoDto> createMessage(@RequestBody MessageDto messageDto) {
         log.info("Получение сообщения от клиента и запись в БД");
         messageService.save(messageDto);
+        // todo по аналогии
         return new ResponseEntity<>(InfoDto.builder().build(), HttpStatus.OK);
     }
 

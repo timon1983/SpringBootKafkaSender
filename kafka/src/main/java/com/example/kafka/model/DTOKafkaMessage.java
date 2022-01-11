@@ -13,8 +13,10 @@ import java.time.LocalTime;
 @Builder
 public class DTOKafkaMessage {
 
+    // todo в дтошках желательно использовать обертки, а не примитыивы, по умолчанию id = 0
     private long id;
     private String title;
+    // todo в дтошках желательно использовать обертки,
     private long size;
     private LocalDate dateOfCreate;
     private LocalTime timeOfCreate;

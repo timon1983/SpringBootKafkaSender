@@ -34,6 +34,7 @@ public class MessageDownloadedController {
     public ResponseEntity<List<DownloadHistoryDto>> getDownloadHistory(@RequestBody Long id) {
         List<DownloadHistoryDto> downloadHistoryDtoList = downloadHistoryService.getAllById(id);
         log.info("Получение истории скачивания файла по id={}", id);
+        // todo по аналогии
         return new ResponseEntity<>(downloadHistoryDtoList, HttpStatus.OK);
     }
 }

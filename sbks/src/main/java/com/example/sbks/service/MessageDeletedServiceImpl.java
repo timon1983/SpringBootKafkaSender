@@ -28,6 +28,7 @@ public class MessageDeletedServiceImpl implements MessageDeletedService {
     @Transactional
     public List<MessageDto> getAll() {
         log.info("Service.Получение списка всех удаленных файлов");
+        // todo через Pageable
         return messageRepository.findAllByStatus(Status.DELETED)
                 .stream()
                 .map(mapper::messageToDto)
@@ -68,6 +69,7 @@ public class MessageDeletedServiceImpl implements MessageDeletedService {
     public void restoreMessage(Long id) {
         messageRepository
                 .findById(id)
+                // todo ifPresentOrElse заменить на отдельный map и orElseThrow
                 .ifPresentOrElse(message -> {
                             message.setStatus(Status.UPLOAD);
                             message.setDateOfDelete(null);
