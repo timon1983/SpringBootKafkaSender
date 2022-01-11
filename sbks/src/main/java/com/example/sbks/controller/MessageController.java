@@ -13,12 +13,9 @@ import org.apache.logging.log4j.Logger;
 import org.mapstruct.factory.Mappers;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.io.UnsupportedEncodingException;
 import java.net.URISyntaxException;
 import java.net.URLDecoder;
@@ -43,16 +40,18 @@ public class MessageController {
      * Получение сообщения от клиента
      */
     @PostMapping("/create")
+    @PreAuthorize("hasAuthority('message:write')")
     public ResponseEntity<InfoDto> createMessage(@RequestBody MessageDto messageDto) {
         log.info("Получение сообщения от клиента и запись в БД");
         messageService.save(messageDto);
-        return new ResponseEntity<>(new InfoDto(), HttpStatus.OK);
+        return new ResponseEntity<>(InfoDto.builder().build(), HttpStatus.OK);
     }
 
     /**
      * Получение списка всех загруженных файлов
      */
     @GetMapping("/files")
+    @PreAuthorize("hasAuthority('message:read')")
     public ResponseEntity<List<MessageDto>> getAllMessages() {
         List<MessageDto> messageDtoList = messageService.getAll();
         return new ResponseEntity<>(messageDtoList, HttpStatus.OK);
@@ -62,15 +61,17 @@ public class MessageController {
      * Удаление файла по id
      */
     @PostMapping("/delete")
+    @PreAuthorize("hasAuthority('delete-message:write')")
     public ResponseEntity<InfoDto> deleteById(@RequestBody Long id) {
         messageService.deleteById(id);
-        return new ResponseEntity<>(new InfoDto(), HttpStatus.OK);
+        return new ResponseEntity<>(InfoDto.builder().build(), HttpStatus.OK);
     }
 
     /**
      * Скачивание файла по id
      */
     @PostMapping("/open-id")
+    @PreAuthorize("hasAuthority('message:read')")
     public ResponseEntity<InfoDto> findById(@RequestBody DownloadHistoryDto downloadHistoryDto) {
         DownloadHistoryDto downloadHistoryDtoResponse = downloadHistoryService.saveById(downloadHistoryDto);
         InfoDto infoDto = mapper.downloadHistoryDtoToInfoDto(downloadHistoryDtoResponse);
@@ -82,6 +83,7 @@ public class MessageController {
      */
 
     @PostMapping("/open-name")
+    @PreAuthorize("hasAuthority('message:read')")
     public ResponseEntity<InfoDto> findByName(@RequestBody DownloadHistoryDto downloadHistoryDto)
             throws UnsupportedEncodingException {
         String fileName = downloadHistoryDto.getFileName();
@@ -95,10 +97,11 @@ public class MessageController {
      * Оправка файла в MessageSenderSender
      */
     @PostMapping("/send-file")
+    @PreAuthorize("hasAuthority('message-send:read')")
     public ResponseEntity<InfoDto> receiveMessageForSendToMessageSender(@RequestBody String name)
             throws UnsupportedEncodingException, URISyntaxException {
         name = URLDecoder.decode(name, StandardCharsets.UTF_8.name());
         messageSenderService.sendMessage(name);
-        return new ResponseEntity<>(new InfoDto(), HttpStatus.OK);
+        return new ResponseEntity<>(InfoDto.builder().build(), HttpStatus.OK);
     }
 }

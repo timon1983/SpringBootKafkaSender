@@ -7,6 +7,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -29,6 +30,7 @@ public class MessageDownloadedController {
      * Обработка запроса для получения истории скачивания файла по его id
      */
     @PostMapping("/download-history")
+    @PreAuthorize("hasAuthority('download-history:read')")
     public ResponseEntity<List<DownloadHistoryDto>> getDownloadHistory(@RequestBody Long id) {
         List<DownloadHistoryDto> downloadHistoryDtoList = downloadHistoryService.getAllById(id);
         log.info("Получение истории скачивания файла по id={}", id);
