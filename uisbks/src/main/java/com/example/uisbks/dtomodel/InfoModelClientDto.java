@@ -8,7 +8,8 @@ import lombok.*;
 @Setter
 @ToString
 @Builder
-public class DTOInfoModelClient {
+public class InfoModelClientDto {
     private String info;
+    private Object object;
     private Boolean isError;
 }

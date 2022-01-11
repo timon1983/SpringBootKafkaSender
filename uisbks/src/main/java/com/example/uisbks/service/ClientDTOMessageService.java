@@ -1,8 +1,8 @@
 package com.example.uisbks.service;
 
-import com.example.uisbks.dtomodel.DTODownloadHistory;
-import com.example.uisbks.dtomodel.DTOMessage;
-import com.example.uisbks.dtomodel.DTORequestMessage;
+import com.example.uisbks.dtomodel.DownloadHistoryDto;
+import com.example.uisbks.dtomodel.MessageDto;
+import com.example.uisbks.dtomodel.RequestMessageDto;
 import com.example.uisbks.exception.NoIdException;
 import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
@@ -27,16 +27,16 @@ public class ClientDTOMessageService {
     /**
      * Формирование объекта DTOMessage
      */
-    public DTOMessage getDTOMessage(DTORequestMessage dtoRequestMessage)
+    public MessageDto getDTOMessage(RequestMessageDto requestMessageDto)
             throws IOException {
-        MultipartFile multipartFile = dtoRequestMessage.getFile();
+        MultipartFile multipartFile = requestMessageDto.getFile();
         if (multipartFile != null && !multipartFile.isEmpty() && multipartFile.getOriginalFilename() != null) {
             var fileName = multipartFile.getOriginalFilename();
-            return DTOMessage.builder()
-                    .title(dtoRequestMessage.getTitle())
+            return MessageDto.builder()
+                    .title(requestMessageDto.getTitle())
                     .size(multipartFile.getSize())
                     .dateOfCreate(LocalDateTime.now().withNano(0))
-                    .author(dtoRequestMessage.getAuthor())
+                    .author(requestMessageDto.getAuthor())
                     .originFileName(fileName)
                     .fileNameForS3(String.join(".",
                             String.valueOf(System.currentTimeMillis()),
@@ -52,11 +52,11 @@ public class ClientDTOMessageService {
     /**
      * Формирование объекта DTODownloadHistory по имени
      */
-    public DTODownloadHistory getDTODownloadHistoryByName(String name, String ip) {
+    public DownloadHistoryDto getDTODownloadHistoryByName(String name, String ip) {
         if (name.isBlank()) {
             throw new NoIdException(MessageFormat.format("Параметр {} не должен быть пустым", name));
         }
-        return DTODownloadHistory.builder()
+        return DownloadHistoryDto.builder()
                 .id(null)
                 .fileName(URLEncoder.encode(name, StandardCharsets.UTF_8))
                 .ipUser(ip)
@@ -67,11 +67,11 @@ public class ClientDTOMessageService {
     /**
      * Формирование объекта DTODownloadHistory по ID
      */
-    public DTODownloadHistory getDTODownloadHistoryById(Long id, String ip) {
+    public DownloadHistoryDto getDTODownloadHistoryById(Long id, String ip) {
         if (id == 0) {
             throw new NoIdException("Введите id для открытия файла");
         }
-        return DTODownloadHistory.builder()
+        return DownloadHistoryDto.builder()
                 .id(id)
                 .fileName(null)
                 .ipUser(ip)

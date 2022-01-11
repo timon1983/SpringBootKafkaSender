@@ -2,11 +2,14 @@ package com.example.uisbks.configuration;
 
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
+import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.boot.web.embedded.tomcat.TomcatServletWebServerFactory;
 import org.springframework.boot.web.server.WebServerFactoryCustomizer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Lazy;
+import org.springframework.context.annotation.Scope;
 import org.springframework.web.client.RestTemplate;
 
 import java.io.File;
@@ -42,8 +45,9 @@ public class GlobalConfig {
                 .build();
     }
 
-    @Bean("token")
-    public String getToken(){
-        return token;
-    }
+//    @Bean("token")
+//    @Lazy
+//    public String getToken(){
+//        return token;
+//    }
 }

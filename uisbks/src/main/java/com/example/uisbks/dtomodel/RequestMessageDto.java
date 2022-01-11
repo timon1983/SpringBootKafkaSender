@@ -9,7 +9,7 @@ import org.springframework.web.multipart.MultipartFile;
 @Setter
 @ToString
 @Builder
-public class DTORequestMessage {
+public class RequestMessageDto {
     private Long id;
     private String title;
     private String author;

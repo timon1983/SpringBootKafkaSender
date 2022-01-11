@@ -10,6 +10,6 @@ import lombok.*;
 @Builder
 public class AuthDto {
 
-    private String name;
+    private String email;
     private String password;
 }

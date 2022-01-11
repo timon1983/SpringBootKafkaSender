@@ -63,7 +63,7 @@ public class UserSecurity implements UserDetails {
 
     public static UserDetails fromUserAuth(UserAuth userAuth) {
         return new User(
-                userAuth.getName(),
+                userAuth.getEmail(),
                 userAuth.getPassword(),
                 userAuth.getStatusAuth().equals(StatusAuth.ACTIVE),
                 userAuth.getStatusAuth().equals(StatusAuth.ACTIVE),

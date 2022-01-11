@@ -4,12 +4,17 @@
 <head>
     <meta charset="UTF-8">
     <title>Login</title>
+    <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 </head>
 <body>
+
+<c:forEach var="error" items="${error}">
+    <c:out value="${error}"/>
+</c:forEach>
 <table>
     <td>
-        <form action="#" th:action="@{/login}" th:object="${authDto}" method="post">
-            name:<input type="text" th:field="*{name}" name="name" placeholder="name"/>
+        <form action="#" th:action="@{/UI/login}" th:object="${authDto}" method="post">
+            email:<input type="text" th:field="*{email}" name="email" placeholder="email"/>
             <br/>
             <br/>
             password:<input type="text" th:field="*{password}" name="password" placeholder="password"/>

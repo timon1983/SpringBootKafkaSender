@@ -1,6 +1,6 @@
 package com.example.uisbks.service;
 
-import com.example.uisbks.dtomodel.DTOMessage;
+import com.example.uisbks.dtomodel.MessageDto;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
@@ -39,10 +39,10 @@ class ClientCacheServiceTest {
     @DisplayName("Метод должен поместить файл в кеш")
     void check_setCache_Should_Set_File_To_Cache(@TempDir Path tempDir) throws IOException {
         Path file = tempDir.resolve(fileName);
-        DTOMessage dtoMessage = new DTOMessage();
-        dtoMessage.setFileNameForS3(fileName);
-        dtoMessage.setContent("test-line".getBytes(StandardCharsets.UTF_8));
-        clientCacheService.setCache(dtoMessage, tempDir.toString());
+        MessageDto messageDto = new MessageDto();
+        messageDto.setFileNameForS3(fileName);
+        messageDto.setContent("test-line".getBytes(StandardCharsets.UTF_8));
+        clientCacheService.setCache(messageDto, tempDir.toString());
 
         assertTrue(Files.exists(file));
         assertEquals(file.getFileName().toString(), fileName);

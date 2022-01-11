@@ -3,12 +3,12 @@ package com.example.sbks.controller;
 import com.example.sbks.dto.InfoDto;
 import com.example.sbks.dto.MessageDto;
 import com.example.sbks.service.MessageDeletedService;
-import com.example.sbks.service.MessageService;
 import lombok.RequiredArgsConstructor;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -28,6 +28,7 @@ public class MessageDeletedController {
      * Получение списка удаленных файлов
      */
     @GetMapping("/files-deleted")
+    @PreAuthorize("hasAuthority('deleted-message:read')")
     public ResponseEntity<List<MessageDto>> getAllMessages() {
         List<MessageDto> messageDtoList = messageDeletedService.getAll();
         log.info("Контроллер.Запрос в сервис на получение списка удаленных файлов");
@@ -38,6 +39,7 @@ public class MessageDeletedController {
      * Очистка списка удаленных файлов
      */
     @GetMapping("/files-clean")
+    @PreAuthorize("hasAuthority('deleted-message:write')")
     public ResponseEntity<List<String>> deleteAllMessages() {
         List<String> fileNames = messageDeletedService.deleteAll();
         log.info("Контроллер.Запрос на очистку списка удаленных файлов");
@@ -48,20 +50,22 @@ public class MessageDeletedController {
      * Удаление файла на совсем
      */
     @PostMapping("/full-delete")
+    @PreAuthorize("hasAuthority('deleted-message:write')")
     public ResponseEntity<InfoDto> deletingTheFileAtAll(@RequestBody Long id) {
         log.info("Контроллер.Запрос на полное удаление файла по id={}", id);
         InfoDto infoDto = new InfoDto();
         infoDto.setInfo(messageDeletedService.fullDelete(id));
-        return new ResponseEntity<>(infoDto,HttpStatus.OK);
+        return new ResponseEntity<>(infoDto, HttpStatus.OK);
     }
 
     /**
      * Восстановление файла из корзины по его id
      */
     @PostMapping("/restore-file")
+    @PreAuthorize("hasAuthority('deleted-message:write')")
     public ResponseEntity<InfoDto> restoreMessageById(@RequestBody Long id) {
         log.info("Контроллер.Запрос на восстановление файла по id={}", id);
         messageDeletedService.restoreMessage(id);
-        return new ResponseEntity<>(new InfoDto(),HttpStatus.OK);
+        return new ResponseEntity<>(new InfoDto(), HttpStatus.OK);
     }
 }

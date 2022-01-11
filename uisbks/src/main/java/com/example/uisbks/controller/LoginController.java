@@ -10,21 +10,39 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+/**
+ * Контроллер для перехода на страницу аутентифиуации и стартовую страницу
+ */
 @Controller
-@RequestMapping("login")
+@RequestMapping("UI")
 @RequiredArgsConstructor
 public class LoginController {
 
     private final ClientAuthService clientAuthService;
 
-    @GetMapping
-    public String getLoginPage(){
+    /**
+     * Переход на страницу аутентифиуации
+     */
+    @GetMapping("login")
+    public String getLoginPage() {
         return JspPage.LOGIN_PAGE;
     }
 
-    @PostMapping
-    public String sendLogin(@ModelAttribute AuthDto authDto){
+    /**
+     * Отправление данных для аутентификации
+     */
+    @PostMapping("login")
+    public String sendLogin(@ModelAttribute AuthDto authDto) {
         clientAuthService.sendAuth(authDto);
+        return JspPage.START_PAGE;
+    }
+
+    /**
+     * Выход из аккаунта
+     */
+    @GetMapping("logout")
+    public String sendLogout() {
+        clientAuthService.sendOut();
         return JspPage.START_PAGE;
     }
 }

@@ -1,8 +1,7 @@
 package com.example.uisbks.controller;
 
-import com.example.uisbks.dtomodel.DTODownloadHistory;
+import com.example.uisbks.dtomodel.DownloadHistoryDto;
 import com.example.uisbks.dtomodel.JspPage;
-import com.example.uisbks.exception.NoIdException;
 import com.example.uisbks.service.ClientDownloadHistoryService;
 import lombok.RequiredArgsConstructor;
 import org.apache.logging.log4j.LogManager;
@@ -11,7 +10,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 /**
@@ -31,7 +29,7 @@ public class ClientDownloadHistoryController {
     @GetMapping("")
     public String getDownloadHistoryByFileId(@RequestParam Long id, Model model) {
         log.info("Получение запроса на историю загрузки файла по id={}", id);
-        List<DTODownloadHistory> dtoDownloadClientInfos = clientDownloadHistoryService.getAllDownloadHistory(id);
+        List<DownloadHistoryDto> dtoDownloadClientInfos = clientDownloadHistoryService.getAllDownloadHistory(id);
         model.addAttribute("downloadList", dtoDownloadClientInfos);
         return JspPage.DOWNLOAD_HISTORY;
     }

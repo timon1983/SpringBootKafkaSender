@@ -17,6 +17,6 @@
 
 <br/>
 <br/>
-<form method="get" action="/login"><button type="submit">Войти</button></form>
+<form method="get" action="/UI/login"><button type="submit">Войти</button></form>
 </body>
 </html>

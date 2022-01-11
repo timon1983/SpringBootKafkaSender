@@ -1,9 +1,9 @@
 package com.example.uisbks.controller;
 
-import com.example.uisbks.dtomodel.DTODownloadHistory;
-import com.example.uisbks.dtomodel.DTOMessage;
-import com.example.uisbks.dtomodel.DTORequestMessage;
+import com.example.uisbks.dtomodel.DownloadHistoryDto;
 import com.example.uisbks.dtomodel.JspPage;
+import com.example.uisbks.dtomodel.MessageDto;
+import com.example.uisbks.dtomodel.RequestMessageDto;
 import com.example.uisbks.service.ClientDTOMessageService;
 import com.example.uisbks.service.ClientMessageService;
 import lombok.RequiredArgsConstructor;
@@ -43,11 +43,11 @@ public class ClientMessageController {
      * Загрузка файла с UI
      */
     @PostMapping
-    public String createMessage(@ModelAttribute DTORequestMessage dtoRequestMessage)
+    public String createMessage(@ModelAttribute RequestMessageDto requestMessageDto)
             throws URISyntaxException, IOException {
         log.info("Получение сообщения от клиента");
-        DTOMessage dtoMessage = clientDTOMessageService.getDTOMessage(dtoRequestMessage);
-        clientMessageService.doOperationToSaveFiles(dtoMessage);
+        MessageDto messageDto = clientDTOMessageService.getDTOMessage(requestMessageDto);
+        clientMessageService.doOperationToSaveFiles(messageDto);
         return JspPage.FILE_INSERT;
     }
 
@@ -66,7 +66,7 @@ public class ClientMessageController {
      */
     @GetMapping("/file-delete/{id}")
     public String deleteFileById(@PathVariable Long id) {
-        clientMessageService. doOperationToDeleteFiles(id);
+        clientMessageService.doOperationToDeleteFiles(id);
         return "redirect:/create/files";
     }
 
@@ -75,7 +75,7 @@ public class ClientMessageController {
      */
     @GetMapping("/open-file-id/{ip}")
     public String openFileById(@RequestParam Long id, @PathVariable String ip) {
-        DTODownloadHistory downloadHistory = clientDTOMessageService.getDTODownloadHistoryById(id, ip);
+        DownloadHistoryDto downloadHistory = clientDTOMessageService.getDTODownloadHistoryById(id, ip);
         String url = clientMessageService.doOperationWithFilesForOpenById(downloadHistory);
         return String.join("",
                 "redirect:",
@@ -86,8 +86,8 @@ public class ClientMessageController {
      * Получение файла по имени
      */
     @GetMapping("/open-file-name/{ip}")
-    public String openFileByName(@RequestParam String name, @PathVariable String ip) throws IOException {
-        DTODownloadHistory downloadHistory = clientDTOMessageService.getDTODownloadHistoryByName(name, ip);
+    public String openFileByName(@RequestParam String name, @PathVariable String ip) {
+        DownloadHistoryDto downloadHistory = clientDTOMessageService.getDTODownloadHistoryByName(name, ip);
         String url = clientMessageService.doOperationWithFilesForOpenByName(downloadHistory);
         return String.join("",
                 "redirect:",

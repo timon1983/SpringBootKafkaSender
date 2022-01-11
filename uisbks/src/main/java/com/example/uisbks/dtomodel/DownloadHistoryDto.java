@@ -10,7 +10,7 @@ import java.time.LocalDateTime;
 @Setter
 @ToString
 @Builder
-public class DTODownloadHistory {
+public class DownloadHistoryDto {
     private Long id;
     private String fileName;
     private String ipUser;

@@ -1,6 +1,5 @@
 package com.example.sbks.service;
 
-import com.amazonaws.services.cloudfront.model.Paths;
 import com.example.sbks.dto.MessageDto;
 import com.example.sbks.exception.NoSuchDataFileException;
 import com.example.sbks.mapper.MapperForModel;
@@ -86,5 +85,10 @@ public class MessageServiceImpl implements MessageService {
     public Optional<Message> getByName(String name) {
         log.info("Service.Получение информации о файле по его name={}", name);
         return messageRepository.findByOriginFileName(name);
+    }
+
+    @Override
+    public void throwException(){
+        throw new NoSuchDataFileException("ggg");
     }
 }

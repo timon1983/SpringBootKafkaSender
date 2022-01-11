@@ -36,5 +36,5 @@ public interface MessageService {
      */
     Optional<Message> getByName(String name);
 
-
+    void throwException();
 }

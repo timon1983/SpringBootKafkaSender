@@ -1,7 +1,7 @@
 package com.example.uisbks.service;
 
-import com.example.uisbks.dtomodel.DTODownloadHistory;
-import com.example.uisbks.dtomodel.DTOMessage;
+import com.example.uisbks.dtomodel.DownloadHistoryDto;
+import com.example.uisbks.dtomodel.MessageDto;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
@@ -22,9 +22,9 @@ class ClientMessageServiceTest {
 
     @Test
     void check_doOperationToSaveFiles() throws URISyntaxException, IOException {
-        DTOMessage dtoMessage = new DTOMessage();
-        clientMessageService.doOperationToSaveFiles(dtoMessage);
-        verify(clientMessageService).doOperationToSaveFiles(dtoMessage);
+        MessageDto messageDto = new MessageDto();
+        clientMessageService.doOperationToSaveFiles(messageDto);
+        verify(clientMessageService).doOperationToSaveFiles(messageDto);
     }
 
     @Test
@@ -34,15 +34,15 @@ class ClientMessageServiceTest {
 
     @Test
     void check_doOperationWithFilesForOpenById_Should_Return_RedirectPage() {
-        DTODownloadHistory dtoDownloadHistory = new DTODownloadHistory();
-        lenient().when(clientMessageService.doOperationWithFilesForOpenById(dtoDownloadHistory))
+        DownloadHistoryDto downloadHistoryDto = new DownloadHistoryDto();
+        lenient().when(clientMessageService.doOperationWithFilesForOpenById(downloadHistoryDto))
                 .thenReturn("/create/files");
     }
 
     @Test
     void check_doOperationWithFilesForOpenByName_Should_Return_RedirectPage(){
-        DTODownloadHistory dtoDownloadHistory = new DTODownloadHistory();
-        lenient().when(clientMessageService.doOperationWithFilesForOpenByName(dtoDownloadHistory))
+        DownloadHistoryDto downloadHistoryDto = new DownloadHistoryDto();
+        lenient().when(clientMessageService.doOperationWithFilesForOpenByName(downloadHistoryDto))
                 .thenReturn("/create/files");
     }
 

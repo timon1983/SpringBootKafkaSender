@@ -16,5 +16,4 @@
     <changeSet id="create_tables_user_auth" author="timon">
         <sqlFile path="db/changelog/1.0/user_auth.sql"/>
     </changeSet>
-
 </databaseChangeLog>
