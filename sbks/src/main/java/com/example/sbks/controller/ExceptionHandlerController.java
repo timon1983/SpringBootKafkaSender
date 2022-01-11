@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 /**
- * Контроллер для обработки исключений NoSuchDataFileException
+ * Контроллер для обработки исключений
  */
 @RestControllerAdvice
 public class ExceptionHandlerController {
@@ -25,7 +25,7 @@ public class ExceptionHandlerController {
     }
 
     @ExceptionHandler(JwtAuthenticationException.class)
-    public ResponseEntity<InfoDto> handleJwtAuthenticationException(JwtAuthenticationException e){
+    public ResponseEntity<InfoDto> handleJwtAuthenticationException(JwtAuthenticationException e) {
         InfoDto infoDto = InfoDto.builder()
                 .info(e.getMessage())
                 .isError(true)
@@ -34,15 +34,16 @@ public class ExceptionHandlerController {
     }
 
     @ExceptionHandler(JwtException.class)
-    public ResponseEntity<InfoDto> handleJwtAuthenticationException(JwtException e){
+    public ResponseEntity<InfoDto> handleJwtAuthenticationException(JwtException e) {
         InfoDto infoDto = InfoDto.builder()
                 .info(e.getMessage())
                 .isError(true)
                 .build();
         return new ResponseEntity<>(infoDto, HttpStatus.OK);
     }
+
     @ExceptionHandler(IllegalArgumentException.class)
-    public ResponseEntity<InfoDto> handleJwtAuthenticationException(IllegalArgumentException e){
+    public ResponseEntity<InfoDto> handleJwtAuthenticationException(IllegalArgumentException e) {
         InfoDto infoDto = InfoDto.builder()
                 .info(e.getMessage())
                 .isError(true)

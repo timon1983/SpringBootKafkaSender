@@ -6,6 +6,9 @@ import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
 
+/**
+ * Интерфейс для взаимодействия с БД usersauth
+ */
 @Repository
 public interface UserAuthRepository extends JpaRepository<UserAuth, Long> {
 

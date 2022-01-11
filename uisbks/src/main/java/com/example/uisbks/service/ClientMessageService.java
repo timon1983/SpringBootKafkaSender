@@ -14,7 +14,6 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
@@ -23,10 +22,12 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
-import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 
+/**
+ * Сервис для обработки сообщений(файлов)
+ */
 @Service
 @RequiredArgsConstructor
 public class ClientMessageService {
@@ -47,7 +48,7 @@ public class ClientMessageService {
         URI uri = new URI(clientDTOMessageService.getUrl("create"));
         log.info("Отправка данных по файлу {} в БД", messageDto.getOriginFileName());
         clientCacheService.setCache(messageDto, "uisbks/files/");
-        HttpEntity<Object> request = authorizationHeaderService.getHttpEntityForPostRequest(messageDto);
+        HttpEntity<Object> request = authorizationHeaderService.getHttpEntityForRequest(messageDto);
         try {
             InfoModelClientDto infoModelClientDto = restTemplate.postForObject(uri, request, InfoModelClientDto.class);
             if (infoModelClientDto != null && infoModelClientDto.getIsError()) {
@@ -63,12 +64,13 @@ public class ClientMessageService {
      * Метод для получения списка всех загруженных файлов
      */
     public List<LinkedHashMap<String, Object>> getListOfFiles() {
-        HttpEntity<MultiValueMap<String, String>> request = authorizationHeaderService.getHttpEntityForGetRequest();
+        HttpEntity<Object> request = authorizationHeaderService.getHttpEntityForRequest(null);
         log.info("Получение списка загруженных файлов");
         try {
             ResponseEntity<List<LinkedHashMap<String, Object>>> response =
                     restTemplate.exchange(clientDTOMessageService.getUrl("files"), HttpMethod.GET,
-                            request, new ParameterizedTypeReference <List<LinkedHashMap<String, Object>>>() {});
+                            request, new ParameterizedTypeReference<List<LinkedHashMap<String, Object>>>() {
+                            });
             return response.getBody();
         } catch (HttpClientErrorException e) {
             throw new AuthorizationJwtTokenException("Ошибка валидации токена: ");
@@ -79,10 +81,11 @@ public class ClientMessageService {
      * Метод для выполнения операций скачивания файла по id
      */
     public String doOperationWithFilesForOpenById(DownloadHistoryDto downloadHistoryDto) {
-        HttpEntity<Object> request = authorizationHeaderService.getHttpEntityForPostRequest(downloadHistoryDto);
+        HttpEntity<Object> request = authorizationHeaderService.getHttpEntityForRequest(downloadHistoryDto);
         try {
-            InfoModelClientDto infoModelClientDto = restTemplate
-                    .postForObject(clientDTOMessageService.getUrl("open-id"), request, InfoModelClientDto.class);
+            InfoModelClientDto infoModelClientDto =
+                    restTemplate.postForObject(clientDTOMessageService.getUrl("open-id"),
+                            request, InfoModelClientDto.class);
             return getUrlForFileAfterCheckDtoInfoModelClient(downloadHistoryDto, infoModelClientDto);
         } catch (HttpClientErrorException e) {
             throw new AuthorizationJwtTokenException("Ошибка валидации токена: ");
@@ -93,10 +96,11 @@ public class ClientMessageService {
      * Метод для выполнения операций скачивания файла по имени
      */
     public String doOperationWithFilesForOpenByName(DownloadHistoryDto downloadHistoryDto) {
-        HttpEntity<Object> request = authorizationHeaderService.getHttpEntityForPostRequest(downloadHistoryDto);
+        HttpEntity<Object> request = authorizationHeaderService.getHttpEntityForRequest(downloadHistoryDto);
         try {
-            InfoModelClientDto infoModelClientDto = restTemplate
-                    .postForObject(clientDTOMessageService.getUrl("open-name"), request, InfoModelClientDto.class);
+            InfoModelClientDto infoModelClientDto =
+                    restTemplate.postForObject(clientDTOMessageService.getUrl("open-name"),
+                            request, InfoModelClientDto.class);
             return getUrlForFileAfterCheckDtoInfoModelClient(downloadHistoryDto, infoModelClientDto);
         } catch (HttpClientErrorException e) {
             throw new AuthorizationJwtTokenException("Ошибка валидации токена: ");
@@ -132,10 +136,11 @@ public class ClientMessageService {
      * Метод для выполнения операций по удалению файла
      */
     public void doOperationToDeleteFiles(Long id) {
-        HttpEntity<Object> request = authorizationHeaderService.getHttpEntityForPostRequest(id);
+        HttpEntity<Object> request = authorizationHeaderService.getHttpEntityForRequest(id);
         try {
-            InfoModelClientDto infoModelClientDto = restTemplate
-                    .postForObject(clientDTOMessageService.getUrl("delete"), request, InfoModelClientDto.class);
+            InfoModelClientDto infoModelClientDto =
+                    restTemplate.postForObject(clientDTOMessageService.getUrl("delete"),
+                            request, InfoModelClientDto.class);
             if (infoModelClientDto != null && infoModelClientDto.getIsError()) {
                 log.error(infoModelClientDto.getInfo());
                 throw new NoIdException(infoModelClientDto.getInfo());
@@ -155,10 +160,11 @@ public class ClientMessageService {
         }
         name = URLEncoder.encode(name, StandardCharsets.UTF_8);
         log.info("Отправка файла {} в kafka", name);
-        HttpEntity<Object> request = authorizationHeaderService.getHttpEntityForPostRequest(name);
+        HttpEntity<Object> request = authorizationHeaderService.getHttpEntityForRequest(name);
         try {
-            InfoModelClientDto infoModelClientDto = restTemplate
-                    .postForObject(clientDTOMessageService.getUrl("send-file"), request, InfoModelClientDto.class);
+            InfoModelClientDto infoModelClientDto =
+                    restTemplate.postForObject(clientDTOMessageService.getUrl("send-file"),
+                            request, InfoModelClientDto.class);
             if (infoModelClientDto != null && infoModelClientDto.getIsError()) {
                 log.error("Ошибка при отправке: [{}]", infoModelClientDto.getInfo());
                 throw new NoIdException(infoModelClientDto.getInfo());

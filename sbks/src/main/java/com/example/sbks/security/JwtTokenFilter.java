@@ -1,6 +1,5 @@
 package com.example.sbks.security;
 
-import com.example.sbks.dto.InfoDto;
 import com.example.sbks.exception.JwtAuthenticationException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.logging.log4j.LogManager;
@@ -17,16 +16,17 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 
+/**
+ * Сервлет фильтр sbks
+ */
 @Component
 public class JwtTokenFilter extends GenericFilterBean {
 
     private final static Logger log = LogManager.getLogger(JwtTokenFilter.class);
     private final JwtTokenProvider jwtTokenProvider;
-    private final ObjectMapper objectMapper;
 
-    public JwtTokenFilter(JwtTokenProvider jwtTokenProvider, ObjectMapper objectMapper) {
+    public JwtTokenFilter(JwtTokenProvider jwtTokenProvider) {
         this.jwtTokenProvider = jwtTokenProvider;
-        this.objectMapper = objectMapper;
     }
 
     /**

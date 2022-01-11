@@ -53,8 +53,9 @@ public class MessageDeletedController {
     @PreAuthorize("hasAuthority('deleted-message:write')")
     public ResponseEntity<InfoDto> deletingTheFileAtAll(@RequestBody Long id) {
         log.info("Контроллер.Запрос на полное удаление файла по id={}", id);
-        InfoDto infoDto = new InfoDto();
-        infoDto.setInfo(messageDeletedService.fullDelete(id));
+        InfoDto infoDto = InfoDto.builder()
+                .info(messageDeletedService.fullDelete(id))
+                .build();
         return new ResponseEntity<>(infoDto, HttpStatus.OK);
     }
 
@@ -66,6 +67,6 @@ public class MessageDeletedController {
     public ResponseEntity<InfoDto> restoreMessageById(@RequestBody Long id) {
         log.info("Контроллер.Запрос на восстановление файла по id={}", id);
         messageDeletedService.restoreMessage(id);
-        return new ResponseEntity<>(new InfoDto(), HttpStatus.OK);
+        return new ResponseEntity<>(InfoDto.builder().build(), HttpStatus.OK);
     }
 }

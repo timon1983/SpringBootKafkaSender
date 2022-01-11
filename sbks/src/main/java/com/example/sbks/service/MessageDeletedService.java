@@ -1,7 +1,6 @@
 package com.example.sbks.service;
 
 import com.example.sbks.dto.MessageDto;
-import com.example.sbks.model.Message;
 
 import java.util.List;
 

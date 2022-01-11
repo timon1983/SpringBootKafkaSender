@@ -9,12 +9,18 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+/**
+ * Сервис для получения объекта UserDetails
+ */
 @Service("userDetailService")
 @RequiredArgsConstructor
 public class UserDetailsServiceImpl implements UserDetailsService {
 
     private final UserAuthRepository userAuthRepository;
 
+    /**
+     * Получение объекта UserDetails
+     */
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
         UserAuth userAuth = userAuthRepository.findByEmail(email).orElseThrow(() ->

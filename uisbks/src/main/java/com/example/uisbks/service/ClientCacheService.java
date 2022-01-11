@@ -24,7 +24,7 @@ public class ClientCacheService {
     /**
      * Проверка наличия файла кэше
      */
-    public boolean isCached(String fileName , String path)  {
+    public boolean isCached(String fileName, String path) {
         try {
             return Files.list(Path.of(path))
                     .map(Path::getFileName)
@@ -32,7 +32,7 @@ public class ClientCacheService {
                     .anyMatch(it -> it.equals(fileName));
         } catch (IOException e) {
             log.error("Ошибка при проверке кеша");
-           throw new NoIdException("Ошибка при проверке кеша");
+            throw new NoIdException("Ошибка при проверке кеша");
         }
     }
 

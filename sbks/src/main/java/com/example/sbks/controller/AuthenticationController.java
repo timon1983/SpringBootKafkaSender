@@ -17,11 +17,17 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+/**
+ * Контроллер для аутентификации и выхода из аккаунта
+ */
 @RestController
 @RequestMapping("/api/auth")
 @RequiredArgsConstructor
@@ -32,6 +38,9 @@ public class AuthenticationController {
     private final UserAuthRepository userAuthRepository;
     private final JwtTokenProvider jwtTokenProvider;
 
+    /**
+     * Получение данных с usbks для аутентификации
+     */
     @PostMapping("/login")
     public ResponseEntity<InfoDto> authenticate(@RequestBody AuthenticationDTO authenticationDTO) {
         try {
@@ -49,6 +58,9 @@ public class AuthenticationController {
         }
     }
 
+    /**
+     * Отмена аутентификации
+     */
     @PostMapping("/logout")
     public void logout(HttpServletRequest request, HttpServletResponse response) {
         SecurityContextLogoutHandler securityContextLogoutHandler = new SecurityContextLogoutHandler();

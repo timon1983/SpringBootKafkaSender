@@ -18,11 +18,11 @@ class AuthorizationHeaderServiceTest {
     void check_getHttpEntityForPostRequest_Should_Return_HttpEntity() {
         Object o = new Object();
         HttpEntity<Object> httpEntity = new HttpEntity<>(o);
-        when(authorizationHeaderService.getHttpEntityForPostRequest(o)).thenReturn(httpEntity);
+        when(authorizationHeaderService.getHttpEntityForRequest(o)).thenReturn(httpEntity);
     }
 
     @Test
     void check_getHttpEntityForGetRequest_Should_Return_HttpEntity() {
-        when(authorizationHeaderService.getHttpEntityForGetRequest()).thenReturn(new HttpEntity<>(null));
+        when(authorizationHeaderService.getHttpEntityForRequest(null)).thenReturn(new HttpEntity<>(null));
     }
 }
