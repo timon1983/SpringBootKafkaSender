@@ -13,3 +13,8 @@ uisbks - модуль frontend;
 
 kafka - модуль для отправки сообщений в kafka
 
+Security с помощью Jwt токена, три роли:
+ADMIN (логин admin@gmail.com, пароль admin),
+MODERATOR (логин moder@mail.ru, пароль moder),
+USER (логин user@yandex.ru, пароль user).
+
