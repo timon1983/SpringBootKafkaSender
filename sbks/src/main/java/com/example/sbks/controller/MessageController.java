@@ -53,9 +53,9 @@ public class MessageController {
      * Получение списка всех загруженных файлов
      */
     @GetMapping("/files")
-    public ResponseEntity<InfoDto> getAllMessages() {
-        InfoDto infoDto = InfoDto.builder().object(messageService.getAll()).build();
-        return new ResponseEntity<>(infoDto, HttpStatus.OK);
+    public ResponseEntity<List<MessageDto>> getAllMessages() {
+        List<MessageDto> messageDtoList = messageService.getAll();
+        return new ResponseEntity<>(messageDtoList, HttpStatus.OK);
     }
 
     /**
