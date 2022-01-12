@@ -43,7 +43,7 @@ public class ClientCacheService {
         Files.createDirectories(Paths.get(path));
         log.info("Запись файла {} в кэш", messageDto.getFileNameForS3());
         File file = Path.of(path, messageDto.getFileNameForS3()).toFile();
-        try (FileOutputStream outputStream = new FileOutputStream(file)) {
+        try (var outputStream = new FileOutputStream(file)) {
             outputStream.write(messageDto.getContent());
         } catch (IOException e) {
             log.error("Ошибка при записи файла {} кэш", messageDto.getFileNameForS3());

@@ -19,11 +19,13 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(AuthenticationController.class)
-@MockBean(UserAuthRepository.class)
-@MockBean(JwtTokenProvider.class)
-@MockBean(JwtConfigurer.class)
-@MockBean(JwtTokenFilter.class)
-@MockBean(AuthenticationManager.class)
+@MockBean(classes = {
+        UserAuthRepository.class,
+        JwtTokenProvider.class,
+        JwtConfigurer.class,
+        JwtTokenFilter.class,
+        AuthenticationManager.class
+})
 class AuthenticationControllerTest {
 
     @Autowired
@@ -38,8 +40,8 @@ class AuthenticationControllerTest {
                 .password("admin")
                 .build();
         mockMvc.perform(post("/api/auth/login")
-                        .content(objectMapper.writeValueAsString(authenticationDTO))
-                        .contentType(MediaType.APPLICATION_JSON_VALUE))
+                .content(objectMapper.writeValueAsString(authenticationDTO))
+                .contentType(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(status().isOk());
         //             .andExpect(content().json(objectMapper.writeValueAsString(new InfoDto())));
     }
@@ -48,7 +50,7 @@ class AuthenticationControllerTest {
     @WithMockUser
     void logout() throws Exception {
         mockMvc.perform(post("/api/auth/logout")
-                        .contentType(MediaType.APPLICATION_JSON_VALUE))
+                .contentType(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(status().isOk());
     }
 }

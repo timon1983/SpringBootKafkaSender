@@ -18,16 +18,19 @@ class DownloadHistoryServiceImplTest {
 
     @Test
     void check_saveByName_Should_Return_DownloadHistoryDto() {
-        lenient().when(downloadHistoryService.saveByName(new DownloadHistoryDto())).thenReturn(new DownloadHistoryDto());
+        lenient().when(downloadHistoryService.saveByName(new DownloadHistoryDto()))
+                .thenReturn(new DownloadHistoryDto());
     }
 
     @Test
     void check_saveById_Should_Return_DownloadHistoryDto() {
-        lenient().when(downloadHistoryService.saveByName(new DownloadHistoryDto())).thenReturn(new DownloadHistoryDto());
+        lenient().when(downloadHistoryService.saveByName(new DownloadHistoryDto()))
+                .thenReturn(new DownloadHistoryDto());
     }
 
     @Test
     void check_getAllById_Should_Return_ListOfDownloadHistoryDto() {
-        lenient().when(downloadHistoryService.getAllById(5L)).thenReturn(Collections.emptyList());
+        lenient().when(downloadHistoryService.getAllById(5L))
+                .thenReturn(Collections.emptyList());
     }
 }

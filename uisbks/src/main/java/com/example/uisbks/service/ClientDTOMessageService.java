@@ -60,7 +60,6 @@ public class ClientDTOMessageService {
             throw new NoIdException(MessageFormat.format("Параметр {} не должен быть пустым", name));
         }
         return DownloadHistoryDto.builder()
-                .id(null)
                 .fileName(URLEncoder.encode(name, StandardCharsets.UTF_8))
                 .ipUser(ip)
                 .dateOfDownload(LocalDateTime.now().withNano(0))

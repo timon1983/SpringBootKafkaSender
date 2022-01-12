@@ -38,7 +38,7 @@ public class ClientAuthService {
                     restTemplate.postForObject(uri, authDto, InfoModelClientDto.class);
             checkInfoModelClientDtoResponse(infoModelClientDto);
         } catch (URISyntaxException e) {
-            e.printStackTrace();
+            log.error("Ошибка при создании URI");
         }
     }
 
