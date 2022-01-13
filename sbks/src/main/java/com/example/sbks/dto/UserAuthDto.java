@@ -15,6 +15,6 @@ public class UserAuthDto {
     private String name;
     private String email;
     private String password;
-    private Role role = Role.USER;
-    private StatusAuth statusAuth = StatusAuth.ACTIVE;
+    private final Role role = Role.USER;
+    private final StatusAuth statusAuth = StatusAuth.ACTIVE;
 }

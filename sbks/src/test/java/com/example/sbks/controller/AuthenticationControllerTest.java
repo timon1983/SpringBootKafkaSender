@@ -5,6 +5,7 @@ import com.example.sbks.repository.UserAuthRepository;
 import com.example.sbks.security.JwtConfigurer;
 import com.example.sbks.security.JwtTokenFilter;
 import com.example.sbks.security.JwtTokenProvider;
+import com.example.sbks.service.UserRegistrationService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,7 +25,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
         JwtTokenProvider.class,
         JwtConfigurer.class,
         JwtTokenFilter.class,
-        AuthenticationManager.class
+        AuthenticationManager.class,
+        UserRegistrationService.class
 })
 class AuthenticationControllerTest {
 
