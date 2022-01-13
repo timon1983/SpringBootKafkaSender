@@ -17,7 +17,7 @@ import java.util.List;
  * Контроллер для обработки запросов по операциям с удаленными файлами
  */
 @RestController
-@RequestMapping("/api/sdk")
+@RequestMapping("/api/sbk")
 @RequiredArgsConstructor
 public class MessageDeletedController {
 

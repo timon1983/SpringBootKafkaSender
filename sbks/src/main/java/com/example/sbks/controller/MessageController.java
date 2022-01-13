@@ -25,7 +25,7 @@ import java.util.List;
  * Контроллер для обработки запросов по основным операциям с файлами
  */
 @RestController
-@RequestMapping("/api/sdk")
+@RequestMapping("/api/sbk")
 @RequiredArgsConstructor
 public class MessageController {
 
