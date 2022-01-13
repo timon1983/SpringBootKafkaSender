@@ -1,6 +1,7 @@
 package com.example.sbks.service;
 
 import com.example.sbks.dto.DownloadHistoryDto;
+import com.example.sbks.service.impl.DownloadHistoryServiceImpl;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;

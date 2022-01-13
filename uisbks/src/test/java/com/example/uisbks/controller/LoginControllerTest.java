@@ -1,6 +1,7 @@
 package com.example.uisbks.controller;
 
 import com.example.uisbks.service.ClientAuthService;
+import com.example.uisbks.service.ClientRegistrationService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -14,12 +15,14 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 
 @WebMvcTest(LoginController.class)
+@MockBean(classes = {
+        ClientRegistrationService.class,
+        ClientAuthService.class
+})
 class LoginControllerTest {
 
     @Autowired
     MockMvc mockMvc;
-    @MockBean
-    ClientAuthService clientAuthService;
 
     @Test
     void check_getLoginPage_Should_Return_JspLoginPage() throws Exception {

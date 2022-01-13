@@ -1,6 +1,7 @@
-package com.example.sbks.service;
+package com.example.sbks.service.impl;
 
 import com.example.sbks.repository.RepositoryS3;
+import com.example.sbks.service.ServiceS3;
 import lombok.RequiredArgsConstructor;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -9,7 +10,6 @@ import org.springframework.stereotype.Service;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.nio.file.Path;
 
 
 @Service

@@ -1,4 +1,4 @@
-package com.example.sbks.service;
+package com.example.sbks.service.impl;
 
 import com.example.sbks.dto.UserSecurity;
 import com.example.sbks.model.UserAuth;

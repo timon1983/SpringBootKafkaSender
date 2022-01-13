@@ -1,10 +1,12 @@
-package com.example.sbks.service;
+package com.example.sbks.service.impl;
 
 import com.example.sbks.dto.MessageDto;
 import com.example.sbks.exception.NoSuchDataFileException;
 import com.example.sbks.mapper.MapperForModel;
 import com.example.sbks.model.Status;
 import com.example.sbks.repository.MessageRepository;
+import com.example.sbks.service.MessageDeletedService;
+import com.example.sbks.service.ServiceS3;
 import lombok.RequiredArgsConstructor;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;

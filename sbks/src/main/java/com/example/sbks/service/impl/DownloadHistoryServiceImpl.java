@@ -1,4 +1,4 @@
-package com.example.sbks.service;
+package com.example.sbks.service.impl;
 
 import com.example.sbks.dto.DownloadHistoryDto;
 import com.example.sbks.exception.NoSuchDataFileException;
@@ -6,6 +6,7 @@ import com.example.sbks.mapper.MapperForModel;
 import com.example.sbks.model.DownloadHistory;
 import com.example.sbks.repository.DownloadHistoryRepository;
 import com.example.sbks.repository.MessageRepository;
+import com.example.sbks.service.DownloadHistoryService;
 import lombok.RequiredArgsConstructor;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;

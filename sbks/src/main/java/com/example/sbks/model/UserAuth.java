@@ -5,7 +5,7 @@ import lombok.*;
 import javax.persistence.*;
 
 @Entity
-@Table(name = "usersauth")
+@Table(name = "user_auth")
 @Getter
 @Setter
 @Builder(toBuilder = true)
@@ -13,7 +13,8 @@ import javax.persistence.*;
 @NoArgsConstructor
 public class UserAuth {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @SequenceGenerator(name = "userAuthIdSeq", sequenceName = "user_auth_id_seq", allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "userAuthIdSeq")
     private Long id;
 
     private String email;

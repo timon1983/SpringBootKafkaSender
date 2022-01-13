@@ -1,5 +1,6 @@
 package com.example.uisbks.controller;
 
+import com.example.uisbks.service.ClientCacheService;
 import com.example.uisbks.service.ClientDTOMessageService;
 import com.example.uisbks.service.ClientMessageService;
 import org.junit.jupiter.api.Test;
@@ -18,7 +19,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @WebMvcTest(ClientMessageController.class)
 @MockBean(classes = {
         ClientDTOMessageService.class,
-        ClientMessageService.class
+        ClientMessageService.class,
+        ClientCacheService.class
 })
 class ClientMessageControllerTest {
 
