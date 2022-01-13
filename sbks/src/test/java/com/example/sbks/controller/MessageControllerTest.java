@@ -1,7 +1,6 @@
 package com.example.sbks.controller;
 
 import com.example.sbks.dto.DownloadHistoryDto;
-import com.example.sbks.dto.InfoDto;
 import com.example.sbks.dto.MessageDto;
 import com.example.sbks.security.JwtConfigurer;
 import com.example.sbks.security.JwtTokenFilter;
@@ -18,19 +17,19 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 
-import java.util.Collections;
-
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(MessageController.class)
-@MockBean(MessageServiceImpl.class)
-@MockBean(MessageSenderKafkaService.class)
-@MockBean(DownloadHistoryService.class)
-@MockBean(JwtConfigurer.class)
-@MockBean(JwtTokenFilter.class)
-@MockBean(AuthenticationManager.class)
+@MockBean(classes = {
+        MessageServiceImpl.class,
+        MessageSenderKafkaService.class,
+        DownloadHistoryService.class,
+        JwtConfigurer.class,
+        JwtTokenFilter.class,
+        AuthenticationManager.class
+})
 class MessageControllerTest {
 
     @Autowired

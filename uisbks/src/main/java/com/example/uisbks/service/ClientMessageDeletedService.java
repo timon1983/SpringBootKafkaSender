@@ -20,6 +20,7 @@ import java.nio.file.Paths;
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Сервис для работы с удаленными сообщениями(файлами)
@@ -40,7 +41,7 @@ public class ClientMessageDeletedService {
         HttpEntity<Object> request = authorizationHeaderService.getHttpEntityForRequest(id);
         try {
             InfoModelClientDto infoModelClientDto = restTemplate.postForObject(clientDTOMessageService
-                    .getUrl("full-delete"), request, InfoModelClientDto.class);
+                    .getUrl("sbk/full-delete"), request, InfoModelClientDto.class);
             checkDtoInfoModelClient(infoModelClientDto);
             log.info("Файл c id={} полностью удален", id);
         } catch (HttpClientErrorException e) {
@@ -55,7 +56,7 @@ public class ClientMessageDeletedService {
         HttpEntity<Object> request = authorizationHeaderService.getHttpEntityForRequest(id);
         try {
             InfoModelClientDto infoModelClientDto = restTemplate.postForObject(clientDTOMessageService
-                    .getUrl("restore-file"), request, InfoModelClientDto.class);
+                    .getUrl("sbk/restore-file"), request, InfoModelClientDto.class);
             checkDtoInfoModelClient(infoModelClientDto);
             log.info("Файл c id={} восстановлен", id);
         } catch (HttpClientErrorException e) {
@@ -71,7 +72,7 @@ public class ClientMessageDeletedService {
         HttpEntity<Object> request = authorizationHeaderService.getHttpEntityForRequest(null);
         try {
             ResponseEntity<List<LinkedHashMap<String, Object>>> response =
-                    restTemplate.exchange(clientDTOMessageService.getUrl("files-deleted"), HttpMethod.GET,
+                    restTemplate.exchange(clientDTOMessageService.getUrl("sbk/files-deleted"), HttpMethod.GET,
                             request, new ParameterizedTypeReference<List<LinkedHashMap<String, Object>>>() {
                             });
             return response.getBody();
@@ -87,19 +88,17 @@ public class ClientMessageDeletedService {
         HttpEntity<Object> request = authorizationHeaderService.getHttpEntityForRequest(null);
         try {
             ResponseEntity<List<String>> response =
-                    restTemplate.exchange(clientDTOMessageService.getUrl("files-clean"), HttpMethod.GET,
+                    restTemplate.exchange(clientDTOMessageService.getUrl("sbk/files-clean"), HttpMethod.GET,
                             request, new ParameterizedTypeReference<List<String>>() {
                             });
-            List<String> fileNames = response.getBody();
-            if (fileNames != null) {
-                fileNames.forEach((name) -> {
-                    try {
-                        Files.deleteIfExists(Paths.get(String.format("uisbks/files/%s", name)));
-                    } catch (IOException e) {
-                        throw new NoIdException("ошибка при очистки кеша");
-                    }
-                });
-            }
+            Optional.ofNullable(response.getBody())
+                    .ifPresent((name) -> {
+                        try {
+                            Files.deleteIfExists(Paths.get(String.format("uisbks/files/%s", name)));
+                        } catch (IOException e) {
+                            throw new NoIdException("ошибка при очистки кеша");
+                        }
+                    });
             return Collections.emptyList();
         } catch (HttpClientErrorException e) {
             throw new AuthorizationJwtTokenException("Ошибка валидации токена: ");

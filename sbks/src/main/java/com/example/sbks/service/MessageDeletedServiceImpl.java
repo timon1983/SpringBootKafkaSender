@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.mapstruct.factory.Mappers;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -25,11 +26,10 @@ public class MessageDeletedServiceImpl implements MessageDeletedService {
     private final ServiceS3 serviceS3;
 
     @Override
-    @Transactional
     public List<MessageDto> getAll() {
         log.info("Service.Получение списка всех удаленных файлов");
         // todo через Pageable
-        return messageRepository.findAllByStatus(Status.DELETED)
+        return messageRepository.findAllByStatus(Status.DELETED, PageRequest.of(0, 10))
                 .stream()
                 .map(mapper::messageToDto)
                 .collect(Collectors.toList());
@@ -38,7 +38,8 @@ public class MessageDeletedServiceImpl implements MessageDeletedService {
     @Override
     @Transactional
     public List<String> deleteAll() {
-        List<String> fileNames = messageRepository.findAllFileNameForS3ByStatus(Status.DELETED);
+        List<String> fileNames = messageRepository.findAllFileNameForS3ByStatus(Status.DELETED,
+                PageRequest.of(0, 10));
         fileNames.forEach(serviceS3::delete);
         messageRepository.deleteAllByStatus(Status.DELETED);
         log.info("Service.Записи в таблице удалены");
@@ -69,15 +70,13 @@ public class MessageDeletedServiceImpl implements MessageDeletedService {
     public void restoreMessage(Long id) {
         messageRepository
                 .findById(id)
-                // todo ifPresentOrElse заменить на отдельный map и orElseThrow
-                .ifPresentOrElse(message -> {
-                            message.setStatus(Status.UPLOAD);
-                            message.setDateOfDelete(null);
-                            messageRepository.save(message);
-                        },
-                        () -> {
-                            throw new NoSuchDataFileException(String.format("Данные о файле с id=%d в БД отсутствуют",
-                                    id));
-                        });
+                .map(message -> {
+                    message.setStatus(Status.UPLOAD);
+                    message.setDateOfDelete(null);
+                    messageRepository.save(message);
+                    return message;
+                })
+                .orElseThrow(() -> new NoSuchDataFileException(String.format("Данные о файле с id=%d в БД отсутствуют",
+                        id)));
     }
 }

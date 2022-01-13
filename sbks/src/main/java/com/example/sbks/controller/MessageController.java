@@ -11,7 +11,6 @@ import lombok.RequiredArgsConstructor;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.mapstruct.factory.Mappers;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -44,8 +43,7 @@ public class MessageController {
     public ResponseEntity<InfoDto> createMessage(@RequestBody MessageDto messageDto) {
         log.info("Получение сообщения от клиента и запись в БД");
         messageService.save(messageDto);
-        // todo по аналогии
-        return new ResponseEntity<>(InfoDto.builder().build(), HttpStatus.OK);
+        return ResponseEntity.ok(InfoDto.builder().build());
     }
 
     /**
@@ -55,17 +53,17 @@ public class MessageController {
     @PreAuthorize("hasAuthority('message:read')")
     public ResponseEntity<List<MessageDto>> getAllMessages() {
         List<MessageDto> messageDtoList = messageService.getAll();
-        return new ResponseEntity<>(messageDtoList, HttpStatus.OK);
+        return ResponseEntity.ok(messageDtoList);
     }
 
     /**
      * Удаление файла по id
      */
     @PostMapping("/delete")
-    @PreAuthorize("hasAuthority('delete-message:write')")
+    @PreAuthorize("hasAuthority('message:write')")
     public ResponseEntity<InfoDto> deleteById(@RequestBody Long id) {
         messageService.deleteById(id);
-        return new ResponseEntity<>(InfoDto.builder().build(), HttpStatus.OK);
+        return ResponseEntity.ok(InfoDto.builder().build());
     }
 
     /**
@@ -76,7 +74,7 @@ public class MessageController {
     public ResponseEntity<InfoDto> findById(@RequestBody DownloadHistoryDto downloadHistoryDto) {
         DownloadHistoryDto downloadHistoryDtoResponse = downloadHistoryService.saveById(downloadHistoryDto);
         InfoDto infoDto = mapper.downloadHistoryDtoToInfoDto(downloadHistoryDtoResponse);
-        return new ResponseEntity<>(infoDto, HttpStatus.OK);
+        return ResponseEntity.ok(infoDto);
     }
 
     /**
@@ -91,7 +89,7 @@ public class MessageController {
         downloadHistoryDto.setFileName(URLDecoder.decode(fileName, StandardCharsets.UTF_8.name()));
         DownloadHistoryDto downloadHistoryDtoResponse = downloadHistoryService.saveByName(downloadHistoryDto);
         InfoDto infoDto = mapper.downloadHistoryDtoToInfoDto(downloadHistoryDtoResponse);
-        return new ResponseEntity<>(infoDto, HttpStatus.OK);
+        return ResponseEntity.ok(infoDto);
     }
 
     /**
@@ -103,6 +101,6 @@ public class MessageController {
             throws UnsupportedEncodingException, URISyntaxException {
         name = URLDecoder.decode(name, StandardCharsets.UTF_8.name());
         messageSenderService.sendMessage(name);
-        return new ResponseEntity<>(InfoDto.builder().build(), HttpStatus.OK);
+        return ResponseEntity.ok(InfoDto.builder().build());
     }
 }

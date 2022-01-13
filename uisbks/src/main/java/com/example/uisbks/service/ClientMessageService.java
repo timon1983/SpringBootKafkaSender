@@ -45,7 +45,7 @@ public class ClientMessageService {
      * Метод для выполнения операций по сохранению файла
      */
     public void doOperationToSaveFiles(MessageDto messageDto) throws URISyntaxException, IOException {
-        URI uri = new URI(clientDTOMessageService.getUrl("create"));
+        URI uri = new URI(clientDTOMessageService.getUrl("sbk/create"));
         log.info("Отправка данных по файлу {} в БД", messageDto.getOriginFileName());
         clientCacheService.setCache(messageDto, "uisbks/files/");
         HttpEntity<Object> request = authorizationHeaderService.getHttpEntityForRequest(messageDto);
@@ -68,7 +68,7 @@ public class ClientMessageService {
         log.info("Получение списка загруженных файлов");
         try {
             ResponseEntity<List<LinkedHashMap<String, Object>>> response =
-                    restTemplate.exchange(clientDTOMessageService.getUrl("files"), HttpMethod.GET,
+                    restTemplate.exchange(clientDTOMessageService.getUrl("sbk/files"), HttpMethod.GET,
                             request, new ParameterizedTypeReference<List<LinkedHashMap<String, Object>>>() {
                             });
             return response.getBody();
@@ -84,7 +84,7 @@ public class ClientMessageService {
         HttpEntity<Object> request = authorizationHeaderService.getHttpEntityForRequest(downloadHistoryDto);
         try {
             InfoModelClientDto infoModelClientDto =
-                    restTemplate.postForObject(clientDTOMessageService.getUrl("open-id"),
+                    restTemplate.postForObject(clientDTOMessageService.getUrl("sbk/open-id"),
                             request, InfoModelClientDto.class);
             return getUrlForFileAfterCheckDtoInfoModelClient(downloadHistoryDto, infoModelClientDto);
         } catch (HttpClientErrorException e) {
@@ -99,7 +99,7 @@ public class ClientMessageService {
         HttpEntity<Object> request = authorizationHeaderService.getHttpEntityForRequest(downloadHistoryDto);
         try {
             InfoModelClientDto infoModelClientDto =
-                    restTemplate.postForObject(clientDTOMessageService.getUrl("open-name"),
+                    restTemplate.postForObject(clientDTOMessageService.getUrl("sbk/open-name"),
                             request, InfoModelClientDto.class);
             return getUrlForFileAfterCheckDtoInfoModelClient(downloadHistoryDto, infoModelClientDto);
         } catch (HttpClientErrorException e) {
@@ -122,7 +122,7 @@ public class ClientMessageService {
                         "\\Projects\\SpringBootKafkaSender\\uisbks\\files\\%s", infoModelClientDto.getInfo()));
             } else {
                 log.info("Файл получен: [id: {}, name: {}]", downloadHistoryDto.getId(),
-                        downloadHistoryDto.getFileName());
+                        infoModelClientDto.getInfo());
                 return String.join("",
                         publicS3Reference,
                         "/",
@@ -139,7 +139,7 @@ public class ClientMessageService {
         HttpEntity<Object> request = authorizationHeaderService.getHttpEntityForRequest(id);
         try {
             InfoModelClientDto infoModelClientDto =
-                    restTemplate.postForObject(clientDTOMessageService.getUrl("delete"),
+                    restTemplate.postForObject(clientDTOMessageService.getUrl("sbk/delete"),
                             request, InfoModelClientDto.class);
             if (infoModelClientDto != null && infoModelClientDto.getIsError()) {
                 log.error(infoModelClientDto.getInfo());
@@ -163,7 +163,7 @@ public class ClientMessageService {
         HttpEntity<Object> request = authorizationHeaderService.getHttpEntityForRequest(name);
         try {
             InfoModelClientDto infoModelClientDto =
-                    restTemplate.postForObject(clientDTOMessageService.getUrl("send-file"),
+                    restTemplate.postForObject(clientDTOMessageService.getUrl("sbk/send-file"),
                             request, InfoModelClientDto.class);
             if (infoModelClientDto != null && infoModelClientDto.getIsError()) {
                 log.error("Ошибка при отправке: [{}]", infoModelClientDto.getInfo());

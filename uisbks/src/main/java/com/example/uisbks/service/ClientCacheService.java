@@ -50,4 +50,22 @@ public class ClientCacheService {
             throw new NoIdException("Ошибка при записи в кеш");
         }
     }
+
+    /**
+     * Очистка кеша
+     */
+    public void cleanFileCache() { // todo сделать тест
+        try {
+            Files.list(Path.of("uisbks/files/"))
+                    .forEach(it -> {
+                        try {
+                            Files.delete(it);
+                        } catch (IOException e) {
+                            log.error("Ошибка при очистки кеша");
+                        }
+                    });
+        } catch (IOException e) {
+            log.error("Ошибка при считывании списка файлов для их очистки");
+        }
+    }
 }

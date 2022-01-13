@@ -18,10 +18,12 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(MessageDeletedController.class)
-@MockBean(MessageDeletedService.class)
-@MockBean(JwtConfigurer.class)
-@MockBean(JwtTokenFilter.class)
-@MockBean(AuthenticationManager.class)
+@MockBean(classes = {
+        MessageDeletedService.class,
+        JwtConfigurer.class,
+        JwtTokenFilter.class,
+        AuthenticationManager.class
+})
 class MessageDeletedControllerTest {
 
     @Autowired

@@ -14,14 +14,17 @@
 <table>
     <td>
         <form action="#" th:action="@{/UI/login}" th:object="${authDto}" method="post">
-            email:<input type="text" th:field="*{email}" name="email" placeholder="email"/>
+            email:<input type="text" th:field="*{email}" name="email" placeholder="email" required/>
             <br/>
             <br/>
-            password:<input type="text" th:field="*{password}" name="password" placeholder="password"/>
+            password:<input type="text" th:field="*{password}" name="password" placeholder="password" required/>
             <br/>
             <br/>
-            <input type="submit"/>
+            <input type="submit" value="Войти"/>
         </form>
+        <br/>
+        <br/>
+        <form method="get" action="/UI/registration"><button type="submit">Зарегистрироваться</button></form>
     </td>
 </table>
 </body>

@@ -3,8 +3,10 @@ package com.example.sbks.mapper;
 import com.example.sbks.dto.DownloadHistoryDto;
 import com.example.sbks.dto.InfoDto;
 import com.example.sbks.dto.MessageDto;
+import com.example.sbks.dto.UserAuthDto;
 import com.example.sbks.model.DownloadHistory;
 import com.example.sbks.model.Message;
+import com.example.sbks.model.UserAuth;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.ReportingPolicy;
@@ -23,4 +25,6 @@ public interface MapperForModel {
 
     @Mapping(target="info", source="downloadHistoryDto.fileName")
     InfoDto downloadHistoryDtoToInfoDto(DownloadHistoryDto downloadHistoryDto);
+
+    UserAuth userAuthDtoToUserAuth(UserAuthDto userAuthDto);
 }

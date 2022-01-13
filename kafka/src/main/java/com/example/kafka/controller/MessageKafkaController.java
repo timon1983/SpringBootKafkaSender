@@ -15,12 +15,12 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class MessageKafkaController {
 
-    // todo неиспользуемый
     private final static Logger log = LogManager.getLogger(MessageKafkaController.class);
     private final KafkaProducerService kafkaProducerService;
 
     @PostMapping("/send")
     public void receiveMessageToSend(@RequestBody DTOKafkaMessage dtoKafkaMessage) {
+        log.info("Получение сообщения из sbks");
         kafkaProducerService.sendMessage(dtoKafkaMessage);
     }
 }

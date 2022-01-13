@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.mapstruct.factory.Mappers;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -50,14 +51,10 @@ public class MessageServiceImpl implements MessageService {
     }
 
     @Override
-    // todo это readonly оперция, здесь transactional не нужен
-    @Transactional
     public List<MessageDto> getAll() {
         log.info("Service.Получение списка всех файлов");
-
-        // todo метод возвращает все записи, реализовать через Pageable
         return messageRepository
-                .findAllByStatus(Status.UPLOAD)
+                .findAllByStatus(Status.UPLOAD, PageRequest.of(0, 10))
                 .stream()
                 .map(mapper::messageToDto)
                 .collect(Collectors.toList());
@@ -88,10 +85,5 @@ public class MessageServiceImpl implements MessageService {
     public Optional<Message> getByName(String name) {
         log.info("Service.Получение информации о файле по его name={}", name);
         return messageRepository.findByOriginFileName(name);
-    }
-
-    @Override
-    public void throwException() {
-        throw new NoSuchDataFileException("ggg");
     }
 }

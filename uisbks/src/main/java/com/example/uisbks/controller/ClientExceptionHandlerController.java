@@ -1,10 +1,7 @@
 package com.example.uisbks.controller;
 
 import com.example.uisbks.dtomodel.JspPage;
-import com.example.uisbks.exception.AuthorizationJwtTokenException;
-import com.example.uisbks.exception.ErrorLoginException;
-import com.example.uisbks.exception.SuccessLoginException;
-import com.example.uisbks.exception.NoIdException;
+import com.example.uisbks.exception.*;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -37,5 +34,11 @@ public class ClientExceptionHandlerController {
     public String getErrorAuthorizationJwtToken(AuthorizationJwtTokenException e, Model model){
         model.addAttribute("message", e.getMessage());
         return JspPage.ERROR_AUTH_INFO;
+    }
+
+    @ExceptionHandler(PasswordInvalidateException.class)
+    public String getErrorPasswordInvalidate(PasswordInvalidateException e, Model model){
+        model.addAttribute("error", e.getMessage());
+        return JspPage.REGISTRATION;
     }
 }

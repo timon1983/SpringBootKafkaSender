@@ -17,10 +17,12 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(MessageDownloadedController.class)
-@MockBean(DownloadHistoryService.class)
-@MockBean(JwtConfigurer.class)
-@MockBean(JwtTokenFilter.class)
-@MockBean(AuthenticationManager.class)
+@MockBean(classes = {
+        DownloadHistoryService.class,
+        JwtConfigurer.class,
+        JwtTokenFilter.class,
+        AuthenticationManager.class
+})
 class MessageDownloadedControllerTest {
 
     @Autowired

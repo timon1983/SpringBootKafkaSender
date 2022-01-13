@@ -2,10 +2,12 @@ package com.example.sbks.controller;
 
 import com.example.sbks.dto.AuthenticationDTO;
 import com.example.sbks.dto.InfoDto;
+import com.example.sbks.dto.UserAuthDto;
 import com.example.sbks.exception.NoSuchDataFileException;
 import com.example.sbks.model.UserAuth;
 import com.example.sbks.repository.UserAuthRepository;
 import com.example.sbks.security.JwtTokenProvider;
+import com.example.sbks.service.UserRegistrationService;
 import lombok.RequiredArgsConstructor;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -37,6 +39,7 @@ public class AuthenticationController {
     private final AuthenticationManager authenticationManager;
     private final UserAuthRepository userAuthRepository;
     private final JwtTokenProvider jwtTokenProvider;
+    private final UserRegistrationService userRegistrationService;
 
     /**
      * Получение данных с usbks для аутентификации
@@ -48,12 +51,11 @@ public class AuthenticationController {
             authenticationManager.authenticate((new UsernamePasswordAuthenticationToken(email,
                     authenticationDTO.getPassword())));
             UserAuth userAuth = userAuthRepository.findByEmail(email)
-                    .orElseThrow(() -> new UsernameNotFoundException("Не найден пользователь с емаил = " + email)); // чтобы исключениее было информативнее
+                    .orElseThrow(() -> new UsernameNotFoundException("Не найден пользователь с емаил = " + email));
             String token = jwtTokenProvider.createToken(userAuth.getEmail(), userAuth.getRole().name());
             InfoDto infoDto = InfoDto.builder()
                     .info(token)
                     .build();
-            // todo в остальных местах сделать по аналогии
             return ResponseEntity.ok(infoDto);
         } catch (AuthenticationException e) {
             throw new NoSuchDataFileException("Некорректная комбинация email/password");
@@ -69,5 +71,14 @@ public class AuthenticationController {
         securityContextLogoutHandler.logout(request, response, null);
         SecurityContextHolder.clearContext();
         log.info("Отмена аутентификации");
+    }
+
+    @PostMapping("/registration")
+    public ResponseEntity<InfoDto> registration(@RequestBody UserAuthDto userAuthDto){
+        userRegistrationService.registrationUser(userAuthDto);
+        InfoDto infoDto = InfoDto.builder()
+                .info("Регистрация прошла успешно")
+                .build();
+        return ResponseEntity.ok(infoDto);
     }
 }

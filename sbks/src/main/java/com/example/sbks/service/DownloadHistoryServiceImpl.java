@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.mapstruct.factory.Mappers;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -66,10 +67,9 @@ public class DownloadHistoryServiceImpl implements DownloadHistoryService {
     }
 
     @Override
-    @Transactional // todo лищний
     public List<DownloadHistoryDto> getAllById(Long id) {
         log.info("Получение всю историю скачиваний файла с id={}", id);
-        return downloadHistoryRepository.findAllByMessageId(id)
+        return downloadHistoryRepository.findAllByMessageId(id, PageRequest.of(0, 10))
                 .stream()
                 .map(mapper::downloadHistoryToDto)
                 .collect(Collectors.toList());

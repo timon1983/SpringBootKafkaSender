@@ -4,6 +4,7 @@ import com.example.uisbks.dtomodel.DownloadHistoryDto;
 import com.example.uisbks.dtomodel.JspPage;
 import com.example.uisbks.dtomodel.MessageDto;
 import com.example.uisbks.dtomodel.RequestMessageDto;
+import com.example.uisbks.service.ClientCacheService;
 import com.example.uisbks.service.ClientDTOMessageService;
 import com.example.uisbks.service.ClientMessageService;
 import lombok.RequiredArgsConstructor;
@@ -30,6 +31,7 @@ public class ClientMessageController {
     private final static Logger log = LogManager.getLogger(ClientMessageController.class);
     private final ClientMessageService clientMessageService;
     private final ClientDTOMessageService clientDTOMessageService;
+    private final ClientCacheService clientCacheService;
 
     /**
      * Переход на страницу добавления файла
@@ -101,6 +103,16 @@ public class ClientMessageController {
     public String sendFile(@RequestBody String request) {
         String name = request.substring(request.indexOf("=") + 1);
         clientMessageService.doOperationToSendFiles(name);
+        return "redirect:/create/files";
+    }
+
+    /**
+     * Очитстка кеша
+     */
+    @GetMapping("/clean-cache") // todo сделать тест
+    public String cleanCache(){
+        log.info("Очистка кеша");
+        clientCacheService.cleanFileCache();
         return "redirect:/create/files";
     }
 }

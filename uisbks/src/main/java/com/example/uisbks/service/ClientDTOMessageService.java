@@ -75,7 +75,6 @@ public class ClientDTOMessageService {
         }
         return DownloadHistoryDto.builder()
                 .id(id)
-                .fileName(null)
                 .ipUser(ip)
                 .dateOfDownload(LocalDateTime.now().withNano(0))
                 .build();

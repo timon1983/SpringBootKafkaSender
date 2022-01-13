@@ -16,8 +16,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 
 @WebMvcTest(ClientMessageController.class)
-@MockBean(ClientDTOMessageService.class)
-@MockBean(ClientMessageService.class)
+@MockBean(classes = {
+        ClientDTOMessageService.class,
+        ClientMessageService.class
+})
 class ClientMessageControllerTest {
 
     @Autowired

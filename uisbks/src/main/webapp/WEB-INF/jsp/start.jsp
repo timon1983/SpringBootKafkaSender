@@ -18,5 +18,8 @@
 <br/>
 <br/>
 <form method="get" action="/UI/login"><button type="submit">Войти</button></form>
+<br/>
+<br/>
+<form method="get" action="/UI/registration"><button type="submit">Зарегистрироваться</button></form>
 </body>
 </html>

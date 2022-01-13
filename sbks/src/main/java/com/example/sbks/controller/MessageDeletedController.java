@@ -30,10 +30,9 @@ public class MessageDeletedController {
     @GetMapping("/files-deleted")
     @PreAuthorize("hasAuthority('deleted-message:read')")
     public ResponseEntity<List<MessageDto>> getAllMessages() {
+        log.info("Запрос в сервис на получение списка удаленных файлов");
         List<MessageDto> messageDtoList = messageDeletedService.getAll();
-        // todo слово Контроллер здесь и ниже избыточно, LogManager.getLogger вот здесь определяется что логируется контроллер
-        log.info("Контроллер.Запрос в сервис на получение списка удаленных файлов");
-        return new ResponseEntity<>(messageDtoList, HttpStatus.OK);
+        return ResponseEntity.ok(messageDtoList);
     }
 
     /**
@@ -42,9 +41,9 @@ public class MessageDeletedController {
     @GetMapping("/files-clean")
     @PreAuthorize("hasAuthority('deleted-message:write')")
     public ResponseEntity<List<String>> deleteAllMessages() {
+        log.info("Запрос на очистку списка удаленных файлов");
         List<String> fileNames = messageDeletedService.deleteAll();
-        log.info("Контроллер.Запрос на очистку списка удаленных файлов");
-        return new ResponseEntity<>(fileNames, HttpStatus.OK);
+        return ResponseEntity.ok(fileNames);
     }
 
     /**
@@ -53,11 +52,11 @@ public class MessageDeletedController {
     @PostMapping("/full-delete")
     @PreAuthorize("hasAuthority('deleted-message:write')")
     public ResponseEntity<InfoDto> deletingTheFileAtAll(@RequestBody Long id) {
-        log.info("Контроллер.Запрос на полное удаление файла по id={}", id);
+        log.info("Запрос на полное удаление файла по id={}", id);
         InfoDto infoDto = InfoDto.builder()
                 .info(messageDeletedService.fullDelete(id))
                 .build();
-        return new ResponseEntity<>(infoDto, HttpStatus.OK);
+        return ResponseEntity.ok(infoDto);
     }
 
     /**
@@ -66,8 +65,8 @@ public class MessageDeletedController {
     @PostMapping("/restore-file")
     @PreAuthorize("hasAuthority('deleted-message:write')")
     public ResponseEntity<InfoDto> restoreMessageById(@RequestBody Long id) {
-        log.info("Контроллер.Запрос на восстановление файла по id={}", id);
+        log.info("Запрос на восстановление файла по id={}", id);
         messageDeletedService.restoreMessage(id);
-        return new ResponseEntity<>(InfoDto.builder().build(), HttpStatus.OK);
+        return ResponseEntity.ok(InfoDto.builder().build());
     }
 }

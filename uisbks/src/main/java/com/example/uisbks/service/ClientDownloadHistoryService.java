@@ -14,6 +14,7 @@ import org.springframework.web.client.RestTemplate;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Сервис для работы с историей загрузок файлов
@@ -38,14 +39,12 @@ public class ClientDownloadHistoryService {
         log.info("Получение истории скачивания файла по id={}", id);
         HttpEntity<Object> request = authorizationHeaderService.getHttpEntityForRequest(id);
         try {
-            DownloadHistoryDto[] historyDtoList =
-                    restTemplate.postForObject(clientDTOMessageService.getUrl("download-history"), request,
-                            DownloadHistoryDto[].class);
-            if (historyDtoList != null) {
-                return Arrays.asList(historyDtoList);
-            } else {
-                return Collections.emptyList();
-            }
+            return Optional.ofNullable(restTemplate
+                            .postForObject(clientDTOMessageService
+                                            .getUrl("sbk/download-history"), request,
+                                    DownloadHistoryDto[].class))
+                    .map(Arrays::asList)
+                    .orElse(Collections.emptyList());
         } catch (HttpClientErrorException e) {
             throw new AuthorizationJwtTokenException("Ошибка валидации токена: ");
         }

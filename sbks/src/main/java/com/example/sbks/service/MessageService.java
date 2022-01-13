@@ -35,7 +35,4 @@ public interface MessageService {
      * Получение информации о файле по имени
      */
     Optional<Message> getByName(String name);
-
-    // todo ?
-    void throwException();
 }

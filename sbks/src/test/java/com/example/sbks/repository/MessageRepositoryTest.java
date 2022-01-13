@@ -6,6 +6,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.test.context.ActiveProfiles;
 
 import java.time.LocalDateTime;
@@ -71,7 +73,7 @@ class MessageRepositoryTest {
         messageRepository.save(message1);
         messageRepository.save(message2);
         messageRepository.deleteAllByStatus(Status.UPLOAD);
-        List<Message> uploadMessages = messageRepository.findAllByStatus(Status.UPLOAD);
+        List<Message> uploadMessages = messageRepository.findAllByStatus(Status.UPLOAD, PageRequest.of(0, 10));
         assertNotNull(uploadMessages);
         assertEquals(uploadMessages, Collections.emptyList());
     }
@@ -80,7 +82,7 @@ class MessageRepositoryTest {
     void findAllByStatus_ShouldReturnListMessagesByStatus() {
         messageRepository.save(message1);
         messageRepository.save(message2);
-        List<Message> uploadMessages = messageRepository.findAllByStatus(Status.UPLOAD);
+        List<Message> uploadMessages = messageRepository.findAllByStatus(Status.UPLOAD, PageRequest.of(0, 2));
         assertNotNull(uploadMessages);
         assertEquals(uploadMessages.size(), 2);
         assertEquals(uploadMessages.get(1).getStatus(), Status.UPLOAD);
@@ -90,7 +92,8 @@ class MessageRepositoryTest {
     void findAllFileNameForS3ByStatus_ShouldReturnListOfNames() {
         messageRepository.save(message1);
         messageRepository.save(message2);
-        List<String> fileNames = messageRepository.findAllFileNameForS3ByStatus(Status.UPLOAD);
+        List<String> fileNames = messageRepository.findAllFileNameForS3ByStatus(Status.UPLOAD,
+                PageRequest.of(0, 10));
         assertNotNull(fileNames);
         assertEquals(fileNames.size(), 2);
     }

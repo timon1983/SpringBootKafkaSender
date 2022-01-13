@@ -7,6 +7,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.test.context.ActiveProfiles;
 
 import java.time.LocalDateTime;
@@ -59,7 +60,8 @@ class DownloadHistoryRepositoryTest {
         messageRepository.save(message);
         downloadHistoryRepository.save(downloadHistory1);
         downloadHistoryRepository.save(downloadHistory2);
-        List<DownloadHistory> downloadHistoryList = downloadHistoryRepository.findAllByMessageId(1L);
+        List<DownloadHistory> downloadHistoryList = downloadHistoryRepository.findAllByMessageId(1L,
+                PageRequest.of(0, 10));
 
         assertNotNull(downloadHistoryList);
         assertEquals(downloadHistoryList.size(), 2);

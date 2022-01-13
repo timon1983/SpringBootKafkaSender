@@ -61,15 +61,18 @@ public class UserSecurity implements UserDetails {
         return isActive;
     }
 
+    /**
+     * Создание UserDetails с предоставленными полномочиями если он правильно ввел email и пароль
+     */
     public static UserDetails fromUserAuth(UserAuth userAuth) {
+        boolean isActive = userAuth.getStatusAuth().equals(StatusAuth.ACTIVE);
         return new User(
                 userAuth.getEmail(),
                 userAuth.getPassword(),
-                // todo 4 штуки одинаковых
-                userAuth.getStatusAuth().equals(StatusAuth.ACTIVE),
-                userAuth.getStatusAuth().equals(StatusAuth.ACTIVE),
-                userAuth.getStatusAuth().equals(StatusAuth.ACTIVE),
-                userAuth.getStatusAuth().equals(StatusAuth.ACTIVE),
+                isActive,
+                isActive,
+                isActive,
+                isActive,
                 userAuth.getRole().getAuthorities()
         );
     }

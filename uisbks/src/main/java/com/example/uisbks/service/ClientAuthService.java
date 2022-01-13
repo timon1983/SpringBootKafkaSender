@@ -27,13 +27,14 @@ public class ClientAuthService {
     private final RestTemplate restTemplate;
     private final Token token;
     private final AuthorizationHeaderService authorizationHeaderService;
+    private final ClientDTOMessageService clientDTOMessageService;
 
     /**
      * Отправка данных для аутентификации(email и пароль)
      */
     public void sendAuth(AuthDto authDto) {
         try {
-            URI uri = new URI("http://localhost:8086/api/auth/login");
+            URI uri = new URI(clientDTOMessageService.getUrl("auth/login"));
             InfoModelClientDto infoModelClientDto =
                     restTemplate.postForObject(uri, authDto, InfoModelClientDto.class);
             checkInfoModelClientDtoResponse(infoModelClientDto);
@@ -48,7 +49,7 @@ public class ClientAuthService {
     public void sendOut() {
         try {
             HttpEntity<Object> request = authorizationHeaderService.getHttpEntityForRequest(null);
-            URI uri = new URI("http://localhost:8086/api/auth/logout");
+            URI uri = new URI(clientDTOMessageService.getUrl("auth/logout"));
             token.setToken(null);
             restTemplate.postForObject(uri, request, InfoModelClientDto.class);
         } catch (URISyntaxException e) {

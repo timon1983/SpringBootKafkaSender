@@ -20,5 +20,7 @@ public final class JspPage {
 
     public final static String ERROR_AUTH_INFO = "error-auth-info";
 
+    public final static String REGISTRATION = "registration";
+
 
 }
