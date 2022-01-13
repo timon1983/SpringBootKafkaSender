@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/api/sdk/kafka")
+@RequestMapping("/api/sbk/kafka")
 @RequiredArgsConstructor
 public class MessageKafkaController {
 

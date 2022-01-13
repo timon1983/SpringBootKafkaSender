@@ -19,7 +19,7 @@ import java.util.List;
  * Контроллер для обработки запросов по истории скачивания файлов
  */
 @RestController
-@RequestMapping("/api/sdk")
+@RequestMapping("/api/sbk")
 @RequiredArgsConstructor
 public class MessageDownloadedController {
 
