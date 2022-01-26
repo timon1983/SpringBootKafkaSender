@@ -20,7 +20,7 @@ public interface MessageRepository extends PagingAndSortingRepository<Message, L
     /**
      * Получение сущности по оригинальному имени файла
      */
-    Optional<Message> findByOriginFileName(String name);
+    List<Optional<Message>>findByOriginFileName(String name);
 
     /**
      * Удаление всех записей где присутствует дата и время удаления файла

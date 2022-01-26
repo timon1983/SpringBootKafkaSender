@@ -5,6 +5,7 @@ import com.example.sbks.model.Message;
 import com.example.sbks.repository.MessageRepository;
 import com.example.sbks.repository.RepositoryS3;
 import com.example.sbks.service.MessageSenderService;
+import com.example.sbks.service.MessageService;
 import lombok.RequiredArgsConstructor;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -30,7 +31,7 @@ public class MessageSenderKafkaService implements MessageSenderService {
 
     private final static Logger log = LogManager.getLogger(MessageSenderKafkaService.class);
     private final RestTemplate restTemplate;
-    private final MessageRepository messageRepository;
+    private final MessageService messageService;
     @Value("${kafka-url}")
     private String url;
     private final RepositoryS3 repositoryS3;
@@ -42,7 +43,7 @@ public class MessageSenderKafkaService implements MessageSenderService {
     @Transactional
     public void sendMessage(String name) throws URISyntaxException, NoSuchDataFileException {
         URI uri = new URI(url);
-        messageRepository.findByOriginFileName(name)
+        messageService.getByName(name)
                 .map(message -> {
                     message.setContent(getByteContent(message.getFileNameForS3()));
                     restTemplate.postForObject(uri, message, Message.class);

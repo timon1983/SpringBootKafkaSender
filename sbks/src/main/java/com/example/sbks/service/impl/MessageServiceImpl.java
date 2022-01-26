@@ -86,6 +86,6 @@ public class MessageServiceImpl implements MessageService {
     @Transactional
     public Optional<Message> getByName(String name) {
         log.info("Service.Получение информации о файле по его name={}", name);
-        return messageRepository.findByOriginFileName(name);
+        return messageRepository.findByOriginFileName(name).get(0);
     }
 }

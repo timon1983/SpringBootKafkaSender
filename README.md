@@ -5,7 +5,7 @@
 
 Multimodule project for do operation with files
 
-liquibase - модуль системs управления версиями базы данных;
+liquibase - модуль системы управления версиями базы данных;
 
 sbks - модуль backend взаимодействия с БД и с файловым хранилищем AWS S3;
 
@@ -16,5 +16,7 @@ kafka - модуль для отправки сообщений в kafka
 Security с помощью Jwt токена, три роли:
 ADMIN (логин admin@gmail.com, пароль admin),
 MODERATOR (логин moder@mail.ru, пароль moder),
-USER (логин user@yandex.ru, пароль user).
+USER .
+
+При регистрации нового пользователя ему присуждается роль USER
 

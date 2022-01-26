@@ -7,6 +7,7 @@ import com.example.sbks.model.DownloadHistory;
 import com.example.sbks.repository.DownloadHistoryRepository;
 import com.example.sbks.repository.MessageRepository;
 import com.example.sbks.service.DownloadHistoryService;
+import com.example.sbks.service.MessageService;
 import lombok.RequiredArgsConstructor;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -25,13 +26,13 @@ public class DownloadHistoryServiceImpl implements DownloadHistoryService {
     private final static Logger log = LogManager.getLogger(DownloadHistoryServiceImpl.class);
     private final MapperForModel mapper = Mappers.getMapper(MapperForModel.class);
     private final DownloadHistoryRepository downloadHistoryRepository;
-    private final MessageRepository messageRepository;
+    private final MessageService messageService;
 
     @Transactional
     @Override
     public DownloadHistoryDto saveByName(DownloadHistoryDto downloadHistoryDto) {
         DownloadHistory downloadHistory = mapper.dtoToDownloadHistory(downloadHistoryDto);
-        messageRepository.findByOriginFileName(downloadHistory.getFileName())
+        messageService.getByName(downloadHistory.getFileName())
                 .map(message -> {
                     downloadHistory.setMessage(message);
                     downloadHistoryDto.setFileName(message.getFileNameForS3());
@@ -52,7 +53,7 @@ public class DownloadHistoryServiceImpl implements DownloadHistoryService {
     @Override
     public DownloadHistoryDto saveById(DownloadHistoryDto downloadHistoryDto) {
         DownloadHistory downloadHistory = mapper.dtoToDownloadHistory(downloadHistoryDto);
-        messageRepository.findById(downloadHistoryDto.getId())
+        messageService.getById(downloadHistoryDto.getId())
                 .map(message -> {
                     downloadHistory.setMessage(message);
                     downloadHistory.setFileName(message.getOriginFileName());

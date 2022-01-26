@@ -55,7 +55,7 @@ class MessageRepositoryTest {
     void findByOriginFileName_ShouldReturnOptionalOfMessage() {
         messageRepository.save(message1);
 
-        var foundMessage = messageRepository.findByOriginFileName(message1.getOriginFileName())
+        var foundMessage = messageRepository.findByOriginFileName(message1.getOriginFileName()).get(0)
                 .orElseThrow(NullPointerException::new);
 
         assertEquals(foundMessage.getOriginFileName(), message1.getOriginFileName());
