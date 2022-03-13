@@ -3,3 +3,5 @@ include(':uisbks')
 include(':liquibase')
 include(':sbks')
 include(':kafka')
+include(':autotests')
+
